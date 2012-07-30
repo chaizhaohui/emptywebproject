@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BookDownloadLog">
+	<resultMap class="cn.com.twsm.common.dto.BookDownloadLogDTO" id="bookDownloadLog">
+		<result column="LOG_ID" property="id" jdbcType="INTEGER"/>
+		<result column="USER_ID" property="userId" jdbcType="INTEGER"/>
+		<result column="BOOK_ID" property="bookId" jdbcType="INTEGER"/>
+		<result column="CAPTER_ID" property="capterId" jdbcType="INTEGER"/>
+		<result column="DOWNLOAD_TYPE" property="downloadType" jdbcType="VARCHAR"/>
+		<result column="DEVICE_ID" property="deviceId" jdbcType="NUMBER"/>
+		<result column="DOWNLOAD_YEAR" property="downloadYear" jdbcType="VARCHAR"/>
+		<result column="DOWNLOAD_MONTH" property="downloadMonth" jdbcType="VARCHAR"/>
+		<result column="DOWNLOAD_DAY" property="downloadDay" jdbcType="VARCHAR"/>
+		<result column="DOWNLOAD_TIME" property="downloadTime" jdbcType="NUMBER"/>
+	</resultMap>
+	<!-- *************************************************************************************************** -->
+	<select id="select" resultMap="bookDownloadLog">
+	   SELECT LOG_ID,
+	          USER_ID,
+	          BOOK_ID,
+	          CAPTER_ID,
+	          DOWNLOAD_TYPE,
+	          DEVICE_ID,
+	          DOWNLOAD_YEAR,
+	          DOWNLOAD_MONTH,
+	          DOWNLOAD_DAY,
+	          DOWNLOAD_TIME
+	     FROM BOOK_DOWNLOAD_LOG
+
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookDownloadLogDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_BOOK_DOWNLOAD_LOG.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BOOK_DOWNLOAD_LOG
+		  (LOG_ID,
+		   USER_ID,
+		   BOOK_ID,
+		   CAPTER_ID,
+		   DOWNLOAD_TYPE,
+		   DEVICE_ID,
+		   DOWNLOAD_YEAR,
+		   DOWNLOAD_MONTH,
+		   DOWNLOAD_DAY,
+		   DOWNLOAD_TIME)
+		VALUES
+		  (#id#,
+		   #userId#,
+		   #bookId#,
+		   #capterId#,
+		   #downloadType#,
+		   #deviceId#,
+		   #downloadYear#,
+		   #downloadMonth#,
+		   #downloadDay#,
+		   #downloadTime#)
+	</insert>
+</sqlMap>

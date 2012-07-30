@@ -1,0 +1,63 @@
+package cn.com.twsm.common.dto;
+
+public class UserBookShareDTO extends BasicDTO{
+
+	private static final long serialVersionUID = 1L;
+	private Integer shareUserId;					//分享用户ID: 外键 必填
+	private String bookName;						//书籍名称: 必填
+	private String shareMsg;						//分享留言:
+	private Integer bookId;							//关联书籍ID: 外键
+	private Long addTime;							//分享时间:必填
+	private Integer receiveCount = 0;				//被收取次数: 必填 默认为0
+	private Integer recommendCount = 0;				//推荐次数: 必填 默认为0
+	private String status = "0";					//是否可漂状态: 必填 0:否 1:是 默认为0
+
+	public void setShareUserId(Integer shareUserId){
+		this.shareUserId = shareUserId;
+	}
+	public Integer getShareUserId(){
+		return this.shareUserId;
+	}
+	public void setBookName(String bookName){
+		this.bookName = bookName;
+	}
+	public String getBookName(){
+		return this.bookName;
+	}
+	public void setShareMsg(String shareMsg){
+		this.shareMsg = shareMsg;
+	}
+	public String getShareMsg(){
+		return this.shareMsg;
+	}
+	public void setBookId(Integer bookId){
+		this.bookId = bookId;
+	}
+	public Integer getBookId(){
+		return this.bookId;
+	}
+	public void setAddTime(Long addTime){
+		this.addTime = addTime;
+	}
+	public Long getAddTime(){
+		return this.addTime;
+	}
+	public void setReceiveCount(Integer receiveCount){
+		this.receiveCount = receiveCount;
+	}
+	public Integer getReceiveCount(){
+		return this.receiveCount;
+	}
+	public void setRecommendCount(Integer recommendCount){
+		this.recommendCount = recommendCount;
+	}
+	public Integer getRecommendCount(){
+		return this.recommendCount;
+	}
+	public void setStatus(String status){
+		this.status = status;
+	}
+	public String getStatus(){
+		return this.status;
+	}
+}

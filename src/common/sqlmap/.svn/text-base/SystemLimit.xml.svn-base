@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+        
+<sqlMap namespace="SystemLimit">
+	<resultMap class="cn.com.twsm.common.dto.SystemLimitDTO" id="systemLimit">
+		<result column="LIMIT_ID" property="id" jdbcType="INTEGER"/>
+		<result column="LIMIT_NAME" property="name" jdbcType="VARCHAR"/>
+		<result column="LIMIT_URL" property="url" jdbcType="VARCHAR"/>
+		<result column="IS_PUBLIC" property="publicLimit" jdbcType="CHAR"/>
+		<result column="LIMIT_LEVEL" property="level" jdbcType="INTEGER"/>
+		<result column="PARENT_LIMIT_ID" property="parentId" jdbcType="INTEGER"/>
+		<result column="LIMIT_SORT" property="sort" jdbcType="NUMBER"/>
+	</resultMap>
+	
+	<select id="getIdByParentId" resultClass="Integer" parameterClass="int">
+				SELECT 
+					LIMIT_ID
+				FROM 
+					SYSTEM_LIMIT
+				WHERE PARENT_LIMIT_ID = #parentId#
+				AND IS_PUBLIC = '0'
+				ORDER BY LIMIT_SORT
+	</select>
+	
+	<select id="getPublicLimitsIds" resultClass="Integer" >
+				SELECT 
+					LIMIT_ID
+				FROM 
+					SYSTEM_LIMIT
+				WHERE IS_PUBLIC = '1'
+				ORDER BY LIMIT_SORT
+	</select>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.SystemLimitDTO">
+	        UPDATE SYSTEM_LIMIT
+	        <dynamic prepend="set">
+           	  		LIMIT_NAME        =  #name#
+					LIMIT_URL		  =  #url#
+					IS_PUBLIC         =  #publicLimit#
+					LIMIT_LEVEL       =  #level#
+					PARENT_LIMIT_ID   =  #parentId# 
+					LIMIT_SORT        =  #sort#
+           </dynamic>
+           WHERE LIMIT_ID = #id#
+	</update>
+	 
+	<select id="getById" resultMap="systemLimit" parameterClass="int">
+				SELECT 
+					LIMIT_ID, 
+					LIMIT_NAME, 
+					LIMIT_URL, 
+					IS_PUBLIC, 
+					LIMIT_LEVEL, 
+					PARENT_LIMIT_ID, 
+					LIMIT_SORT
+				FROM 
+					SYSTEM_LIMIT
+				WHERE LIMIT_ID = #id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.SystemLimitDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_SYSTEM_LIMIT.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO SYSTEM_LIMIT  
+		   (LIMIT_ID, 
+			LIMIT_NAME, 
+			LIMIT_URL, 
+			IS_PUBLIC, 
+			LIMIT_LEVEL, 
+			PARENT_LIMIT_ID, 
+			LIMIT_SORT)
+		VALUES
+		  (#id#,
+		   #name#,
+		   #url#,
+		   #publicLimit#,
+		   #level#,
+		   #parentId#,
+		   #sort#
+		  )
+	</insert>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM SYSTEM_LIMIT WHERE LIMIT_ID = #id#
+	</delete>
+</sqlMap>

@@ -1,0 +1,165 @@
+﻿<#macro html title="天闻数媒 - 大众阅读管理平台">
+<#setting url_escaping_charset='utf8'>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${title}</title>
+<link href="/css/smart.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" language="javascript" src="/js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" language="javascript" src="/js/my97/WdatePicker.js"></script>
+<script type="text/javascript" language="javascript" src="/js/common.js"></script>
+<script type="text/javascript" language="javascript">
+$(function(){
+	$(".ri_box_mid table tr").mousemove(function(){
+		$(this).css("background","#8ec7f2");	
+	});	
+	$(".ri_box_mid table tr").mouseout(function(){
+		$(this).css("background","none");	
+	});	
+});
+</script>
+</head>
+<body>
+<div class="publisc">
+    <div class="pub">
+        <div class="pub_le">
+            <div class="pub_top">
+                <div class="pub_top_ri">
+                    <div class="pub_top_le"></div>
+                </div>
+            </div>
+            
+            <div class="pub_content">
+                <div class="pub_content_ri">
+                	
+                    <div class="pub_content_le">
+                    
+						<#nested/>
+
+                        <div class="bank10"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#if session.getAttribute("msg")??><script>alert("${msg}");${session.removeAttribute("msg")}</script></#if>
+<script>
+var getTable = function(node){
+	if($(node).parent() == undefined)
+		return ;
+	if($(node).parent().is("table"))
+		return $(node).parent();
+	else
+		getTable($(node).parent());
+	
+};
+
+$(document).ready(function(){
+	//设置CheckAll功能
+	if($("input[name='checkAll']")){
+		$("input[name='checkAll']").click(function(){
+			if($(this).attr("checked"))
+				$(".ri_box_mid input[type='checkbox']").attr("checked","checked");
+			else
+				$(".ri_box_mid input[type='checkbox']").attr("checked","");
+		});
+	}
+});
+
+//打开书籍选择器方法
+function openGetBookWindow(bookName,bookId,authorName)
+{
+   var pageURL = "/tpl/bookSelector.html";
+   var newWin= window.showModalDialog(pageURL, null, 'dialogWidth:' + 400 + 'px;dialogHeight:' 
+   + 410 + 'px;dialogLeft:'+450+'px;dialogTop:'+150+'px;help:no;unadorned:no;resizable:no;scroll:no;center:yes'); 
+   var arr=new Array(); 
+   if(newWin!=null){
+      var book=newWin.split("|");
+      if(bookName == ""){
+          bookName = book[1];
+       }else{
+          bookName += "," + book[1];
+       }
+      if(authorName == ""){
+          if( book[2] == ""){
+             authorName = "--";
+          }else{
+            authorName = book[2];
+          }          
+       }else{
+          if( book[2] == ""){
+             authorName += ",--";
+          }else{
+            authorName += "," + book[2];
+          }   
+       }
+       if(bookId == ""){
+          bookId = "|"+book[0]+"|";
+       }else{
+          bookId += book[0]+"|";
+       }    
+   }
+    arr[0] = bookId;
+    arr[1] = bookName;
+    arr[2] = authorName;
+    return arr;
+   
+}
+
+//显示选择的书籍并进行删除操作
+function bookDetailWindow(bookName,bookId,authorName){
+    var pageURL = "/tpl/bookDetail.html";
+    var param = new Array();
+    param[0] = bookId;
+    param[1] = bookName;
+    param[2] = authorName;
+    
+    //bookInf[0]="|bookId|bookId|"  bookInf[1] = "bookName,bookName" bookInf[2] = "authorName,authorName" 
+    var bookInf = window.showModalDialog(pageURL, param, 'dialogWidth:' + 400 + 'px;dialogHeight:' 
+     + 410 + 'px;dialogLeft:'+450+'px;dialogTop:'+150+'px;help:no;unadorned:no;resizable:no;scroll:no;center:yes'); 
+     return bookInf;
+}
+
+//打开标签选择器方法
+function openGetLabelWindow(labelName,labelId)
+{
+   var pageURL = "/tpl/labelSelector.html";
+   var newWin= window.showModalDialog(pageURL, null, 'dialogWidth:' + 400 + 'px;dialogHeight:' 
+   + 410 + 'px;dialogLeft:'+450+'px;dialogTop:'+150+'px;help:no;unadorned:no;resizable:no;scroll:no;center:yes'); 
+   var arr=new Array(); 
+   if(newWin!=null){
+      var label=newWin.split("|");
+      if(labelName == ""){
+          labelName = label[1];
+       }else{
+          labelName += "," + label[1];
+       }
+       if(labelId == ""){
+          labelId = "|" + label[0]+"|";
+       }else{
+          labelId += label[0]+"|";
+       }    
+   }
+    arr[0] = labelId;
+    arr[1] = labelName;
+    return arr;
+   
+}
+
+//显示选择的标签并进行删除操作
+function labelDetailWindow(labelName,labelId){
+    var pageURL = "/tpl/labelDetail.html";
+    var param = new Array();
+    param[0] = labelId;
+    param[1] = labelName;
+    //labelInf[0]="|labelId|labelId|"  labelInf[1] = "labelName,labelName"
+    var labelInf = window.showModalDialog(pageURL, param, 'dialogWidth:' + 400 + 'px;dialogHeight:' 
+     + 410 + 'px;dialogLeft:'+450+'px;dialogTop:'+150+'px;help:no;unadorned:no;resizable:no;scroll:no;center:yes');
+    return labelInf; 
+}
+</script>
+</body>
+</html>
+</#macro>

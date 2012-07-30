@@ -1,0 +1,86 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.UserLabelDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+/**
+ * 用户DAO
+ * @author QiaoGuangqing
+ * @date 2012-04-06
+ */
+public class UserLabelDAO extends BasicDAO<UserLabelDTO> {
+	
+	private static UserLabelDAO userLabelDAO; 
+	private UserLabelDAO(){super();}
+	public static UserLabelDAO getInstance(){
+		if(userLabelDAO == null){
+			synchronized(UserLabelDAO.class){
+				if(userLabelDAO == null){
+					userLabelDAO = new UserLabelDAO();
+				}
+			}
+		}
+		return userLabelDAO;
+	}
+	
+	public List<UserLabelDTO> getByWhere(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserLabel.getByWhere", whereMap);
+		if(list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+	
+	/*
+	 * add by chaizhaohui
+	 * lableId 标签id
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByLableId(int lableId) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserLabel.getByLableId", lableId);
+		return list;
+	}
+	
+	/*
+	 * add by chaizhaohui.
+	 * 查询用户设备是否绑定.
+	 */
+	public Integer getByLableColligation(int labelId) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("UserLabel.getByLableColligation", labelId);
+	}
+
+	
+	public int delete(int userLabelId) throws SQLException
+	{
+		return SqlBuilder.getSqlMapClient().delete("UserLabel.delete", userLabelId);
+	}
+
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by xiaojin 2012/04/09
+	 * @param whereMap
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("UserLabel.getCount",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * add by xiaojin 2012/04/09
+	 * @param whereMap
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<UserLabelDTO>  getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = (List<Integer>)SqlBuilder.getSqlMapClient().queryForList("UserLabel.getByPage", whereMap);
+		if(list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+}

@@ -1,0 +1,84 @@
+package cn.com.twsm.common.dto;
+
+public class StatBookDTO extends BasicDTO{
+	private Integer bookId;					//书籍ID
+	private Integer browseCount = 0 ;					//浏览次数
+	private Integer downloadCount = 0;					//下载次数
+	private Integer readCount =0;					//阅读次数
+	private Long addTime;					//统计时间
+	private String year;					//年份
+	private String month;					//月份
+	private String day;					//日期
+	private int browseMonthCount = 0;
+	private int downloadMonthCount = 0;
+	private int readMonthCount = 0;
+	//------------------------------------------------------
+	public Integer getBookId() {
+		return bookId;
+	}
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+	public Integer getBrowseCount() {
+		return browseCount;
+	}
+	public void setBrowseCount(Integer browseCount) {
+		this.browseCount = browseCount;
+	}
+	public Integer getDownloadCount() {
+		return downloadCount;
+	}
+	public void setDownloadCount(Integer downloadCount) {
+		this.downloadCount = downloadCount;
+	}
+	public Integer getReadCount() {
+		return readCount;
+	}
+	public void setReadCount(Integer readCount) {
+		this.readCount = readCount;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public String getYear() {
+		return year;
+	}
+	public void setYear(String year) {
+		this.year = year;
+	}
+	public String getMonth() {
+		return month;
+	}
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	public String getDay() {
+		return day;
+	}
+	public void setDay(String day) {
+		this.day = day;
+	}
+	public int getBrowseMonthCount() {
+		return browseMonthCount;
+	}
+	public void setBrowseMonthCount(int browseMonthCount) {
+		this.browseMonthCount = browseMonthCount;
+	}
+	public int getDownloadMonthCount() {
+		return downloadMonthCount;
+	}
+	public void setDownloadMonthCount(int downloadMonthCount) {
+		this.downloadMonthCount = downloadMonthCount;
+	}
+	public int getReadMonthCount() {
+		return readMonthCount;
+	}
+	public void setReadMonthCount(int readMonthCount) {
+		this.readMonthCount = readMonthCount;
+	}
+
+	
+}

@@ -1,0 +1,48 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import cn.com.twsm.common.dto.UserDeviceRelationDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 用户设备关系DAO
+ * @author QiaoGuangqing
+ * @date 2012-04-06
+ */
+public class UserDeviceRelationDAO extends BasicDAO<UserDeviceRelationDTO> {
+	private static UserDeviceRelationDAO userDeviceRelationDAO; 
+	public static UserDeviceRelationDAO getInstance(){
+		if(userDeviceRelationDAO == null){
+			synchronized(UserDeviceRelationDAO.class){
+				if(userDeviceRelationDAO == null){
+					userDeviceRelationDAO = new UserDeviceRelationDAO();
+				}
+			}
+		}
+		return userDeviceRelationDAO;
+	}
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private UserDeviceRelationDAO(){
+		super();
+	}
+	
+	/**
+	 * 获取指定用户的全部设备关系
+	 * @param userId
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<UserDeviceRelationDTO> getByUserId(int userId) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserDeviceRelation.getByUserId", userId);
+		if(list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+	
+
+}

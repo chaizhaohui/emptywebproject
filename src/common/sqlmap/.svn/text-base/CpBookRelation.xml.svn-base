@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="CpBookRelation">
+	<resultMap class="cn.com.twsm.common.dto.CpBookRelationDTO" id="cpBookRelation">
+		<result column="RELATION_ID" property="id" jdbcType="NUMBER"/>
+		<result column="CP_BOOK_ID" property="cpBookId" jdbcType="VARCHAR2"/>
+		<result column="BOOK_SOURCE_ID" property="bookSourceId" jdbcType="NUMBER"/>
+		<result column="CP_USER_ID" property="cpUserId" jdbcType="NUMBER"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				RELATION_ID=#id#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="cpBookId">
+				CP_BOOK_ID=#cpBookId#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="bookSourceId">
+				BOOK_SOURCE_ID=#bookSourceId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cpUserId">
+				CP_USER_ID=#cpUserId#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	
+	<select id="getByWhere" resultClass="Integer" parameterClass="map">
+		SELECT 
+			RELATION_ID 
+		FROM 
+		CP_BOOK_RELATION
+		where 1=1
+		<include refid="whereCondition"/> 
+	</select>
+	<select id="getById" resultMap="cpBookRelation" parameterClass="int">
+		SELECT
+			RELATION_ID,
+			CP_BOOK_ID,
+			BOOK_SOURCE_ID,
+			CP_USER_ID
+		FROM 
+			CP_BOOK_RELATION
+		WHERE
+			RELATION_ID =#id#
+	</select>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.CpBookRelationDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_CP_BOOK_RELATION.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO CP_BOOK_RELATION(RELATION_ID,CP_BOOK_ID,BOOK_SOURCE_ID,CP_USER_ID)
+		VALUES(#id#,#cpBookId#,#bookSourceId#,#cpUserId#)
+	</insert>
+</sqlMap>

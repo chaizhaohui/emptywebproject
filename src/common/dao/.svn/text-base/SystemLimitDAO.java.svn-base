@@ -1,0 +1,56 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+
+import cn.com.twsm.common.dto.SystemLimitDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+/**
+ * SYSTEM_LIMIT表 DAO
+ * @author Guo Tianci
+ * @date 2012-06-13
+ */
+public class SystemLimitDAO extends BasicDAO<SystemLimitDTO>{
+	
+	private static SystemLimitDAO instance;
+	
+	public static SystemLimitDAO getInstance() {
+		if(instance == null){
+			synchronized(SystemLimitDAO.class){
+				if(instance == null){
+					instance = new SystemLimitDAO();
+				}
+			}
+		}		return instance;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SystemLimitDTO> getByParentId(int parentId) throws SQLException {
+		SqlMapClient sqlMap = SqlBuilder.getSqlMapClient();
+		List<Integer> ids = sqlMap.queryForList("SystemLimit.getIdByParentId", parentId);
+		if (ids != null) {
+			return this.getById(ids);
+		}
+		
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * 获取公开权限
+	 * @return
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public List<SystemLimitDTO> getPublicLimits() throws SQLException {
+		List<Integer> ids = SqlBuilder.getSqlMapClient().queryForList("SystemLimit.getPublicLimitsIds");
+		if (ids != null) {
+			return this.getById(ids);
+		}
+		return Collections.emptyList();
+	}
+
+}

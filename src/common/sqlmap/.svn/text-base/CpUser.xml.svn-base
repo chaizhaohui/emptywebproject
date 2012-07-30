@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="CpUser">
+	<resultMap class="cn.com.twsm.common.dto.CpUserDTO" id="cpUser">
+		<result column="CP_USER_ID" property="id" jdbcType="NUMBER"/>
+		<result column="CP_USER_NAME" property="cpUserName" jdbcType="VARCHAR2"/>
+		<result column="CP_PWD" property="cpPwd" jdbcType="VARCHAR2"/>
+		<result column="DESCRIPTION" property="description" jdbcType="VARCHAR2"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+		<result column="ADMIN_ID" property="adminId" jdbcType="NUMBER"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				CP_USER_ID=#id#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="cpUserName">
+				CP_USER_NAME=#cpUserName#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="cpUserNameLike">
+				CP_USER_NAME like '%'||#cpUserNameLike#||'%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="cpPwd">
+				CP_PWD=#cpPwd#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="description">
+				DESCRIPTION=#description#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="descriptionLike">
+				DESCRIPTION like '%'||#descriptionLike#||'%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="description">
+				DESCRIPTION=#description#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="addTime">
+				ADD_TIME=#addTime#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="adminId">
+				ADMIN_ID=#adminId#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM 
+	    	CP_USER 
+	    WHERE 
+	    	CP_USER_ID = #id#
+	</delete>
+	<select id="getByWhere" resultClass="int" parameterClass="map">
+		SELECT 
+			CP_USER_ID
+		FROM
+			(SELECT
+				CP_USER_ID,
+				ROWNUM RN
+			FROM
+				CP_USER
+			WHERE
+				1=1
+			<include refid="whereCondition"/>)
+		WHERE
+			RN &lt;=#end# and RN &gt; #start#
+	</select>
+	<select id="getCountByWhere" resultClass="int" parameterClass="map">
+		SELECT
+			COUNT(1)
+		FROM
+			CP_USER
+		WHERE
+			1=1
+		<include refid="whereCondition"/>
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.CpUserDTO">
+	        UPDATE CP_USER
+	        <dynamic prepend="set">
+				CP_USER_NAME = #cpUserName#,
+				CP_PWD = #cpPwd#,
+				DESCRIPTION = #description#
+           </dynamic>
+           WHERE 
+           	CP_USER_ID = #id#
+	</update>
+	<select id="getById" resultMap="cpUser" parameterClass="int">
+		SELECT 
+			CP_USER_ID,
+			CP_USER_NAME,
+			CP_PWD,
+			DESCRIPTION,
+			ADD_TIME,
+			ADMIN_ID 
+		FROM 
+			CP_USER
+		WHERE
+			CP_USER_ID=#id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.CpUserDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_CP_USER.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO CP_USER(CP_USER_ID,CP_USER_NAME,CP_PWD,DESCRIPTION,ADD_TIME,ADMIN_ID)
+		VALUES(#id#,#cpUserName#,#cpPwd#,#description#,#addTime#,#adminId#)
+	</insert>
+</sqlMap>

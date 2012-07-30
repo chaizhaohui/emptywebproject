@@ -1,0 +1,39 @@
+package cn.com.twsm.common.dto;
+
+public class CpUserDTO extends BasicDTO{
+	private String cpUserName;					//CP用户名
+	private String cpPwd;					//CP用户密码
+	private String description;					//描述
+	private Long addTime;					//添加时间
+	private int adminId;					//管理员ID
+	public String getCpUserName() {
+		return cpUserName;
+	}
+	public void setCpUserName(String cpUserName) {
+		this.cpUserName = cpUserName;
+	}
+	public String getCpPwd() {
+		return cpPwd;
+	}
+	public void setCpPwd(String cpPwd) {
+		this.cpPwd = cpPwd;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public int getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(int adminId) {
+		this.adminId = adminId;
+	}
+}

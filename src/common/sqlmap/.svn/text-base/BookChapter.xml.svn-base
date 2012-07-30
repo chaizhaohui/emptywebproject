@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BookChapter">
+	<resultMap class="cn.com.twsm.common.dto.BookChapterDTO" id="bookChapter">
+		<result column="CHAPTER_ID" property="id" jdbcType="INTEGER"/>
+		<result column="BOOK_ID" property="bookId" jdbcType="INTEGER"/>
+		<result column="CHAPTER_TYPE" property="chapterType" jdbcType="VARCHAR"/>
+		<result column="CHAPTER_NAME" property="chapterName" jdbcType="VARCHAR"/>
+		<result column="CHAPTER_SORT" property="chapterSort" jdbcType="DECIMAL"/>
+		<result column="CHAPTER_URL" property="chapterUrl" jdbcType="VARCHAR"/>
+		<result column="ENCRYPTION_TYPE" property="encryptionType" jdbcType="VARCHAR"/>
+		<result column="LOCAL_PATH" property="localPath" jdbcType="VARCHAR"/>
+		<result column="DOWNLOAD_COUNT" property="downloadCount" jdbcType="INTEGER"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="chapterId">
+				CHAPTER_ID=#chapterId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookId">
+				BOOK_ID=#bookId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="chapterType">
+				CHAPTER_TYPE=#chapterType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="chapterName">
+				CHAPTER_NAME=#chapterName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="chapterSort">
+				CHAPTER_SORT=#chapterSort#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="chapterUrl">
+				CHAPTER_URL=#chapterUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="encryptionType">
+				ENCRYPTION_TYPE=#encryptionType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="localPath">
+				LOCAL_PATH=#localPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="downloadCount">
+				DOWNLOAD_COUNT=#downloadCount#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   BOOK_CHAPTER 
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+   <select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      CHAPTER_ID 
+	   FROM 
+		  (SELECT 
+		     T.CHAPTER_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         CHAPTER_ID 
+              FROM 
+                 BOOK_CHAPTER 
+              WHERE 
+                 1=1 <include refid="whereCondition"/> ORDER BY CHAPTER_SORT
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	<select id="getByWhere" parameterClass="map" resultClass="int">
+	   SELECT 
+	      CHAPTER_ID 
+	   FROM 
+		  BOOK_CHAPTER 
+              WHERE 
+                 1=1 <include refid="whereCondition"/> ORDER BY CHAPTER_SORT
+	</select>
+	<select id="getById" resultMap="bookChapter" parameterClass="int">
+		SELECT CHAPTER_ID,
+		       BOOK_ID,
+		       CHAPTER_TYPE,
+		       CHAPTER_NAME,
+		       CHAPTER_SORT,
+		       CHAPTER_URL,
+		       ENCRYPTION_TYPE,
+		       LOCAL_PATH,
+		       DOWNLOAD_COUNT
+		  FROM BOOK_CHAPTER 
+		  WHERE CHAPTER_ID = #id#
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.BookChapterDTO">
+	      UPDATE BOOK_CHAPTER
+         <dynamic prepend="set">
+         	 CHAPTER_ID      = #id#,
+             BOOK_ID         = #bookId#,
+             CHAPTER_TYPE    = #chapterType#,
+             CHAPTER_NAME    = #chapterName#,
+             CHAPTER_SORT    = #chapterSort#,
+             CHAPTER_URL     = #chapterUrl#,
+             ENCRYPTION_TYPE = #encryptionType#,
+             LOCAL_PATH      = #localPath#,
+             DOWNLOAD_COUNT  = #downloadCount#
+		</dynamic>
+			WHERE CHAPTER_ID = #id#
+	</update>
+	<!-- *************************************************************************************************** -->
+	<select id="select" resultMap="bookChapter">
+		SELECT CHAPTER_ID,
+		       BOOK_ID,
+		       CHAPTER_TYPE,
+		       CHAPTER_NAME,
+		       CHAPTER_SORT,
+		       CHAPTER_URL,
+		       ENCRYPTION_TYPE,
+		       LOCAL_PATH,
+		       DOWNLOAD_COUNT
+		  FROM BOOK_CHAPTER
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookChapterDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_BOOK_CHAPTER.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BOOK_CHAPTER
+			  (CHAPTER_ID,
+			   BOOK_ID,
+			   CHAPTER_TYPE,
+			   CHAPTER_NAME,
+			   CHAPTER_SORT,
+			   CHAPTER_URL,
+			   ENCRYPTION_TYPE,
+			   LOCAL_PATH,
+			   DOWNLOAD_COUNT)
+			VALUES
+			  (#id#,
+			   #bookId#,
+			   #chapterType#,
+			   #chapterName#,
+			   #chapterSort#,
+			   #chapterUrl#,
+			   #encryptionType#,
+			   #localPath#,
+			   #downloadCount#)
+	</insert>
+	
+	<delete id="delete" parameterClass="int">
+		DELETE FROM BOOK_CHAPTER WHERE CHAPTER_ID=#id#
+	</delete>
+</sqlMap>

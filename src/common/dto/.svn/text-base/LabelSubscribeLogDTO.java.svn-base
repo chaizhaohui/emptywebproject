@@ -1,0 +1,58 @@
+package cn.com.twsm.common.dto;
+
+public class LabelSubscribeLogDTO extends BasicDTO{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer labelId;				//标签ID
+	private Integer userId;					//用户ID
+	private Integer subscribeFlag;			//订阅标识：0 ：取消订阅； 1：订阅
+	private Long addTime;					//同步时间
+	private String year;					//年份
+	private String month;					//月份
+	private String day;						//日期
+
+	public void setLabelId(Integer labelId){
+		this.labelId = labelId;
+	}
+	public Integer getLabelId(){
+		return this.labelId;
+	}
+	public void setUserId(Integer userId){
+		this.userId = userId;
+	}
+	public Integer getUserId(){
+		return this.userId;
+	}
+	public void setSubscribeFlag(Integer subscribeFlag){
+		this.subscribeFlag = subscribeFlag;
+	}
+	public Integer getSubscribeFlag(){
+		return this.subscribeFlag;
+	}
+	public void setAddTime(Long addTime){
+		this.addTime = addTime;
+	}
+	public Long getAddTime(){
+		return this.addTime;
+	}
+	public void setYear(String year){
+		this.year = year;
+	}
+	public String getYear(){
+		return this.year;
+	}
+	public void setMonth(String month){
+		this.month = month;
+	}
+	public String getMonth(){
+		return this.month;
+	}
+	public void setDay(String day){
+		this.day = day;
+	}
+	public String getDay(){
+		return this.day;
+	}
+}

@@ -1,0 +1,288 @@
+package cn.com.twsm.common.dto;
+
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.General;
+
+public class BookSourceDTO extends BasicDTO{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String bookName;					//书籍名称: 必填
+	private Integer authorId;					//作者ID: 外键
+	private String bookType;					//书籍类型: 1:文本 2:语音 必填
+	private Integer bookSize;					//书籍大小: 单位KB 必填
+	private String summary;					//简介:书籍简介
+	private Long addTime;					//添加时间: 必填
+	private Integer adminId;					//添加用户ID:外键 必填
+	private String status;					//当前状态:0:未发布 1:正常 2:草稿
+	private String delMark;					//可删除标记:是否可删除标记 0:否 1:是 默认为1 必填
+	private String localPath;					//本地路径: 必填
+	private String remotePath;              //远程路径
+	private String coverLocalUrl;			//书的封面的本地路径
+	private String coverRemoteUrl;			//书的封面的远程路径
+	private String allLabel;
+	private String upStack;
+	private Long publishDate;
+	private int catalogId;
+	private String catalogName;
+	private String isbn;
+	private Integer totalPage;
+	private Integer totalWords;
+	private String subjectWords;
+	private String keyWords;
+	private String shortDescription;
+	private String longNominateInfor;
+	private String shortNominateInfor;
+	private String celebrityRecommend;
+	private String mediaRecommend;
+	private String metaid;
+	/**
+	 * 获取书籍图片本地全路径
+	 * @return
+	 */
+	public String getFullCoverLocalUrl(){
+		if(!General.isEmpty(this.getCoverLocalUrl())){
+			return General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.BOOKCOVER_URL_PREFIX_BIG)) + this.getCoverLocalUrl();
+		}
+		return null;
+	
+	}
+	/**
+	 * 获取听书的全路径
+	 */
+	public String getFullAudioPath(){
+		if(!General.isEmpty(this.getAudioPath())){
+			return General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.AUDIOBOOKS_URL_PREFIX)) + this.getAudioPath();
+		}else{
+			return null;
+		}
+	}
+	/**
+	 * 获取epub书的全路径
+	 */
+	public String getFullEpuPath(){
+		if(!General.isEmpty(this.getLocalPath())){
+			return General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.BOOKS_URL_PREFIX)) + this.getLocalPath();
+		}else{
+			return null;
+		}
+	}
+	private String audioPath;
+	private String audioRemotePath;
+
+	public void setBookName(String bookName){
+		this.bookName = bookName;
+	}
+	public String getBookName(){
+		return this.bookName;
+	}
+	
+	public void setBookType(String bookType){
+		this.bookType = bookType;
+	}
+	public String getBookType(){
+		return this.bookType;
+	}
+
+	public void setSummary(String summary){
+		this.summary = summary;
+	}
+	public String getSummary(){
+		return this.summary;
+	}
+	
+	public void setStatus(String status){
+		this.status = status;
+	}
+	public String getStatus(){
+		return this.status;
+	}
+	public void setDelMark(String delMark){
+		this.delMark = delMark;
+	}
+	public String getDelMark(){
+		return this.delMark;
+	}
+	public void setLocalPath(String localPath){
+		this.localPath = localPath;
+	}
+	public String getLocalPath(){
+		return this.localPath;
+	}
+	public Integer getAuthorId() {
+		return authorId;
+	}
+	public void setAuthorId(Integer authorId) {
+		this.authorId = authorId;
+	}
+	public Integer getBookSize() {
+		return bookSize;
+	}
+	public void setBookSize(Integer bookSize) {
+		this.bookSize = bookSize;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public Integer getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+	public String getRemotePath() {
+		return remotePath;
+	}
+	public void setRemotePath(String remotePath) {
+		this.remotePath = remotePath;
+	}
+	public String getCoverLocalUrl() {
+		return coverLocalUrl;
+	}
+	public void setCoverLocalUrl(String coverLocalUrl) {
+		this.coverLocalUrl = coverLocalUrl;
+	}
+	public String getCoverRemoteUrl() {
+		return coverRemoteUrl;
+	}
+	public void setCoverRemoteUrl(String coverRemoteUrl) {
+		this.coverRemoteUrl = coverRemoteUrl;
+	}
+	public String getAllLabel() {
+		return allLabel;
+	}
+	public void setAllLabel(String allLabel) {
+		this.allLabel = allLabel;
+	}
+	public String getUpStack() {
+		return upStack;
+	}
+	public void setUpStack(String upStack) {
+		this.upStack = upStack;
+	}
+	public String getAudioPath() {
+		return audioPath;
+	}
+	public void setAudioPath(String audioPath) {
+		this.audioPath = audioPath;
+	}
+	public String getAudioRemotePath() {
+		return audioRemotePath;
+	}
+	public void setAudioRemotePath(String audioRemotePath) {
+		this.audioRemotePath = audioRemotePath;
+	}
+
+	public Long getPublishDate() {
+		return publishDate;
+	}
+
+	public void setPublishDate(Long publishDate) {
+		this.publishDate = publishDate;
+	}
+
+	public int getCatalogId() {
+		return catalogId;
+	}
+
+	public void setCatalogId(int catalogId) {
+		this.catalogId = catalogId;
+	}
+
+	public String getCatalogName() {
+		return catalogName;
+	}
+
+	public void setCatalogName(String catalogName) {
+		this.catalogName = catalogName;
+	}
+
+	public String getIsbn() {
+		return isbn;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
+	}
+
+	public String getSubjectWords() {
+		return subjectWords;
+	}
+
+	public void setSubjectWords(String subjectWords) {
+		this.subjectWords = subjectWords;
+	}
+
+	public String getKeyWords() {
+		return keyWords;
+	}
+
+	public void setKeyWords(String keyWords) {
+		this.keyWords = keyWords;
+	}
+
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
+	}
+
+	public String getLongNominateInfor() {
+		return longNominateInfor;
+	}
+
+	public void setLongNominateInfor(String longNominateInfor) {
+		this.longNominateInfor = longNominateInfor;
+	}
+
+	public String getShortNominateInfor() {
+		return shortNominateInfor;
+	}
+
+	public void setShortNominateInfor(String shortNominateInfor) {
+		this.shortNominateInfor = shortNominateInfor;
+	}
+
+	public String getCelebrityRecommend() {
+		return celebrityRecommend;
+	}
+
+	public void setCelebrityRecommend(String celebrityRecommend) {
+		this.celebrityRecommend = celebrityRecommend;
+	}
+
+	public String getMediaRecommend() {
+		return mediaRecommend;
+	}
+
+	public void setMediaRecommend(String mediaRecommend) {
+		this.mediaRecommend = mediaRecommend;
+	}
+
+	public String getMetaid() {
+		return metaid;
+	}
+
+	public void setMetaid(String metaid) {
+		this.metaid = metaid;
+	}
+	public Integer getTotalPage() {
+		return totalPage;
+	}
+	public void setTotalPage(Integer totalPage) {
+		this.totalPage = totalPage;
+	}
+	public Integer getTotalWords() {
+		return totalWords;
+	}
+	public void setTotalWords(Integer totalWords) {
+		this.totalWords = totalWords;
+	}
+ 
+}

@@ -1,0 +1,83 @@
+package cn.com.twsm.common.dto;
+
+import java.math.BigDecimal;
+
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.General;
+
+/**
+ * 系统书籍分类DTO
+ * @author zhangmeng
+ * @date 2012-04-11
+ * @version 1.0.0.1
+ */
+public class BookCatalogDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+
+	public static final String BOOKCATALOG_DISABLED_YES = "1";
+	public static final String BOOKCATALOG_DISABLED_NO = "0";
+	
+	private String catalogName; // 分类名称: 必填
+	private String disabled; // 是否有效:0:否 1:是 必填
+	private BigDecimal catalogSort; // 分类排序: 必填
+	private Integer bookCount; // 书籍数量: 必填
+	private String catalogImgLocalPath; // 分类图片本地路径:必填
+	private String catalogImgUrl; // 分类图片URL:必填
+	
+	/**
+	 * 获取书籍分类图片URL全路径
+	 * @return
+	 */
+	public String getCataLogFullImgUrl(){
+		return General.isEmpty(this.getCatalogImgUrl())?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.IMAGES_URL_PREFIX)) + this.getCatalogImgUrl();
+	}
+	
+	/**
+	 * 获取书籍分类图片本地路径全路径
+	 * @return
+	 */
+	public String getCataLogFullImgLocalPath(){
+		return General.isEmpty(this.getCatalogImgLocalPath())?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.IMAGES_LOCALPATH_PREFIX)) + this.getCatalogImgLocalPath();
+	}
+
+	public String getCatalogName() {
+		return catalogName;
+	}
+	public void setCatalogName(String catalogName) {
+		this.catalogName = catalogName;
+	}
+	public String getDisabled() {
+		return disabled;
+	}
+	public void setDisabled(String disabled) {
+		this.disabled = disabled;
+	}
+	public BigDecimal getCatalogSort() {
+		return catalogSort;
+	}
+	public void setCatalogSort(BigDecimal catalogSort) {
+		this.catalogSort = catalogSort;
+	}
+
+	public Integer getBookCount() {
+		return bookCount;
+	}
+
+	public void setBookCount(Integer bookCount) {
+		this.bookCount = bookCount;
+	}
+
+	public String getCatalogImgLocalPath() {
+		return catalogImgLocalPath;
+	}
+	public void setCatalogImgLocalPath(String catalogImgLocalPath) {
+		this.catalogImgLocalPath = catalogImgLocalPath;
+	}
+	public String getCatalogImgUrl() {
+		return catalogImgUrl;
+	}
+	public void setCatalogImgUrl(String catalogImgUrl) {
+		this.catalogImgUrl = catalogImgUrl;
+	}
+	
+}

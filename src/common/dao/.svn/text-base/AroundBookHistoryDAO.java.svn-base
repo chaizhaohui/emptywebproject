@@ -1,0 +1,58 @@
+package cn.com.twsm.common.dao;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.AroundBookHistoryDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 漂流书历史记录DAO
+ * @author Shi Weiyan
+ * @date 2012-04-12
+ * @version 1.0.0.1
+ */
+public class AroundBookHistoryDAO extends BasicDAO<AroundBookHistoryDTO> {
+	
+	private static AroundBookHistoryDAO aroundBookHistoryDAO; 
+	private AroundBookHistoryDAO(){super();}
+	public static AroundBookHistoryDAO getInstance(){
+		if(aroundBookHistoryDAO == null){
+			synchronized(AroundBookHistoryDAO.class){
+				if(aroundBookHistoryDAO == null){
+					aroundBookHistoryDAO = new AroundBookHistoryDAO();
+				}
+			}
+		}		return aroundBookHistoryDAO;
+	}
+	
+	
+	public AroundBookHistoryDTO getHistoryByBookId(Map<String, Object> whereMap) throws SQLException{
+		
+		return this.getById((Integer)SqlBuilder.getSqlMapClient()
+								.queryForObject("AroundBookHistory.getHistoryByBookId", whereMap));
+		
+	}
+	
+	/**
+	 * 查询所有的记录总数
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getCount(Map<String, Object> whereMap) throws SQLException{
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject("AroundBookHistory.getCount", whereMap);
+	}
+	
+	/**
+	 * 查询所有的漂流书信息列表
+	 * @param whereMap
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<AroundBookHistoryDTO> getAroundBookHistoryList(Map<String, Object> whereMap) throws SQLException{
+		return this.getById(SqlBuilder.getSqlMapClient().queryForList("AroundBookHistory.getId", whereMap));
+	}
+}

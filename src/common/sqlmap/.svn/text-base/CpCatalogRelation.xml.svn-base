@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="CpCatalogRelation">
+	<resultMap class="cn.com.twsm.common.dto.CpCatalogRelationDTO" id="cpCatalogRelation">
+		<result column="RELATION_ID" property="id" jdbcType="NUMBER"/>
+		<result column="CP_CATALOG_ID" property="cpCatalogId" jdbcType="VARCHAR2"/>
+		<result column="BOOK_CATALOG_ID" property="bookCatalogId" jdbcType="NUMBER"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				RELATION_ID=#id#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cpCatalogId">
+				CP_CATALOG_ID=#cpCatalogId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookCatalogId">
+				BOOK_CATALOG_ID=#bookCatalogId#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	<select id="getByWhere" resultClass="int" parameterClass="map">
+		SELECT
+			RELATION_ID
+		FROM
+			CP_CATALOG_RELATION
+		WHERE
+			1=1
+		<include refid="whereCondition"/> 
+	</select>
+	<select id="getById" resultMap="cpCatalogRelation" parameterClass="int">
+		SELECT 
+			RELATION_ID,
+			CP_CATALOG_ID,
+			BOOK_CATALOG_ID 
+		FROM 
+			CP_CATALOG_RELATION
+		WHERE RELATION_ID = #id#
+	</select>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   CP_CATALOG_RELATION
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	<select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      RELATION_ID 
+	   FROM 
+		  (SELECT 
+		     T.RELATION_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         RELATION_ID 
+              FROM 
+                 CP_CATALOG_RELATION
+              WHERE 
+                 1=1 <include refid="whereCondition"/>
+              ORDER BY BOOK_CATALOG_ID,RELATION_ID DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.CpCatalogRelationDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_CP_CATALOG_RELATION.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO CP_CATALOG_RELATION(RELATION_ID,CP_CATALOG_ID,BOOK_CATALOG_ID)
+		VALUES(#id#,#cpCatalogId#,#bookCatalogId#)
+	</insert>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.CpCatalogRelationDTO">
+	        UPDATE CP_CATALOG_RELATION
+	        <dynamic prepend="set">
+           	   RELATION_ID            = #id#,
+               CP_CATALOG_ID          = #cpCatalogId#,
+               BOOK_CATALOG_ID        = #bookCatalogId#
+           </dynamic>
+           WHERE RELATION_ID = #id#
+	</update>
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM CP_CATALOG_RELATION WHERE RELATION_ID = #id#
+	</delete>
+</sqlMap>

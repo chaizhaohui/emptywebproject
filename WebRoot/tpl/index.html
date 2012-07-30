@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma"   content="no-cache"/>
+<meta http-equiv="Cache-Control"   content="no-cache"/>
+<meta http-equiv="Expires"   content="0"/> 
+
+<title>天闻数媒 大众阅读管理平台</title>
+<link href="/css/smart.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" language="javascript" src="/js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" language="javascript" src="/js/common.js"></script>
+<script type="text/javascript" language="javascript">
+	$(function(){
+		$("#arrow_ico").click(function(){
+			var OpenClose=$("#left_menu").css("display");
+			if(OpenClose=="none"){
+				$("#left_menu").css("display","");
+				this.className="arrow_open";
+			}else{
+				$("#left_menu").css("display","none");
+				this.className="arrow_close";	
+			}
+		});
+		var browserheight=$(window).height();
+		leftheight=browserheight-85-30;
+		$("#tabheight").height(leftheight);
+	});
+</script>
+</head>
+<body>
+<div class="header">
+	<div class="header_logo">
+        <div class="top_ri">
+            <div class="nav_menu">
+                <ul>
+                    <li><a name="menu" jump="/index.html" href="javascript:void(0)" class="nav_menu_hover">首&nbsp;页</a></li>
+					<li><a name="menu" mode="users" href="javascript:void(0)"> 用户管理 </a></li>
+					<li><a name="menu" mode="books" href="javascript:void(0)"> 书籍管理 </a></li>
+					<li><a name="menu" mode="onlinelisten" href="javascript:void(0)"> 听书管理 </a></li>
+					<li><a name="menu" mode="sns" href="javascript:void(0)"> 社区管理 </a></li>
+					<li><a name="menu" mode="promotion" href="javascript:void(0)"> 专题管理 </a></li>
+					<li><a name="menu" mode="label" href="javascript:void(0)"> 标签管理 </a></li>
+					<li><a name="menu" mode="around" href="javascript:void(0)"> 漂流书管理 </a></li>
+					<li><a name="menu" mode="client" href="javascript:void(0)"> 客户端管理 </a></li>
+					<li><a name="menu" mode="system" href="javascript:void(0)"> 系统管理 </a></li>
+					<li><a name="menu" href="javascript:void(0)" jump="/system/UserAction-toModifyPwd.do">修改密码</a></li>
+					<li><a name="menu" href="javascript:void(0)" jump="/doLogout.do"> 退&nbsp;出 </a></li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+        	<div class="top_user">当前用户：<strong>${userName!}</strong><!--，您当前有<strong> <a href="javascript:void(0)">（5）</a></strong>个任务待处理。 --></div>
+        </div>
+        <div class="top_mid"></div>
+    </div>
+</div>
+<!--头部结束-->
+<div class="clear"></div>
+<div class="content">
+	<table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="left" valign="top" id="left_menu">
+            	<div class="left_bg">
+                	<div class="left_bg_line"></div>
+                </div>
+                <div class="left_menu">
+                	<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="users" href="javascript:void(0);"><span>用户管理</span></a></div>
+                    <ul style="display:none;">
+						<li><a href="javascript:void(0)" jump="/users/UserAction-showUserList.do"><span class="book_ico"></span><span>用户列表</span></a></li>
+						<li><a href="javascript:void(0)" jump="/users/SuggestAction-showSuggestList.do"><span class="book_ico"></span><span>用户反馈</span></a></li>
+					</ul>
+                    <div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="books" href="javascript:void(0);"><span>书籍管理</span></a></div>
+					<ul style="display:none;">
+						<li><a href="javascript:void(0)" jump="../books/BookSourceManager-showBookSourceList.do"><span class="book_ico"></span><span>书源管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="../books/BookManager-showBookList.do"><span class="book_ico"></span><span>书籍管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="../books/AuthorManager-showAuthorList.do"><span class="book_ico" ></span><span>作家管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="../books/CpBookAction-showCpSuggestList.do"><span class="book_ico" ></span><span>CP消息管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="../books/CpUserManager-showCpUserList.do"><span class="book_ico" ></span><span>cp用户管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="../drm/DrmPackage-page.do"><span class="book_ico" ></span><span>图书DRM加密</span></a></li>
+						
+					</ul>
+                    <div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="onlinelisten" href="javascript:void(0);"><span>听书管理</span></a></div>
+					<ul style="display:none;">
+						<li><a href="javascript:void(0)"  jump="/onlinelisten/ListenPromotionManagerAction-showPromotionList.do"><span class="book_ico"></span><span>听书首页专题管理</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/onlinelisten/ListenBookManagerAction-showBookList.do"><span class="book_ico" ></span><span>听书书籍管理</span></a></li>
+					</ul>
+                    <div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="sns" href="javascript:void(0);"><span>社区管理</span></a></div>
+					<ul style="display:none;">
+						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-showBlogList.do"><span class="book_ico"></span><span>用户博客管理</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertBlog.do"><span class="book_ico"></span><span>后台添加博客</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertDiscuss.do"><span class="book_ico"></span><span>后台添加书评</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertNote.do"><span class="book_ico"></span><span>后台添加笔记</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertSummar.do"><span class="book_ico"></span><span>后台添加书摘</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/sns/BlogDiscussAction-showBlogDiscussList.do"><span class="book_ico" ></span><span>博客评论管理</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/sns/FriendAction-showFriendList.do"><span class="book_ico" ></span><span>用户关注管理</span></a></li>
+						<li><a href="javascript:void(0)"  jump="/sns/ActiveUserAction-showActiveUserList.do"><span class="book_ico" ></span><span>活跃用户管理</span></a></li>
+					</ul>
+					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="catalog" href="javascript:void(0);"><span>分类管理</span></a></div>
+					<ul style="display:none;">
+						<li><a href="javascript:void(0)" jump="../catalog/CatalogAction-showCatalogList.do"><span class="book_ico" ></span><span>书籍分类管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="../catalog/CpCatalogRelationManager-showCpCatalogRelationList.do"><span class="book_ico"></span><span>分类关联管理</span></a></li>
+					</ul>
+					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="promotion" href="javascript:void(0);"><span>专题管理</span></a></div>
+					
+					<ul style="display:none;">
+						<li><a href="javascript:void(0)" jump="/promotion/PromotionAction-showPromotionList.do"><span class="book_ico"></span><span>专题列表</span></a></li>
+					</ul>
+					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="label" href="javascript:void(0);"><span>标签管理</span></a></div>
+					<ul style="display:none;">
+                        <li><a href="javascript:void(0)"  jump="/label/LabelListAction-showLabelList.do"><span class="book_ico"></span><span>标签列表</span></a></li>
+                        <li><a href="javascript:void(0)"  jump="/label/LabelListAction-showHotLabelList.do"><span class="book_ico" ></span><span>热门标签列表</span></a></li>
+                    </ul>
+					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="around" href="javascript:void(0);"><span>漂流书管理</span></a></div>
+					<ul style="display:none;">
+                        <li><a href="javascript:void(0)"  jump="/around/AroundBookAction-showAroundBookList.do"><span class="book_ico"></span><span>漂流书列表</span></a></li>
+                        <li><a href="javascript:void(0)"  jump="/around/AroundBookHistoryAction-showAroundBookHistoryList.do"><span class="book_ico" ></span><span>漂流书历史列表</span></a></li>
+                    </ul>
+					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="client" href="javascript:void(0);"><span>客户端管理</span></a></div>
+						<ul style="display:none;">
+							<li><a href="javascript:void(0)" jump="/client/ClientCoveryMsgAction-showClientCoveryMsgList.do"><span class="book_ico"></span><span>客户端每日寄语管理</span></a></li>
+							<li><a href="javascript:void(0)" jump="/client/ClientSkinAction-showClientSkinList.do"><span class="book_ico"></span><span>客户端皮肤管理</span></a></li>
+							<li><a href="javascript:void(0)" jump="/client/ClientVersionAction-showClientVersionList.do"><span class="book_ico"></span><span>客户端版本管理</span></a></li>
+						</ul>
+					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="system" href="javascript:void(0);"><span>系统管理</span></a></div>
+					<ul style="display:none;">
+						<li><a href="javascript:void(0)" jump="/system/UserAction-showUserList.do"><span class="book_ico"></span><span>管理员列表</span></a></li>
+						<li><a href="javascript:void(0)" jump="/system/AdminGroupAction-showAdminGroupList.do"><span class="book_ico"></span><span>用户组管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="/system/DataCacheAction-showCache.do"><span class="book_ico"></span><span>数据缓存管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="/system/SessionCacheAction-showCache.do"><span class="book_ico"></span><span>Session缓存管理</span></a></li>
+						<li><a href="javascript:void(0)" jump="/system/ErrorLogAction-getErrorLog.do"><span class="book_ico"></span><span>错误日志</span></a></li>
+					</ul>
+					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="system" href="javascript:void(0);"><span>数据统计</span></a></div>
+					<ul style="display:none;">
+						<li><a href="javascript:void(0)" jump="/count/BookCountAction-showBookCountListByDay.do"><span class="book_ico"></span><span>书籍统计-日</span></a></li>
+						<li><a href="javascript:void(0)" jump="/count/BookCountAction-showBookCountListByMonth.do"><span class="book_ico"></span><span>书籍统计-月</span></a></li>
+						<li><a href="javascript:void(0)" jump="/count/BookCatalogCountAction-showBookCatalogCountListByDay.do"><span class="book_ico"></span><span>书籍分类统计-日</span></a></li>
+						<li><a href="javascript:void(0)" jump="/count/BookCatalogCountAction-showBookCatalogCountListByMonth.do"><span class="book_ico"></span><span>书籍分类统计-月</span></a></li>
+						<li><a href="javascript:void(0)" jump="/count/ShowStatLabelListAction-showStatLabelDayList.do"><span class="book_ico"></span><span>标签统计-日</span></a></li>
+						<li><a href="javascript:void(0)" jump="/count/ShowStatLabelListAction-showStatLabelMonthList.do"><span class="book_ico"></span><span>标签统计-月</span></a></li>
+					</ul>
+                </div>
+            </td>
+            
+            <td class="table_line6" id="tabheight">
+                <div class="arrow_open" id="arrow_ico"></div>
+            </td>
+            <td valign="top" class="right_top_bg">
+            	<iframe id="mainframe" width="100%" height="520" frameborder="0" style="margin-top:10px;" scrolling="auto" src="/index.html"></iframe>
+            </td>
+        </tr>
+    </table>
+</div>
+<!--主体内容结束-->
+<div class="clear"></div>
+<div class="footer">
+	Copyright © 2008-2012 天闻数媒科技（北京）有限公司 . 数据中心产品, All Rights Reser
+</div>
+<#if session.getAttribute("msg")??><script>alert("${msg}");${session.removeAttribute("msg")}</script></#if>
+<script>
+	$(document).ready(function() {
+		$("a").click(function(){
+			var url = $(this).attr("jump");
+			if(url != "" && url != undefined){
+				document.getElementById("mainframe").src = url;
+			}
+		});
+		
+		//menu开关控制
+		$("a[name='menu']").click(function(){
+			if($(this).parent().next().is("ul")){
+				if($(this).parent().next().css("display") != "block"){
+					$(".content ul").hide("normal");
+					$(this).parent().next().show("normal");
+				}
+				else
+				{
+					$(this).parent().next().hide("normal");
+				}
+			}else{
+				if($(this).parent().parent().parent().attr("class") == "nav_menu"){
+					$(this).parent().parent().find("a").attr("class","");
+					$(this).addClass("nav_menu_hover");
+					if($(this).attr("mode") != undefined){
+						var a = $($("a[mode='"+$(this).attr("mode")+"']")[1]);
+						if(a){
+							if($(a).parent().next().is("ul")){
+								if($(a).parent().next().css("display") != "block"){
+									$(".content ul").hide("normal");
+									$(a).parent().next().show("normal");
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+	});
+</script>
+</body>
+</html>

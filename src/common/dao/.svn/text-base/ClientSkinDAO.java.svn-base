@@ -1,0 +1,50 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.ClientSkinDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+public class ClientSkinDAO extends BasicDAO<ClientSkinDTO> {
+
+	private static ClientSkinDAO clientSkinDAO; 
+	private ClientSkinDAO(){super();}
+	public static ClientSkinDAO getInstance(){
+		if(clientSkinDAO == null){
+			synchronized(ClientSkinDAO.class){
+				if(clientSkinDAO == null){
+					clientSkinDAO = new ClientSkinDAO();
+				}
+			}
+		}
+		return clientSkinDAO;
+	}
+
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[id,downloadCount,localPath,skinSort,skinName,skinImgUrl,addTime,downloadUrl,disabled,skinImgLocalPath]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("ClientSkin.getCount",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得皮肤ID
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[start,end,id,downloadCount,localPath,skinSort,skinName,skinImgUrl,addTime,downloadUrl,disabled,skinImgLocalPath]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("ClientSkin.getByPage", whereMap);
+		return list;
+	}
+	
+}

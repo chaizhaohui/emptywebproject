@@ -1,0 +1,85 @@
+package cn.com.twsm.common.dto;
+
+
+public class CpBookDTO extends BasicDTO{
+	private static final long serialVersionUID = 1L;
+	
+	private String cpBookId;					//CP书籍ID: 外键
+	private int cpUserId;					//CP用户ID: 外键 
+	private String cpCatalogId;					//CP类别ID: 外键
+	private String suggest;					//建议
+	private String status = "2";			//状态: 0:放弃1:同步（可以为空）;2 未操作
+	private String read;					//是否可读: 0:未读；1：已读；默认0
+	private Long addTime;					//添加时间
+	private Integer adminId;					//后台管理员ID:外键
+	private	Long adminTime;					//后台管理时间
+	private String xmlContent;					//XML内容: XMLTYPE
+	private String onDownStack;                //上下架标志：0,下架；1,上架；其他：其他
+	
+	public void setCpUserId(int cpUserId){
+		this.cpUserId = cpUserId;
+	}
+	public int getCpUserId(){
+		return this.cpUserId;
+	}
+	public void setCpCatalogId(String cpCatalogId){
+		this.cpCatalogId = cpCatalogId;
+	}
+	public String getCpCatalogId(){
+		return this.cpCatalogId;
+	}
+	public void setSuggest(String suggest){
+		this.suggest = suggest;
+	}
+	public String getSuggest(){
+		return this.suggest;
+	}
+	public void setStatus(String status){
+		this.status = status;
+	}
+	public String getStatus(){
+		return this.status;
+	}
+	public void setRead(String read){
+		this.read = read;
+	}
+	public String getRead(){
+		return this.read;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public Integer getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+	public Long getAdminTime() {
+		return adminTime;
+	}
+	public void setAdminTime(Long adminTime) {
+		this.adminTime = adminTime;
+	}
+	public String getXmlContent() {
+		return xmlContent;
+	}
+	public void setXmlContent(String xmlContent) {
+		this.xmlContent = xmlContent;
+	}
+	public String getOnDownStack() {
+		return onDownStack;
+	}
+	public void setOnDownStack(String onDownStack) {
+		this.onDownStack = onDownStack;
+	}
+	public String getCpBookId() {
+		return cpBookId;
+	}
+	public void setCpBookId(String cpBookId) {
+		this.cpBookId = cpBookId;
+	}
+}

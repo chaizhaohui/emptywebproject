@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserDeviceRelation">
+	<resultMap class="cn.com.twsm.common.dto.UserDeviceRelationDTO" id="userDeviceRelation">
+		<result column="RELATION_ID" property="id" jdbcType="Integer"/>
+		<result column="USER_ID" property="userId" jdbcType="Integer"/>
+		<result column="DEVICE_ID" property="deviceId" jdbcType="Integer"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+	</resultMap>
+	
+	<select id="getByUserId" resultClass="int" parameterClass="int">
+		SELECT RELATION_ID
+		  FROM USER_DEVICE_RELATION
+		 WHERE USER_ID = #userId#
+	</select>
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="userDeviceRelation" parameterClass="int">
+		SELECT RELATION_ID,
+			   USER_ID,
+			   DEVICE_ID,
+			   STATUS,
+			   ADD_TIME
+		  FROM USER_DEVICE_RELATION
+		 WHERE RELATION_ID = #id#
+	</select>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UserDeviceRelationDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_USER_DEVICE_RELATION.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO USER_DEVICE_RELATION(
+			   RELATION_ID,
+			   USER_ID,
+			   DEVICE_ID,
+			   STATUS,
+			   ADD_TIME
+			   )
+		VALUES (
+			   #id#,
+			   #userId#,
+			   #deviceId#,
+			   #status#,
+			   #addTime#
+			   )
+	</insert>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.UserDeviceRelationDTO">
+	    UPDATE USER_DEVICE_RELATION
+	    <dynamic prepend="SET">
+	    	USER_ID   = #userId#,
+	    	DEVICE_ID = #deviceId#,
+	    	STATUS    = #status#,
+	    	ADD_TIME  = #addTime#
+	    </dynamic>
+	     WHERE RELATION_ID = #id#
+	</update>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM USER_DEVICE_RELATION WHERE RELATION_ID = #id#
+	</delete>
+</sqlMap>
+

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BookLabel">
+	<resultMap class="cn.com.twsm.common.dto.BookLabelDTO" id="BookLabel">
+		<result column="RELATION_ID" property="id" jdbcType="Integer"/>
+		<result column="BOOK_ID" property="bookId" jdbcType="Integer"/>
+		<result column="LABEL_ID" property="labelId" jdbcType="Integer"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="relationId">				
+				RELATION_ID = #relationId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookId">				
+				BOOK_ID = #bookId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="labelId">				
+				LABEL_ID = #labelId#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT COUNT(1) FROM BOOK_LABEL_RELATION WHERE 1 = 1 <include refid="whereCondition"/>
+	</select>
+	<select id="getByWhere" resultClass="int" parameterClass="map">
+		SELECT RELATION_ID
+		  FROM BOOK_LABEL_RELATION
+		 WHERE 1=1 <include refid="whereCondition"/>
+	</select>
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="BookLabel">
+		SELECT RELATION_ID, 
+		  	   BOOK_ID,
+		  	   LABEL_ID
+		  FROM BOOK_LABEL_RELATION
+		 WHERE RELATION_ID = #id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookLabelDTO">
+		<selectKey keyProperty="id" resultClass="int">
+			SELECT SEQ_BOOK_LABEL_RELATION.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BOOK_LABEL_RELATION
+		  (RELATION_ID, 
+		  BOOK_ID,
+		  LABEL_ID)
+		VALUES
+		  (#id#, 
+		  #bookId#, 
+		  #labelId#)
+	</insert>
+	<delete id="delete" parameterClass="int">
+		DELETE FROM  BOOK_LABEL_RELATION WHERE RELATION_ID=#id#
+	</delete>
+</sqlMap>

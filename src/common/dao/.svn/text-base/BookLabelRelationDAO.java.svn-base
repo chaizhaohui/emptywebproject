@@ -1,0 +1,31 @@
+package cn.com.twsm.common.dao;
+
+import cn.com.twsm.common.dao.BasicDAO;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+import cn.com.twsm.common.dto.BookLabelRelationDTO;
+
+public class BookLabelRelationDAO extends BasicDAO<BookLabelRelationDTO> {
+	private static BookLabelRelationDAO bookLabelRelationDAO;
+	public static BookLabelRelationDAO getInstance(){
+		if(bookLabelRelationDAO == null){
+			synchronized(BookLabelRelationDAO.class){
+				if(bookLabelRelationDAO == null){
+					bookLabelRelationDAO = new BookLabelRelationDAO();
+				}
+			}
+		}
+		return bookLabelRelationDAO;
+	}
+
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookLabelRelationDAO() {
+		super();
+	}
+	
+	
+	
+	
+}

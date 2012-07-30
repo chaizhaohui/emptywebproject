@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Suggest">
+	<resultMap class="cn.com.twsm.common.dto.SuggestDTO" id="suggest">
+		<result column="SUGGEST_ID"  property="id" jdbcType="INTEGER"/>
+		<result column="USER_ID"     property="userId" jdbcType="INTEGER"/>
+		<result column="DEVICE_ID"   property="deviceId" jdbcType="INTEGER"/>
+		<result column="CONTENT"     property="content" jdbcType="VARCHAR"/>
+		<result column="CONTACT_WAY" property="contactWay" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME"    property="addTime" jdbcType="NUMBER"/>
+		<result column="DEAL"        property="deal" jdbcType="VARCHAR"/>
+		<result column="DEAL_REMARK" property="dealRemark" jdbcType="VARCHAR"/>
+		<result column="DEAL_TIME"   property="dealTime" jdbcType="NUMBER"/>
+		<result column="ADMIN_ID"    property="adminId" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<isNotNull prepend="AND" property="deal">
+			SUGGEST.DEAL = #deal#
+		</isNotNull>
+		<isNotNull prepend="AND" property="adminId">
+			SUGGEST.ADMIN_ID = #adminId#
+		</isNotNull>
+	</sql>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT COUNT(1) FROM SUGGEST WHERE 1 = 1 <include refid="whereCondition"/>
+	</select>
+	<select id="getByPage" resultClass="int" parameterClass="map">
+		SELECT SUGGEST_ID FROM (SELECT t.SUGGEST_ID,ROWNUM as RN FROM (
+            SELECT SUGGEST_ID
+              FROM SUGGEST
+             WHERE 1 = 1
+                   <include refid="whereCondition"/>
+            ORDER BY SUGGEST.SUGGEST_ID DESC
+            ) t )
+        WHERE RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<!-- ********************************************************* -->
+	<select id="getById" resultMap="suggest"  parameterClass="Integer">
+	   SELECT 
+		   SUGGEST_ID,
+		   USER_ID,
+		   DEVICE_ID,
+		   CONTENT,
+		   CONTACT_WAY,
+		   ADD_TIME,
+		   DEAL,
+		   DEAL_REMARK,
+		   DEAL_TIME,
+		   ADMIN_ID 
+	  FROM 
+	       SUGGEST
+	  WHERE
+	       SUGGEST_ID = #id#     
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.SuggestDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			select SEQ_SUGGEST.NEXTVAL from dual
+        </selectKey>
+		INSERT INTO SUGGEST
+		(
+		   SUGGEST_ID,
+		   USER_ID,
+		   DEVICE_ID,
+		   CONTENT,
+		   CONTACT_WAY,
+		   ADD_TIME,
+		   DEAL,
+		   DEAL_REMARK,
+		   DEAL_TIME,
+		   ADMIN_ID
+		 )
+		VALUES
+		(
+		   #id#,
+		   #userId#,
+		   #deviceId#,
+		   #content#,
+		   #contactWay#,
+		   #addTime#,
+		   #deal#,
+		   #dealRemark#,
+		   #dealTime#,
+		   #adminId#
+		 )
+	</insert>
+	
+	<delete id="delete" parameterClass="int">
+		DELETE FROM SUGGEST WHERE SUGGEST_ID = #id#
+	</delete>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.SuggestDTO">
+		UPDATE SUGGEST
+		<dynamic prepend="SET">
+			USER_ID = #userId#,
+			DEVICE_ID = #deviceId#,
+			CONTENT = #content#,
+			CONTACT_WAY = #contactWay#,
+			ADD_TIME = #addTime#,
+			DEAL = #deal#,
+			DEAL_REMARK = #dealRemark#,
+			DEAL_TIME = #dealTime#,
+			ADMIN_ID = #adminId#
+		</dynamic>
+		 WHERE SUGGEST_ID = #id#
+	</update>
+</sqlMap>

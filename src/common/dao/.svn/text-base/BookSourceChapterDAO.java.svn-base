@@ -1,0 +1,66 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookSourceChapterDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+/**
+ * 
+ * @author Kangbaoxing
+ * @date 2012-04-19
+ */
+public class BookSourceChapterDAO extends BasicDAO<BookSourceChapterDTO> {
+	private static BookSourceChapterDAO bookSourceChapterDAO;
+	public static  BookSourceChapterDAO getInstance(){
+		if(bookSourceChapterDAO == null){
+			synchronized(BookSourceChapterDAO.class){
+				if(bookSourceChapterDAO == null){
+					bookSourceChapterDAO = new BookSourceChapterDAO();
+				}
+			}
+		}
+		return bookSourceChapterDAO;
+	}	
+	private BookSourceChapterDAO(){
+		super();
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<BookSourceChapterDTO> getByBookSourceId(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("BookSourceChapter.getBybookSourceId",whereMap);
+		if(list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+//		return this.getById(this.getSqlMapClient()
+//						.queryForList("BookSourceChapter.getByWhere",whereMap));
+	}
+
+	/**
+	 * modify By Shi Weiyan 
+	 * 2012年5月10日
+	 * @param whereMap
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<BookSourceChapterDTO> getByWhere(Map<String, Object> whereMap) throws SQLException {
+		// TODO Auto-generated method stub
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("BookSourceChapter.getByWhere",whereMap);
+		if(list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	public int getByWhereCount(Map<String, Object> whereMap) throws SQLException {
+		// TODO Auto-generated method stub
+		Integer count = (Integer) SqlBuilder.getSqlMapClient().queryForObject("BookSourceChapter.getByWhereCount",whereMap);
+		return count;
+	}
+	
+	
+}

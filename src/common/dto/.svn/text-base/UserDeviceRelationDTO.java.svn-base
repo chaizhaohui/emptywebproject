@@ -1,0 +1,53 @@
+package cn.com.twsm.common.dto;
+
+import cn.com.twsm.common.dto.BasicDTO;
+/**
+ * 用户设备关联DTO
+ * @author QiaoGuangqing
+ * @date 2012-04-06
+ */
+public class UserDeviceRelationDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+	
+	public static final String STATUS_BIND = "bind";		//关联状态-绑定
+	public static final String STATUS_UNBIND = "unbind";	//关联状态-未绑定
+	
+	private Integer userId;			//用户ID[必填][外键]
+	private Integer deviceId;		//设备ID[必填][外键]
+	private String status = "bind";	//关联状态[必填] bind:绑定 unbind:未绑定
+	private Long addTime;			//创建时间[必填]
+	
+	//扩展字段
+	private DeviceDTO deviceDTO;	//设备信息
+	
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public DeviceDTO getDeviceDTO() {
+		return deviceDTO;
+	}
+	public void setDeviceDTO(DeviceDTO deviceDTO) {
+		this.deviceDTO = deviceDTO;
+	}
+}

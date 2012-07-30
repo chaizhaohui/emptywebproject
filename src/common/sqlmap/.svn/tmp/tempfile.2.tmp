@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Label">
+    <resultMap class="cn.com.twsm.common.dto.LabelDTO" id="label">
+        <result column="LABEL_ID" property="id" jdbcType="INTEGER"/>
+        <result column="LABEL_NAME" property="labelName" jdbcType="VARCHAR"/>
+        <result column="LABEL_NAME_PY" property="labelNamePy" jdbcType="VARCHAR"/>
+        <result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+        <result column="ADD_TYPE" property="addType" jdbcType="VARCHAR"/>
+        <result column="ADMIN_ID" property="adminId" jdbcType="INTEGER"/>
+        <result column="USE_COUNT" property="useCount" jdbcType="INTEGER"/>
+        <result column="SEARCH_COUNT" property="searchCount" jdbcType="INTEGER"/>
+        <result column="SUBSCRIBE_COUNT" property="subscribeCount" jdbcType="INTEGER"/>
+        <result column="HOT_LABEL" property="hotLabel" jdbcType="VARCHAR"/>
+        <result column="LABEL_SORT" property="labelSort" jdbcType="DECIMAL"/>
+    </resultMap>
+       <sql id="whereCondition">
+        <dynamic>
+             <isNotEmpty prepend="AND" property="labelId">             
+                LABEL_ID = #labelId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="labelName">             
+                LABEL_NAME = #labelName#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="labelNamePy">               
+                LABEL_NAME_PY = #labelNamePy#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="adminId">               
+                ADMIN_ID = #adminId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="hotLabel">             
+                HOT_LABEL = #hotLabel#
+            </isNotEmpty>
+            <isNotNull prepend="AND" property="beginTime">
+                 ADD_TIME &gt;= #beginTime#
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="endTime">
+	             ADD_TIME &lt;= #endTime#
+	        </isNotNull>
+            <isNotNull property="orderBy">				
+				 ORDER BY $orderBy$
+			</isNotNull>
+			<isNotEmpty prepend="AND" property="labelNamePyBlur">               
+<<<<<<< .mine
+                LABEL_NAME_PY LIKE '$labelNamePyBlur#'||'%'
+=======
+                LABEL_NAME_PY LIKE '%'||'#labelNamePyBlur#'||'%' 
+>>>>>>> .r8134
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="labelNameBlur">               
+<<<<<<< .mine
+                LABEL_NAME LIKE '$labelNameBlur#'||'%'
+=======
+                LABEL_NAME LIKE '%'||'#labelNamePyBlur#'||'%'
+>>>>>>> .r8134
+            </isNotEmpty>
+            
+        </dynamic>
+    </sql>
+    
+    <sql id="orderbyCondition">
+		<dynamic>
+			<isNotNull property="orderByLabelSortDesc">
+				ORDER BY LABEL_SORT DESC
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
+    <select id="getHotLabelCount" resultClass="int">
+    	SELECT COUNT(1) FROM V_HOT_LABEL 
+    </select>
+    
+    <select id="getHotLabelByPage" resultClass="int" parameterClass="map">
+    	SELECT LABEL_ID FROM (SELECT t.LABEL_ID,ROWNUM as RN FROM (
+            SELECT LABEL_ID FROM V_HOT_LABEL ORDER BY LABEL_SORT DESC 
+            ) t )
+        WHERE RN &gt; #start# AND RN &lt;= #end#
+    </select>
+    
+     <select id="getByPage" resultClass="int" parameterClass="map">
+    	 SELECT 
+    	   LABEL_ID 
+    	 FROM (
+    	       SELECT t.LABEL_ID,ROWNUM as RN 
+    	       FROM (
+                     SELECT LABEL_ID 
+                     FROM LABEL 
+                     WHERE 
+                          1=1 <include refid="whereCondition"/>
+                          <include refid="orderbyCondition"/> 
+               ) t 
+         )
+         WHERE 
+            RN &gt; #start# AND RN &lt;= #end#
+    </select>
+    
+   <select id="getLabelCount" resultClass="int" parameterClass="map">
+        SELECT COUNT(1) FROM LABEL WHERE 1 = 1 <include refid="whereCondition"/>
+    </select>
+	
+    <select id="getByLableId" resultClass="int"  parameterClass="map">
+         SELECT 
+           LABEL_ID 
+        FROM 
+          (SELECT LABEL_ID,ROWNUM RN FROM V_HOT_LABEL WHERE ROWNUM  &lt;= #end# )
+      
+         WHERE  RN  &gt; #start#  and RN &lt;= #end# 
+    </select>
+    
+    <select id="getCount" resultClass="int" parameterClass="map">
+        SELECT COUNT(1) FROM V_HOT_LABEL WHERE 1 = 1 <include refid="whereCondition"/>
+    </select>
+    
+    <select id="getById" resultMap="label"  parameterClass="Integer">
+        SELECT 
+            LABEL_ID,
+            LABEL_NAME,
+            LABEL_NAME_PY,
+            ADD_TIME,
+            ADD_TYPE,
+            ADMIN_ID,
+            USE_COUNT,
+            SEARCH_COUNT,
+            SUBSCRIBE_COUNT,
+            HOT_LABEL,
+            LABEL_SORT 
+        FROM LABEL 
+        where 
+            LABEL_ID=#id#
+    </select>
+    
+    <select id="getByWhere" parameterClass="map" resultClass="Integer">
+        SELECT LABEL_ID
+          FROM LABEL
+         WHERE 1 = 1
+         <include refid="whereCondition"/>
+    </select>
+    
+    <select id="getLableId" resultClass="int" parameterClass="Integer">
+        SELECT LABEL_ID FROM BOOK_LABEL_RELATION WHERE BOOK_ID = #bookId# 
+    </select>
+    
+    <select id="getLabelByBook" resultClass="int" parameterClass="Integer">
+        SELECT LABEL_ID FROM BOOK_LABEL_RELATION WHERE BOOK_ID = #bookId# 
+    </select>
+    
+    <select id="getIdByName" resultClass="int" parameterClass="String">
+        SELECT LABEL_ID FROM LABEL WHERE LABEL_NAME = #labelNAme# AND ROWNUM &lt; 2 
+    </select>
+    
+    <select id="getPageByBook" resultClass="int"  parameterClass="map">
+         SELECT 
+           LABEL_ID 
+        FROM 
+          (SELECT LABEL_ID,ROWNUM RN FROM BOOK_LABEL_RELATION WHERE BOOK_ID = #bookId# AND ROWNUM &lt;= #end# )
+      
+         WHERE  RN  &gt; #start#  and RN &lt;= #end# 
+    </select>
+    
+    <!-- *************************************************************************************************** -->
+    <select id="select" resultMap="label">
+        SELECT 
+            LABEL_ID,
+            LABEL_NAME,
+            LABEL_NAME_PY,
+            ADD_TIME,
+            ADD_TYPE,
+            ADMIN_ID,
+            USE_COUNT,
+            SEARCH_COUNT,
+            SUBSCRIBE_COUNT,
+            HOT_LABEL,
+            LABEL_SORT 
+        FROM LABEL
+    </select>
+
+	<update id="update" parameterClass="cn.com.twsm.common.dto.LabelDTO">
+        UPDATE LABEL
+        <dynamic prepend="set">
+			LABEL_NAME = #labelName#,
+			LABEL_NAME_PY = #labelNamePy#,
+			ADD_TIME = #addTime#,
+			ADD_TYPE = #addType#,
+			ADMIN_ID = #adminId#,
+			USE_COUNT = #useCount#,
+			SEARCH_COUNT = #searchCount#,
+			SUBSCRIBE_COUNT = #subscribeCount#,
+			HOT_LABEL = #hotLabel#,
+			LABEL_SORT = #labelSort#
+        </dynamic>
+		WHERE LABEL_ID = #id#
+    </update>
+    
+    <delete id="delete" parameterClass="int">
+        DELETE FROM LABEL WHERE LABEL_ID = #id#
+    </delete>
+
+    <insert id="insert" parameterClass="cn.com.twsm.common.dto.LabelDTO">
+        <selectKey resultClass="int" keyProperty="id">
+            select SEQ_LABEL.NEXTVAL from dual
+        </selectKey>
+        INSERT INTO LABEL
+        (
+         LABEL_ID,
+         LABEL_NAME,
+         LABEL_NAME_PY,
+         ADD_TIME,
+         ADD_TYPE,
+         ADMIN_ID,
+         USE_COUNT,
+         SEARCH_COUNT,
+         SUBSCRIBE_COUNT,
+         HOT_LABEL,
+         LABEL_SORT
+         )
+        VALUES
+        (
+         #id#,
+         #labelName#,
+         #labelNamePy#,
+         #addTime#,
+         #addType#,
+         #adminId#,
+         #useCount#,
+         #searchCount#,
+         #subscribeCount#,
+         #hotLabel#,
+         #labelSort#
+        )
+    </insert>
+</sqlMap>

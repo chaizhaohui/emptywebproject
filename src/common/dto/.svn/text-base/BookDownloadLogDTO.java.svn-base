@@ -1,0 +1,83 @@
+package cn.com.twsm.common.dto;
+
+
+/**
+ * 书籍下载日志表DTO
+ * 
+ * @author Zhangmeng
+ * @date 2012-04-12
+ * @version 1.0.0.1
+ */
+public class BookDownloadLogDTO extends BasicDTO {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static final String DOWNLOAD_TYPE_CLIENT = "1";
+	public static final String DOWNLOAD_TYPE_WEB = "2";
+	public static final String DOWNLOAD_TYPE_OTHER = "9";
+	private Integer userId; // 用户ID:外键 必填
+	private Integer bookId; // 书籍ID:外键 必填
+	private Integer capterId; // 章节ID:外键
+	private String downloadType; // 下载方式:1:客户端 2:网站 9:其他
+	private Integer deviceId; // 设备ID:外键
+	private String downloadYear; // 下载时间-年:下载时间的日 必填 2位 用于统计
+	private String downloadMonth; // 下载时间-月:下载时间的日 必填 2位 用于统计
+	private String downloadDay; // 下载时间-日:下载时间的日 必填 2位 用于统计
+	private Long downloadTime; // 下载时间:必填
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+	public Integer getBookId() {
+		return bookId;
+	}
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+	public Integer getCapterId() {
+		return capterId;
+	}
+	public void setCapterId(Integer capterId) {
+		this.capterId = capterId;
+	}
+	public String getDownloadType() {
+		return downloadType;
+	}
+	public void setDownloadType(String downloadType) {
+		this.downloadType = downloadType;
+	}
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
+	public String getDownloadYear() {
+		return downloadYear;
+	}
+	public void setDownloadYear(String downloadYear) {
+		this.downloadYear = downloadYear;
+	}
+	public String getDownloadMonth() {
+		return downloadMonth;
+	}
+	public void setDownloadMonth(String downloadMonth) {
+		this.downloadMonth = downloadMonth;
+	}
+	public String getDownloadDay() {
+		return downloadDay;
+	}
+	public void setDownloadDay(String downloadDay) {
+		this.downloadDay = downloadDay;
+	}
+	public Long getDownloadTime() {
+		return downloadTime;
+	}
+	public void setDownloadTime(Long downloadTime) {
+		this.downloadTime = downloadTime;
+	}
+
+}

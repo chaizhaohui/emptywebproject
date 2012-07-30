@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserBlog">
+	<resultMap class="cn.com.twsm.common.dto.UserBlogDTO" id="userBlog">
+		<result column="BLOG_ID" property="id" jdbcType="Integer"/>
+		<result column="CONTENT_TYPE" property="contentType" jdbcType="VARCHAR"/>
+		<result column="TITLE" property="title" jdbcType="VARCHAR"/>
+		<result column="CONTENT" property="content" jdbcType="VARCHAR"/>
+		<result column="ALL_LABEL" property="allLabel" jdbcType="VARCHAR"/>
+		<result column="BOOK_ID" property="bookId" jdbcType="Integer"/>
+		<result column="POSITION" property="position" jdbcType="VARCHAR"/>
+		<result column="CLICK_COUNT" property="clickCount" jdbcType="Integer"/>
+		<result column="CLICK_COUNT_PREFIX" property="clickCountPrefix" jdbcType="Integer"/>
+		<result column="OTHER_USER_VISABLE" property="otherUserVisable" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="CLIENT_ADD_TIME" property="clientAddTime" jdbcType="NUMBER"/>
+		<result column="DEVICE_ID" property="deviceId" jdbcType="Integer"/>
+		<result column="TO_SNS" property="toSns" jdbcType="VARCHAR"/>
+		<result column="ADMIN_READ" property="adminRead" jdbcType="VARCHAR"/>
+		<result column="ADMIN_READ_TIME" property="adminReadTime" jdbcType="NUMBER"/>
+		<result column="ADMIN_ID" property="adminId" jdbcType="Integer"/>
+		<result column="REF_ACTIVITY_ID" property="refActivityId" jdbcType="Integer"/>
+		<result column="POSITION_DESC" property="positionDesc" jdbcType="VARCHAR"/>
+		<result column="USER_ID" property="userId" jdbcType="Integer"/>
+		<result column="DISCUSS_COUNT" property="discussCount" jdbcType="Integer"/>
+		<result column="DELETE_FLAG" property="deleteFlag" jdbcType="VARCHAR"/>
+		<result column="IS_RECOMMEND" property="isRecommend" jdbcType="VARCHAR"/>
+		<result column="IMG_FILE_LOCALPATH" property="imgFileLocalPath" jdbcType="VARCHAR"/>
+		<result column="IMG_FILE_URL" property="imgFileUrl" jdbcType="VARCHAR"/>
+		<result column="IS_TOP" property="isTop" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="userId">				
+				USER_ID = #userId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookId">				
+				BOOK_ID = #bookId#
+			</isNotEmpty>			
+			<isNotEmpty prepend="AND" property="refActivityId">				
+				REF_ACTIVITY_ID = #refActivityId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="otherUserVisable">				
+				OTHER_USER_VISABLE = #otherUserVisable#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isRecommend">				
+				IS_RECOMMEND = #isRecommend#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="toSns">				
+				TO_SNS = #toSns#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="title">				
+				TITLE = #title#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="titleLike">				
+				TITLE like '%'||#titleLike#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="adminId">				
+				ADMIN_ID = #adminId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="contentType">				
+				CONTENT_TYPE = #contentType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="allLabel">				
+				ALL_LABEL = #allLabel#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="allLabelLike">				
+				ALL_LABEL LIKE '%'||#allLabelLike#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="deleteFlag">				
+				DELETE_FLAG = #deleteFlag#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="startDate">				
+				ADD_TIME &gt; #startDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="endDate">				
+				ADD_TIME &lt;= #endDate#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<sql id="orderbyCondition">
+		<dynamic>
+			<isNotNull property="orderByAddTimeDesc">				
+				ORDER BY ADD_TIME DESC
+			</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNotNull property="orderByClickCountDesc">				
+				ORDER BY CLICK_COUNT DESC
+			</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNotNull property="orderByAllClickCountDesc">				
+				ORDER BY CLICK_COUNT + CLICK_COUNT_PREFIX DESC
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   USER_BLOG
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+	<select id="getByWhere" resultClass="int" parameterClass="map">
+		SELECT
+			BLOG_ID
+		FROM
+			USER_BLOG
+		WHERE
+			1=1 <include refid="whereCondition"/>
+		<include refid="orderbyCondition"/>
+	</select>
+	
+	<select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      BLOG_ID 
+	   FROM 
+		  (SELECT 
+		     T.BLOG_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         BLOG_ID 
+              FROM 
+                 USER_BLOG
+              WHERE 
+                 1=1 <include refid="whereCondition"/>
+                 <include refid="orderbyCondition"/> 
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="userBlog" parameterClass="int">
+		SELECT BLOG_ID,
+		       CONTENT_TYPE,
+		       TITLE,
+		       CONTENT,
+		       ALL_LABEL,
+		       BOOK_ID,
+		       POSITION,
+		       CLICK_COUNT,
+		       CLICK_COUNT_PREFIX,
+		       OTHER_USER_VISABLE,
+		       ADD_TIME,
+		       CLIENT_ADD_TIME,
+		       DEVICE_ID,
+		       TO_SNS,
+		       ADMIN_READ,
+		       ADMIN_READ_TIME,
+		       ADMIN_ID,
+		       REF_ACTIVITY_ID,
+		       POSITION_DESC,
+		       USER_ID,
+		       DISCUSS_COUNT,
+		       DELETE_FLAG,
+		       IS_RECOMMEND,
+		       IMG_FILE_LOCALPATH,
+		       IMG_FILE_URL,
+		       IS_TOP
+		  FROM USER_BLOG
+		 WHERE BLOG_ID = #id# 
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.UserBlogDTO">
+		UPDATE USER_BLOG
+		<dynamic prepend="set">
+			CONTENT_TYPE = #contentType#,
+			TITLE = #title#,
+			CONTENT = #content#,
+			ALL_LABEL = #allLabel#,
+			BOOK_ID = #bookId#,
+			POSITION = #position#,
+			CLICK_COUNT = #clickCount#,
+			CLICK_COUNT_PREFIX = #clickCountPrefix#,
+			OTHER_USER_VISABLE = #otherUserVisable#,
+			ADD_TIME =  #addTime#,
+			CLIENT_ADD_TIME = #clientAddTime#,
+			DEVICE_ID = #deviceId#,
+			TO_SNS = #toSns#,
+			ADMIN_READ = #adminRead#,
+			ADMIN_READ_TIME = #adminReadTime#,
+			ADMIN_ID = #adminId#,
+			REF_ACTIVITY_ID = #refActivityId#,
+			POSITION_DESC = #positionDesc#,
+			USER_ID = #userId#,
+			DISCUSS_COUNT = #discussCount#,
+			DELETE_FLAG = #deleteFlag#,
+			IS_RECOMMEND = #isRecommend#,
+			IMG_FILE_LOCALPATH = #imgFileLocalPath#,
+			IMG_FILE_URL = #imgFileUrl#,
+			IS_TOP = #isTop#
+		</dynamic>
+		WHERE BLOG_ID = #id#
+	</update>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UserBlogDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_USER_BLOG.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO USER_BLOG
+		  (BLOG_ID,
+		   CONTENT_TYPE,
+		   TITLE,
+		   CONTENT,
+		   ALL_LABEL,
+		   BOOK_ID,
+		   POSITION,
+		   CLICK_COUNT,
+		   CLICK_COUNT_PREFIX,
+		   OTHER_USER_VISABLE,
+		   ADD_TIME,
+		   CLIENT_ADD_TIME,
+		   DEVICE_ID,
+		   TO_SNS,
+		   ADMIN_READ,
+		   ADMIN_READ_TIME,
+		   ADMIN_ID,
+		   REF_ACTIVITY_ID,
+		   POSITION_DESC,
+		   USER_ID,
+		   DISCUSS_COUNT,
+		   DELETE_FLAG,
+		   IS_RECOMMEND,
+		   IMG_FILE_LOCALPATH,
+		   IMG_FILE_URL,
+		   IS_TOP)
+		VALUES
+		  (#id#,
+		   #contentType#,
+		   #title#,
+		   #content#,
+		   #allLabel#,
+		   #bookId#,
+		   #position#,
+		   #clickCount#,
+		   #clickCountPrefix#,
+		   #otherUserVisable#,
+		   #addTime#,
+		   #clientAddTime#,
+		   #deviceId#,
+		   #toSns#,
+		   #adminRead#,
+		   #adminReadTime#,
+		   #adminId#,
+		   #refActivityId#,
+		   #positionDesc#,
+		   #userId#,
+		   #discussCount#,
+		   #deleteFlag#,
+		   #isRecommend#,
+		   #imgFileLocalPath#,
+		   #imgFileUrl#,
+		   #isTop#)
+	</insert>
+</sqlMap>

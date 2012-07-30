@@ -1,0 +1,52 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.AdminsDTO;
+import cn.com.twsm.common.dto.StatBookCatalogDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * Admins表DAO
+ * @author QiaoGuangqing
+ * @date 2012-04-19
+ */
+public class StatBookCatalogDAO extends BasicDAO<StatBookCatalogDTO> {
+	
+	private static StatBookCatalogDAO statBookCatalogDAO; 
+	private StatBookCatalogDAO(){super();}
+	public static StatBookCatalogDAO getInstance(){
+		if(statBookCatalogDAO == null){
+			synchronized(StatBookCatalogDAO.class){
+				if(statBookCatalogDAO == null){
+					statBookCatalogDAO = new StatBookCatalogDAO();
+				}
+			}
+		}		return statBookCatalogDAO;
+	}
+	
+	/**
+	 * 
+	 * @param whereMap
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<StatBookCatalogDTO> getByWhere(Map<String,Object> whereMap) throws SQLException{
+		List<StatBookCatalogDTO> statBookCatalogDTOList = (List<StatBookCatalogDTO>)SqlBuilder.getSqlMapClient().queryForList("StatBookCatalog.getByWhere", whereMap);
+		if(statBookCatalogDTOList != null && statBookCatalogDTOList.size()>0)
+			return statBookCatalogDTOList;
+		return null;
+	}
+	public List<StatBookCatalogDTO> getByMonth(Map<String, Object> whereMap) throws SQLException {
+		// TODO Auto-generated method stub
+		List<StatBookCatalogDTO> statBookCatalogDTOList = (List<StatBookCatalogDTO>)SqlBuilder.getSqlMapClient().queryForList("StatBookCatalog.getByMonth", whereMap);
+		if(statBookCatalogDTOList!=null&&statBookCatalogDTOList.size()>0){
+			return statBookCatalogDTOList;
+		}
+		return null;
+	}
+
+}

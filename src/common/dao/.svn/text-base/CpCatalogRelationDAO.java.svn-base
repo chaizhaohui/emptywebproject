@@ -1,0 +1,70 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.CpCatalogRelationDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 分类关联关系表DAO
+ * 
+ * @author QiaoGuangqing
+ * @date 2012-04-19
+ */
+public class CpCatalogRelationDAO extends BasicDAO<CpCatalogRelationDTO> {
+	private static CpCatalogRelationDAO cpCatalogRelationDAO;
+
+	private CpCatalogRelationDAO() {
+		super();
+	}
+
+	public static CpCatalogRelationDAO getInstance() {
+		if (cpCatalogRelationDAO == null) {
+			synchronized (CpCatalogRelationDAO.class) {
+				if (cpCatalogRelationDAO == null) {
+					cpCatalogRelationDAO = new CpCatalogRelationDAO();
+				}
+			}
+		}
+		return cpCatalogRelationDAO;
+	}
+
+	/**
+	 * 根据条件获得记录的总数 add by ZhangMeng 2012/06/6
+	 * 
+	 * @param whereMap[relationId,bookCatalogId,CpCatalogId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"CpCatalogRelation.getCount", whereMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<CpCatalogRelationDTO> getByWhere(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"CpCatalogRelation.getByWhere", whereMap);
+		if (list != null && list.size() > 0) {
+			return this.getById(list);
+		}
+		return null;
+	}
+
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * 
+	 * @param whereMap[relationId,bookCatalogId,CpCatalogId]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		return SqlBuilder.getSqlMapClient().queryForList(
+				"CpCatalogRelation.getByPage", whereMap);
+	}
+}

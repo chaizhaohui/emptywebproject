@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="StatBook">
+	<resultMap class="cn.com.twsm.common.dto.StatBookDTO" id="statBook">
+		<!-- 
+		<result column="STAT_ID" property="id" jdbcType="NUMBER"/>
+		 -->
+		<result column="BOOK_ID" property="bookId" jdbcType="NUMBER"/>
+		<result column="BROWSE_COUNT" property="browseCount" jdbcType="NUMBER"/>
+		<result column="DOWNLOAD_COUNT" property="downloadCount" jdbcType="NUMBER"/>
+		<result column="READ_COUNT" property="readCount" jdbcType="NUMBER"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="YEAR" property="year" jdbcType="CHAR"/>
+		<result column="MONTH" property="month" jdbcType="CHAR"/>
+		<result column="DAY" property="day" jdbcType="CHAR"/>
+	</resultMap>
+	<resultMap class="cn.com.twsm.common.dto.StatBookDTO" id="statBook1">
+		<result column="BOOK_ID" property="bookId" jdbcType="NUMBER"/>
+		<result column="YEAR" property="year" jdbcType="CHAR"/>
+		<result column="MONTH" property="month" jdbcType="CHAR"/>
+		<result column="BROWSE_MONTH_COUNT" property="browseMonthCount" jdbcType="NUMBER"/>
+		<result column="DOWNLOAD_MONTH_COUNT" property="downloadMonthCount" jdbcType="NUMBER"/>
+		<result column="READ_MONTH_COUNT" property="readMonthCount" jdbcType="NUMBER"/>
+	</resultMap>
+	<sql id="whereCondition">
+        <dynamic>
+             <isNotEmpty prepend="AND" property="bookId">             
+                BOOK_ID = #bookId#
+            </isNotEmpty>
+        </dynamic>
+        <dynamic>
+             <isNotEmpty prepend="AND" property="day">             
+                DAY = #day#
+            </isNotEmpty>
+        </dynamic>
+        <dynamic>
+             <isNotEmpty prepend="AND" property="month">             
+                MONTH = #month#
+            </isNotEmpty>
+        </dynamic>
+        <dynamic>
+             <isNotEmpty prepend="AND" property="year">             
+                YEAR = #year#
+            </isNotEmpty>
+        </dynamic>
+    </sql>
+    <select id="getByMonth" resultMap="statBook1" parameterClass="map">
+		SELECT A.MONTH,
+       #bookId# BOOK_ID,
+        SUM(NVL((B.DOWNLOAD_COUNT),0)) DOWNLOAD_MONTH_COUNT,
+        SUM(NVL((B.BROWSE_COUNT),0)) BROWSE_MONTH_COUNT,
+        SUM(NVL((B.READ_COUNT),0)) READ_MONTH_COUNT,
+       A.YEAR
+  FROM STAT_BOOK B
+ RIGHT JOIN (SELECT YEAR, MONTH, DAY FROM CODE_DAY WHERE YEAR = #year#) A ON A.YEAR =
+                                                                             B.YEAR
+                                                                         AND A.MONTH =
+                                                                             B.MONTH
+                                                                         AND A.DAY =
+                                                                             B.DAY
+                                                                         AND B.BOOK_ID =
+                                                                             #bookId#
+ GROUP BY A.MONTH, B.BOOK_ID,A.YEAR
+ ORDER BY A.MONTH
+	</select>
+	<select id="getByWhere" resultMap="statBook" parameterClass="map">
+		SELECT 
+      a.DAY DAY,
+      ADD_TIME,
+      #bookId# BOOK_ID,
+      NVL(BROWSE_COUNT,0) BROWSE_COUNT,
+      NVL(DOWNLOAD_COUNT,0) DOWNLOAD_COUNT,
+      NVL(READ_COUNT,0) READ_COUNT,
+      a.month,
+      a.year
+      FROM (SELECT DAY,YEAR,MONTH
+              FROM CODE_DAY t
+             WHERE YEAR = #year#
+               AND MONTH = #month#) a
+      LEFT JOIN STAT_BOOK b ON a.DAY = b.DAY AND a.YEAR = b.YEAR AND A.MONTH = b.MONTH
+                            AND b.BOOK_ID = #bookId#
+     ORDER BY DAY 
+	</select>
+	<select id="getById" resultMap="statBook" parameterClass="Integer">
+		SELECT 
+			STAT_ID,
+			BOOK_ID,
+			BROWSE_COUNT,
+			DOWNLOAD_COUNT,
+			READ_COUNT,
+			ADD_TIME,
+			YEAR,
+			MONTH,
+			DAY 
+		FROM 
+			STAT_BOOK
+		WHERE
+			STAT_ID = #id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.StatBookDTO">
+		<selectKey resultClass="int" keyProperty="id">
+            SELECT SEQ_STAT_BOOK.NEXTVAL FROM DUAL
+        </selectKey>
+		INSERT INTO STAT_BOOK(STAT_ID,BOOK_ID,BROWSE_COUNT,DOWNLOAD_COUNT,READ_COUNT,ADD_TIME,YEAR,MONTH,DAY)
+		VALUES(#id#,#bookId#,#browseCount#,#downloadCount#,#readCount#,#addTime#,#year#,#month#,#day#)
+	</insert>
+</sqlMap>

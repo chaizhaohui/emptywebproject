@@ -1,0 +1,101 @@
+package cn.com.twsm.common.dto;
+
+import java.math.BigDecimal;
+
+
+public class LabelDTO extends BasicDTO{
+
+	public static final long serialVersionUID = 1L;
+	public static final String HOTLABEL = "0";
+	public static final int SEARCHCOUNT = 0;
+	public static final int SUBSCRIBECOUNT = 0;
+	public static final int USECOUNT = 0;
+	
+	public static final String ADD_TYPE_USERSEARCH = "userSearch";
+	public static final String ADD_TYPE_ADMIN = "admin";
+	
+	//private Integer labelId;								//标签ID 主键 自增
+	private String labelName;								//标签名称 必填
+	private String labelNamePy;								//标签拼音 必填
+	private Long addTime;									//首次添加时间 必填
+	private String addType;									//添加方式 必填 userSearch:用户搜索 admin:管理员添加
+	private Integer adminId;								//外键
+	private Integer useCount = USECOUNT;					//使用次数 必填 默认为0
+	private Integer searchCount = SEARCHCOUNT;				//用户搜索次数 必填 默认为0
+	private Integer subscribeCount = SUBSCRIBECOUNT;		//用户订阅次数 必填 默认为0
+	private String hotLabel = HOTLABEL;						//是否为热门标签 0:否 1:是 默认为0 必填
+	private BigDecimal labelSort;								//标签排序 必填
+	
+	//自定义标签，标示当前标签是否被当前用户所订阅,默认为0，没有订阅；kangbaoxing
+	private int isSubscribe=0;
+	
+	//--------------------------------------------------------------------------------------------
+	public String getLabelName() {
+		return labelName;
+	}
+	public void setLabelName(String labelName) {
+		this.labelName = labelName;
+	}
+	public String getLabelNamePy() {
+		return labelNamePy;
+	}
+	public void setLabelNamePy(String labelNamePy) {
+		this.labelNamePy = labelNamePy;
+	}
+	public String getAddType() {
+		return addType;
+	}
+	public void setAddType(String addType) {
+		this.addType = addType;
+	}
+	public Integer getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+	public Integer getUseCount() {
+		return useCount;
+	}
+	public void setUseCount(Integer useCount) {
+		this.useCount = useCount;
+	}
+	public Integer getSearchCount() {
+		return searchCount;
+	}
+	public void setSearchCount(Integer searchCount) {
+		this.searchCount = searchCount;
+	}
+	public Integer getSubscribeCount() {
+		return subscribeCount;
+	}
+	public void setSubscribeCount(Integer subscribeCount) {
+		this.subscribeCount = subscribeCount;
+	}
+	public String getHotLabel() {
+		return hotLabel;
+	}
+	public void setHotLabel(String hotLabel) {
+		this.hotLabel = hotLabel;
+	}
+	public BigDecimal getLabelSort() {
+		return labelSort;
+	}
+	public void setLabelSort(BigDecimal labelSort) {
+		this.labelSort = labelSort;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public int getIsSubscribe() {
+		return isSubscribe;
+	}
+	public void setIsSubscribe(int isSubscribe) {
+		this.isSubscribe = isSubscribe;
+	}
+
+	
+}

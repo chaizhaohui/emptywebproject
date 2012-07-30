@@ -1,0 +1,108 @@
+package cn.com.twsm.common.dto;
+
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.General;
+
+/**
+ * 每日寄语DTO
+ * 
+ * @author ZhangChengpeng
+ * @date 2012-04-09
+ */
+public class CoveryMsgDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+
+	private String title; // 每日寄语标题
+	private String content; // 寄语内容
+	private String imgUrl; // 图片url地址
+	private String imgLocalPath;// 图片本地路径
+	private Long addTime; // 寄语添加时间
+	private Integer adminId; // 添加寄语用户ID
+	private String isShow = "1";// 是否显示，默认为1
+	private Long showTime; // 设置显示时间
+
+	/**
+	 * 获取每日寄语图片地址
+	 * 
+	 * @return
+	 */
+	public String getFullImgUrl() {
+		return General.isEmpty(this.imgUrl)?"":General.convertNullToEmpty(ConfigUtil
+				.getProperty(ConfigUtil.IMAGES_URL_PREFIX))
+				+ General.convertNullToEmpty(this.imgUrl);
+	}
+	
+	/**
+	 * 获取每日寄语图片本地路径
+	 * @return
+	 */
+	public String getFullImgLocalPath()
+	{
+		return General.isEmpty(this.imgLocalPath)?"":General.convertNullToEmpty(ConfigUtil
+				.getProperty(ConfigUtil.IMAGES_LOCALPATH_PREFIX))
+				+ General.convertNullToEmpty(this.imgLocalPath);
+	}
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+	public String getImgLocalPath() {
+		return imgLocalPath;
+	}
+
+	public void setImgLocalPath(String imgLocalPath) {
+		this.imgLocalPath = imgLocalPath;
+	}
+
+	public Long getAddTime() {
+		return addTime;
+	}
+
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+
+	public Integer getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+
+	public String getIsShow() {
+		return isShow;
+	}
+
+	public void setIsShow(String isShow) {
+		this.isShow = isShow;
+	}
+
+	public Long getShowTime() {
+		return showTime;
+	}
+
+	public void setShowTime(Long showTime) {
+		this.showTime = showTime;
+	}
+}

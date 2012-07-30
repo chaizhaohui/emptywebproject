@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BlogLabel">
+	<resultMap class="cn.com.twsm.common.dto.BlogLabelDTO" id="blogLabel">
+		<result column="BLOG_LABEL_ID" property="id" jdbcType="Integer"/>
+		<result column="BLOG_ID" property="blogId" jdbcType="Integer"/>
+		<result column="LABEL_ID" property="labelId" jdbcType="Integer"/>
+		<result column="LABEL_NAME" property="labelName" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+		<result column="ACTIVITY_ID" property="activityId" jdbcType="Integer"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="labelName">				
+				LABEL_NAME = #labelName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="blogId">				
+				BLOG_ID = #blogId#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT COUNT(1) FROM BLOG_LABEL WHERE 1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+	<select id="getByWhere" resultClass="int" parameterClass="map">
+		SELECT
+			BLOG_LABEL_ID
+		FROM
+			BLOG_LABEL
+		WHERE
+			1=1 <include refid="whereCondition"/>
+	</select>
+	
+	<select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      ACTIVITY_ID 
+	   FROM 
+		  (SELECT 
+		     T.ACTIVITY_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         ACTIVITY_ID 
+              FROM 
+                 BLOG_LABEL
+              WHERE 
+                 1=1 <include refid="whereCondition"/> 
+              ORDER BY ADD_TIME DESC   
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="blogLabel">
+		SELECT BLOG_LABEL_ID, 
+		       BLOG_ID, 
+		       LABEL_ID, 
+		       LABEL_NAME, 
+		       ADD_TIME,
+		       ACTIVITY_ID
+		  FROM BLOG_LABEL
+		 WHERE BLOG_LABEL_ID = #id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BlogLabelDTO">
+		<selectKey keyProperty="id" resultClass="int">
+			SELECT Seq_Blog_Label.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BLOG_LABEL
+		  (BLOG_LABEL_ID, 
+		  BLOG_ID, 
+		  LABEL_ID, 
+		  LABEL_NAME, 
+		  ADD_TIME,
+		  ACTIVITY_ID)
+		VALUES
+		  (#id#, 
+		  #blogId#, 
+		  #labelId#, 
+		  #labelName#, 
+		  #addTime#,
+		  #activityId#)
+	</insert>
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM BLOG_LABEL WHERE BLOG_LABEL_ID = #id#
+	</delete>
+</sqlMap>

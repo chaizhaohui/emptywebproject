@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserInfo">
+	<resultMap class="cn.com.twsm.common.dto.UserInfoDTO" id="userInfo">
+		<result column="USER_ID" property="id" jdbcType="Integer"/>
+		<result column="SEX" property="sex" jdbcType="VARCHAR"/>
+		<result column="AREA_NAME" property="areaName" jdbcType="VARCHAR"/>
+		<result column="MOTTO" property="motto" jdbcType="VARCHAR"/>
+		<result column="RANK" property="rank" jdbcType="VARCHAR"/>
+		<result column="READ_TIME_AMOUNT" property="readTimeAmount" jdbcType="Integer"/>
+		<result column="FAVORITE_BOOK_COUNT" property="favoriteBookCount" jdbcType="Integer"/>
+	</resultMap>
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="userInfo" parameterClass="int">
+		SELECT USER_ID,
+			   SEX,
+			   AREA_NAME,
+			   MOTTO,
+			   RANK,
+			   READ_TIME_AMOUNT,
+			   FAVORITE_BOOK_COUNT
+		  FROM USER_INFO
+		 WHERE USER_ID = #id#
+	</select>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UserInfoDTO">
+		INSERT INTO USER_INFO(
+			   USER_ID,
+			   SEX,
+			   AREA_NAME,
+			   MOTTO,
+			   RANK,
+			   READ_TIME_AMOUNT,
+			   FAVORITE_BOOK_COUNT
+			   )
+		VALUES (
+			   #id#,
+			   #sex#,
+			   #areaName#,
+			   #motto#,
+			   #rank#,
+			   #readTimeAmount#,
+			   #favoriteBookCount#
+			   )
+	</insert>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.UserInfoDTO">
+	    UPDATE USER_INFO
+	    <dynamic prepend="SET">
+	    	SEX = #sex#,
+	    	AREA_NAME = #areaName#,
+	    	MOTTO = #motto#,
+	    	RANK = #rank#,
+	    	READ_TIME_AMOUNT = #readTimeAmount#,
+	    	FAVORITE_BOOK_COUNT = #favoriteBookCount#
+	    </dynamic>
+	     WHERE USER_ID = #id#
+	</update>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM USER_INFO WHERE USER_ID = #id#
+	</delete>
+</sqlMap>
+

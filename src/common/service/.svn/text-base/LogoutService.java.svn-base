@@ -1,0 +1,56 @@
+package cn.com.twsm.common.service;
+
+import org.apache.log4j.Logger;
+
+import cn.com.twsm.common.utils.Cook;
+
+/**
+ * 注销service
+ * @author Guo Tianci
+ * @date 2012-05-21
+ */
+public class LogoutService extends BasicService {
+	
+	private static final Logger logger = Logger.getLogger(LogoutService.class);
+	
+	public static LogoutService logoutService = null;
+	
+	public static LogoutService getInstance() {
+		if (logoutService == null) {
+			synchronized ( LogoutService.class) {
+				if (logoutService == null) {
+					logoutService = new LogoutService();
+				}
+			}
+		}
+		return logoutService;
+	}
+	
+	/**
+	 * 注销
+	 */
+	public void doLogout() {
+		invalidSession();
+		removeCookie();
+	}
+
+	private void invalidSession() {
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Invalidate session [" + getSession().getId() + "] ");
+		}
+		this.getSession().invalidate();	
+	}
+	
+	private void removeCookie() {
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Remove cookies [" + Cook.USER_NAME + "] [" + Cook.USER_PWD + "]");
+		}
+		
+		Cook.removeCookie(getResponse(), Cook.USER_NAME, null);
+		Cook.removeCookie(getResponse(), Cook.USER_PWD, null);
+	}
+
+	
+}

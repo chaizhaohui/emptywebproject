@@ -1,0 +1,85 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.CpBookDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * Admins表DAO
+ * 
+ * @author QiaoGuangqing
+ * @date 2012-04-19
+ */
+public class CpBookDAO extends BasicDAO<CpBookDTO> {
+
+	private static CpBookDAO cpBookDAO;
+
+	private CpBookDAO() {
+		super();
+	}
+
+	public static CpBookDAO getInstance() {
+		if (cpBookDAO == null) {
+			synchronized (CpBookDAO.class) {
+				if (cpBookDAO == null) {
+					cpBookDAO = new CpBookDAO();
+				}
+			}
+		}
+		return cpBookDAO;
+	}
+
+	public List<CpBookDTO> getByWhere(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"CpBook.getByWhere", whereMap);
+		if (list != null && list.size() > 0) {
+			return this.getById(list);
+		}
+		return null;
+	}
+
+	public boolean isExist(Map<String, Object> whereMap) throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"CpBook.getByWhere", whereMap);
+		if (list != null && list.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 根据条件获得记录的总数
+	 * 
+	 * @param whereMap
+	 *            [adminId,read,status]
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"CpBook.getCount", whereMap);
+	}
+
+	/**
+	 * 根据分页数据及条件获得记录对象 add by xiaojin 2012/04/12
+	 * 
+	 * @param whereMap
+	 *            [adminId,read,status,start,end]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<CpBookDTO> getByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("CpBook.getByPage", whereMap);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+}

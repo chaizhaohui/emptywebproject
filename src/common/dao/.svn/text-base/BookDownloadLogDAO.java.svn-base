@@ -1,0 +1,65 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookDownloadLogDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+/**
+ * 书籍下载历史表DAO
+ * 
+ * @author Zhangmeng
+ * @date 2012-04-12
+ * @version 1.0.0.1
+ */
+public class BookDownloadLogDAO extends BasicDAO<BookDownloadLogDTO> {
+	private static BookDownloadLogDAO bookDownloadLogDAO; 
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookDownloadLogDAO() {
+		super();
+	}
+
+	public static BookDownloadLogDAO getInstance(){
+		if(bookDownloadLogDAO == null){
+			synchronized(BookDownloadLogDAO.class){
+				if(bookDownloadLogDAO == null){
+					bookDownloadLogDAO = new BookDownloadLogDAO();
+				}
+			}
+		}
+		return bookDownloadLogDAO;
+	}
+	/**
+	 * 根据条件获得记录的总数 add by ZhangMeng 2012/04/10
+	 * 
+	 * @param whereMap[id,userId,bookId,capterId,downloadType,deviceId,downloadYear,downloadMonth,downloadDay,downloadTime]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"BookChapter.getCount", whereMap);
+	}
+
+	/**
+	 * 根据分页数据及条件获得章节ID add by ZhangMeng 2012/04/11
+	 * 
+	 * @param whereMap[start,end,id,userId,bookId,capterId,downloadType,deviceId,downloadYear,downloadMonth,downloadDay,downloadTime]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list =SqlBuilder.getSqlMapClient().queryForList(
+				"BookChapter.getByPage", whereMap);
+		return list;
+	}
+
+}

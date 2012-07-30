@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BookCatalog">
+	<resultMap class="cn.com.twsm.common.dto.BookCatalogDTO" id="bookCatalog">
+		<result column="CATALOG_ID" property="id" jdbcType="INTEGER"/>
+		<result column="CATALOG_NAME" property="catalogName" jdbcType="VARCHAR"/>
+		<result column="CATALOG_SORT" property="catalogSort" jdbcType="DECIMAL"/>
+		<result column="BOOK_COUNT" property="bookCount" jdbcType="INTEGER"/>
+		<result column="CATALOG_IMG_URL" property="catalogImgUrl" jdbcType="VARCHAR"/>
+		<result column="DISABLED" property="disabled" jdbcType="VARCHAR"/>
+		<result column="CATALOG_IMG_LOCAL_PATH" property="catalogImgLocalPath" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				CATALOG_ID=#id#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="catalogName">
+				CATALOG_NAME=#catalogName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="catalogSort">
+				CATALOG_SORT=#catalogSort#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookCount">
+				BOOK_COUNT=#bookCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="catalogImgUrl">
+				CATALOG_IMG_URL=#catalogImgUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="disabled">
+				DISABLED=#disabled#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="catalogImgLocalPath">
+				CATALOG_IMG_LOCAL_PATH=#catalogImgLocalPath#
+			</isNotEmpty>
+
+		</dynamic>
+	</sql>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   BOOK_CATALOG 
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+   <select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      CATALOG_ID 
+	   FROM 
+		  (SELECT 
+		     T.CATALOG_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         CATALOG_ID 
+              FROM 
+                 BOOK_CATALOG 
+              WHERE 
+                 1=1 <include refid="whereCondition"/> ORDER BY CATALOG_SORT DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	 <select id="getByWhere" parameterClass="map" resultClass="int">
+				SELECT 
+		         CATALOG_ID 
+	             FROM 
+	                BOOK_CATALOG 
+	             WHERE 
+	                1=1 <include refid="whereCondition"/> ORDER BY CATALOG_SORT
+
+	</select>
+	<select id="getById" resultMap="bookCatalog" parameterClass="int">
+		SELECT CATALOG_ID,
+			CATALOG_NAME,
+			DISABLED,
+			CATALOG_SORT,
+			BOOK_COUNT,
+			CATALOG_IMG_LOCAL_PATH,
+			CATALOG_IMG_URL
+		  FROM BOOK_CATALOG 
+		  WHERE CATALOG_ID = #id#
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.BookCatalogDTO">
+	      UPDATE BOOK_CATALOG
+         <dynamic prepend="set">
+				CATALOG_ID=#id#,
+				CATALOG_NAME=#catalogName#,
+				CATALOG_SORT=#catalogSort#,
+				BOOK_COUNT=#bookCount#,
+				CATALOG_IMG_URL=#catalogImgUrl#,
+				DISABLED=#disabled#,
+				CATALOG_IMG_LOCAL_PATH=#catalogImgLocalPath#
+		</dynamic>
+			WHERE CATALOG_ID = #id#
+	</update>
+		
+	<select id="getBookCatalogByBookId" resultClass="int" parameterClass="int">
+		SELECT CATALOG_ID
+		  FROM BOOK_CATALOG_RELATION WHERE BOOK_ID=#id# AND ROWNUM=1
+	</select>
+	<!-- *************************************************************************************************** -->
+	<select id="select" resultMap="bookCatalog">
+		SELECT CATALOG_ID,
+			CATALOG_NAME,
+			DISABLED,
+			CATALOG_SORT,
+			BOOK_COUNT,
+			CATALOG_IMG_LOCAL_PATH,
+			CATALOG_IMG_URL
+		  FROM BOOK_CATALOG 
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookCatalogDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_BOOK_CATALOG.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BOOK_CATALOG
+			   (CATALOG_ID,
+				CATALOG_NAME,
+				DISABLED,
+				CATALOG_SORT,
+				BOOK_COUNT,
+				CATALOG_IMG_LOCAL_PATH,
+				CATALOG_IMG_URL
+				)
+			VALUES
+			   (#id#,
+				#catalogName#,
+				#disabled#,
+				#catalogSort#,
+				#bookCount#,
+				#catalogImgLocalPath#,
+				#catalogImgUrl#
+				)
+	</insert>
+	
+	<delete id="delete" parameterClass="int">
+		DELETE FROM BOOK_CATALOG WHERE CATALOG_ID=#id#
+	</delete>
+	
+	<select id="getCatalogBookCount" resultClass="int" parameterClass="int">
+		SELECT COUNT(*) 
+		FROM BOOK_CATALOG_RELATION  
+		WHERE CATALOG_ID = #catalogId#
+	</select>
+	
+	<select id="getCatalogBookSourceCount" resultClass="int" parameterClass="int">
+		SELECT COUNT(*) 
+		FROM BOOK_SOURCE_CATALOG_RELATION  
+		WHERE CATALOG_ID = #catalogId#
+	</select>
+	
+	<select id="getCatalogCpCount" resultClass="int" parameterClass="int">
+		SELECT COUNT(*) 
+		FROM CP_CATALOG_RELATION  
+		WHERE BOOK_CATALOG_ID = #catalogId#
+	</select>
+</sqlMap>

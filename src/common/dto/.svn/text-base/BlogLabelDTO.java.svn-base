@@ -1,0 +1,50 @@
+package cn.com.twsm.common.dto;
+
+/**
+ * 博客标签表DTO
+ * @author lixinglei
+ * @date 2012-04-09
+ * @version 1.0.0.1
+ */
+public class BlogLabelDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+	
+	private Integer blogId;							//博客信息ID 外键 必填
+	private Integer labelId;						//外键 必填
+	private String labelName;						//标签名称 必填 冗余字段
+	private Integer activityId;						//动态ID:外键 不发布到社区为空
+	private Long addTime;							//添加时间 必填
+	
+	public Integer getBlogId() {
+		return blogId;
+	}
+	public void setBlogId(Integer blogId) {
+		this.blogId = blogId;
+	}
+	public Integer getLabelId() {
+		return labelId;
+	}
+	public void setLabelId(Integer labelId) {
+		this.labelId = labelId;
+	}
+	public String getLabelName() {
+		return labelName;
+	}
+	public void setLabelName(String labelName) {
+		this.labelName = labelName;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public Integer getActivityId() {
+		return activityId;
+	}
+	public void setActivityId(Integer activityId) {
+		this.activityId = activityId;
+	}
+	
+			
+}

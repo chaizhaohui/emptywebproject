@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BookSource">
+	<resultMap class="cn.com.twsm.common.dto.BookSourceDTO" id="bookSource">
+		<result column="BOOK_SOURCE_ID" property="id" jdbcType="NUMBER"/>
+		<result column="BOOK_NAME" property="bookName" jdbcType="VARCHAR2"/>
+		<result column="AUTHOR_ID" property="authorId" jdbcType="NUMBER"/>
+		<result column="BOOK_TYPE" property="bookType" jdbcType="CHAR"/>
+		<result column="BOOK_SIZE" property="bookSize" jdbcType="NUMBER"/>
+		<result column="SUMMARY" property="summary" jdbcType="VARCHAR2"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+		<result column="ADMIN_ID" property="adminId" jdbcType="NUMBER"/>
+		<result column="STATUS" property="status" jdbcType="CHAR"/>
+		<result column="DEL_MARK" property="delMark" jdbcType="CHAR"/>
+		<result column="LOCAL_PATH" property="localPath" jdbcType="VARCHAR2"/>
+		<result column="REMOTE_PATH" property="remotePath" jdbcType="VARCHAR2"/>
+		<result column="COVER_LOCAL_URL" property="coverLocalUrl" jdbcType="VARCHAR2"/>
+		<result column="COVER_REMOTE_URL" property="coverRemoteUrl" jdbcType="VARCHAR2"/>
+		<result column="All_LABEL" property="allLabel" jdbcType="VARCHAR2"/>
+		<result column="UP_STACK" property="upStack" jdbcType="VARCHAR2"/>
+		<result column="AUDIO_PATH" property="audioPath" jdbcType="VARCHAR2"/>
+		<result column="AUDIO_REMOTE_PATH" property="audioRemotePath" jdbcType="VARCHAR2"/>
+		<result column="PUBLISH_DATE" property="publishDate" jdbcType="DECIMAL"/>
+		<result column="ISBN" property="isbn" jdbcType="VARCHAR2"/>
+		
+		<result column="SUBJECT_WORDS" property="subjectWords" jdbcType="VARCHAR2"/>
+		<result column="KEY_WORDS" property="keyWords" jdbcType="VARCHAR2"/>
+		<result column="SHORT_DESCRIPTION" property="shortDescription" jdbcType="VARCHAR2"/>
+		<result column="LONG_NOMINATEINFOR" property="longNominateInfor" jdbcType="VARCHAR2"/>
+		<result column="SHORT_NOMINATEINFOR" property="shortNominateInfor" jdbcType="VARCHAR2"/>
+		<result column="CELEBRITY_RECOMMEND" property="celebrityRecommend" jdbcType="VARCHAR2"/>
+		<result column="MEDIA_RECOMMEND" property="mediaRecommend" jdbcType="VARCHAR2"/>
+		<result column="METAID" property="metaid" jdbcType="VARCHAR2"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				BOOK_SOURCE.BOOK_SOURCE_ID=#id#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookName">
+				BOOK_NAME=#bookName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNameLike">
+				BOOK_NAME like '%'||#bookNameLike#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="authorId">
+				AUTHOR_ID=#authorId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookType">
+				BOOK_TYPE=#bookType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookSize">
+				BOOK_SIZE=#bookSize#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bigSize">
+				BOOK_SIZE&lt;=#bigSize#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="smallSize">
+				BOOK_SIZE &gt;=#smallSize#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="summary">
+				SUMMARY like '%'||#summary#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="beginTime">
+				ADD_TIME &gt;=#beginTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="endTime">
+				ADD_TIME &lt;=#endTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="adminId">
+				ADMIN_ID =#adminId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="status">
+				STATUS =#status#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="delMark">
+				DEL_MARK =#delMark#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="allLabelLike">
+				ALL_LABEL LIKE '%'||#allLabelLike#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="upStack">
+				UP_STACK =#upStack#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isbn">
+				ISBN =#isbn#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cpBookId">
+					CP_BOOK_ID =#cpBookId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="metaid">
+					METAID =#metaid#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	<select id="getByCpBookId" resultClass="Integer" parameterClass="String">
+		SELECT BOOK_SOURCE_ID
+		  FROM CP_BOOK_RELATION
+		 WHERE CP_BOOK_ID = #cpBookId# 
+		   AND ROWNUM &lt; 2
+	</select>
+	
+	<select id="getCountByWhere" resultClass="Integer" parameterClass="map">
+		SELECT COUNT(1) FROM BOOK_SOURCE,CP_BOOK_RELATION
+		WHERE 1=1 AND BOOK_SOURCE.BOOK_SOURCE_ID = CP_BOOK_RELATION.BOOK_SOURCE_ID
+		<include refid="whereCondition"/> 
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.BookSourceDTO">
+	        UPDATE BOOK_SOURCE
+	        <dynamic prepend="set">
+				BOOK_NAME = #bookName#,
+				AUTHOR_ID = #authorId#,
+				BOOK_TYPE = #bookType#,
+				BOOK_SIZE = #bookSize#,
+				SUMMARY   = #summary#,
+				ADD_TIME  = #addTime#,
+				ADMIN_ID  = #adminId#,
+				STATUS  =  #status#,
+				DEL_MARK = #delMark#,
+				LOCAL_PATH = #localPath#,
+				REMOTE_PATH = #remotePath#,
+				COVER_LOCAL_URL = #coverLocalUrl#,
+				COVER_REMOTE_URL = #coverRemoteUrl#,
+				All_LABEL =#allLabel#,
+				UP_STACK = #upStack#,
+				AUDIO_PATH =#audioPath#,
+				AUDIO_REMOTE_PATH =#audioRemotePath#,
+				ISBN = #isbn#,
+				
+				SUBJECT_WORDS = #subjectWords#,
+				KEY_WORDS = #keyWords#,
+				SHORT_DESCRIPTION = #shortDescription#,
+				LONG_NOMINATEINFOR = #longNominateInfor#,
+				SHORT_NOMINATEINFOR =#shortNominateInfor#,
+				CELEBRITY_RECOMMEND =#celebrityRecommend#,
+				MEDIA_RECOMMEND = #mediaRecommend#,
+				METAID = #metaid#
+           </dynamic>
+           WHERE BOOK_SOURCE_ID = #id#
+	</update>
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM BOOK_SOURCE WHERE BOOK_SOURCE_ID = #id#
+	</delete>
+	<select id="getBookSourceCount" resultClass="Integer">
+		SELECT COUNT(1) FROM BOOK_SOURCE
+		<include refid="whereCondition"/> 
+	</select>
+	<select id ="showBookSourceList" parameterClass="map" resultClass="Integer">
+			SELECT BOOK_SOURCE_ID
+	  		FROM (SELECT BOOK_SOURCE.BOOK_SOURCE_ID,
+	               ROWNUM RN
+	          FROM BOOK_SOURCE,CP_BOOK_RELATION
+	          WHERE 1=1  AND BOOK_SOURCE.BOOK_SOURCE_ID = CP_BOOK_RELATION.BOOK_SOURCE_ID
+	          <include refid="whereCondition"/> 
+	          ORDER BY BOOK_SOURCE_ID DESC)
+	 			WHERE 1=1 and
+	 				RN &gt; #start# AND RN &lt;=#end#
+	</select>
+	<select id="getById" resultMap="bookSource" parameterClass="int">
+		SELECT BOOK_SOURCE_ID,
+	       BOOK_NAME,
+	       AUTHOR_ID,
+	       BOOK_TYPE,
+	       BOOK_SIZE,
+	       SUMMARY,
+	       ADD_TIME,
+	       ADMIN_ID,
+	       STATUS,
+	       DEL_MARK,
+	       LOCAL_PATH,
+	       REMOTE_PATH,
+	       COVER_LOCAL_URL,
+	       COVER_REMOTE_URL,
+	       ALL_LABEL,
+	       UP_STACK,
+	       AUDIO_PATH,
+		   AUDIO_REMOTE_PATH,
+		   PUBLISH_DATE,
+		   ISBN,
+		   SUBJECT_WORDS,
+		   KEY_WORDS,
+		   SHORT_DESCRIPTION,
+		   LONG_NOMINATEINFOR,
+		   SHORT_NOMINATEINFOR,
+		   CELEBRITY_RECOMMEND,
+		   MEDIA_RECOMMEND,
+		   METAID
+  		FROM BOOK_SOURCE
+ 		WHERE BOOK_SOURCE_ID = #id#
+	</select>	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookSourceDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_BOOK_SOURCE.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BOOK_SOURCE
+		  (BOOK_SOURCE_ID,
+		   BOOK_NAME,
+		   AUTHOR_ID,
+		   BOOK_TYPE,
+		   BOOK_SIZE,
+		   SUMMARY,
+		   ADD_TIME,
+		   ADMIN_ID,
+		   STATUS,
+		   DEL_MARK,
+		   LOCAL_PATH,
+		   REMOTE_PATH,
+		   UP_STACK,
+		   AUDIO_PATH,
+		   AUDIO_REMOTE_PATH,
+		   PUBLISH_DATE,
+		   ISBN,
+		   SUBJECT_WORDS,
+		   KEY_WORDS,
+		   SHORT_DESCRIPTION,
+		   LONG_NOMINATEINFOR,
+		   SHORT_NOMINATEINFOR,
+		   CELEBRITY_RECOMMEND,
+		   MEDIA_RECOMMEND,
+		   ALL_LABEL,
+		   METAID
+		   )
+		VALUES
+		  (#id#,
+		   #bookName#,
+		   #authorId#,
+		   #bookType#,
+		   #bookSize#,
+		   #summary#,
+		   #addTime#,
+		   #adminId#,
+		   #status#,
+		   #delMark#,
+		   #localPath#,
+		   #remotePath#,
+		   #upStack#,
+		   #audioPath#,
+		   #audioRemotePath#,
+		   #publishDate#,
+		   #isbn#,
+		   #subjectWords#,
+		   #keyWords#,
+		   #shortDescription#,
+		   #longNominateInfor#,
+		   #shortNominateInfor#,
+		   #celebrityRecommend#,
+		   #mediaRecommend#,
+		   #allLabel#,
+		   #metaid#
+		   )
+	</insert>
+</sqlMap>

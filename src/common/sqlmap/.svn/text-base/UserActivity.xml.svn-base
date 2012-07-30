@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserActivity">
+	<resultMap class="cn.com.twsm.common.dto.UserActivityDTO" id="userActivity">
+		<result column="ACTIVITY_ID" property="id" jdbcType="Integer"/>
+		<result column="BLOG_ID" property="blogId" jdbcType="Integer"/>
+		<result column="USER_ID" property="userId" jdbcType="Integer"/>
+		<result column="NICK_NAME" property="nickName" jdbcType="VARCHAR"/>
+		<result column="CONTENT_TYPE" property="contentType" jdbcType="VARCHAR"/>
+		<result column="TITLE" property="title" jdbcType="VARCHAR"/>
+		<result column="CONTENT" property="content" jdbcType="VARCHAR"/>
+		<result column="ALL_LABEL" property="allLabel" jdbcType="VARCHAR"/>
+		<result column="BOOK_ID" property="bookId" jdbcType="Integer"/>
+		<result column="OTHER_USER_VISABLE" property="otherUserVisable" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+		<result column="CLICK_COUNT" property="clickCount" jdbcType="Integer"/>
+		<result column="CLICK_COUNT_PREFIX" property="clickCountPrefix" jdbcType="Integer"/>
+		<result column="REF_ACTIVITY_ID" property="refActivityId" jdbcType="Integer"/>
+		<result column="DELETE_FLAG" property="deleteFlag" jdbcType="VARCHAR"/>
+		<result column="IS_RECOMMEND" property="isRecommend" jdbcType="VARCHAR"/>
+		<result column="IMG_FILE_LOCALPATH" property="imgFileLocalPath" jdbcType="VARCHAR"/>
+		<result column="IMG_FILE_URL" property="imgFileUrl" jdbcType="VARCHAR"/>
+		<result column="IS_TOP" property="isTop" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="blogId">
+				BLOG_ID = #blogId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="userId">
+				USER_ID = #userId#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<sql id="businessCondition">
+		<dynamic>
+			<isNotNull  property="getByLabelName">	
+				  from user_activity a, blog_label b
+				 where b.label_name = #labelName#
+				   and a.activity_id = b.activity_id
+				   and (
+				        (a.other_user_visable = '1') 
+				         or
+				        (a.other_user_visable = '0' 
+				        and 
+				         a.user_id = #userId#)
+				        )
+				 order by a.add_time desc
+			</isNotNull>
+			<isNotNull  property="getRecommend">
+				  from user_activity a
+				 where ((a.other_user_visable = '1') or
+				       (a.other_user_visable = '0' and a.user_id = #userId#))
+				   and a.delete_flag = '0'
+				   and a.is_recommend = '1'
+				 order by a.add_time desc
+			</isNotNull>
+			<isNotNull  property="getByMyLabel">
+				  from user_activity a, blog_label b, user_label c
+				 where c.user_id = #userId#
+				   and c.label_id = b.label_id
+				   and b.activity_id = a.activity_id
+				   and a.delete_flag = '0'
+				   and ((a.other_user_visable = '1') or
+				       (a.other_user_visable = '0' and a.user_id = #userId#))
+				 order by b.label_name, a.add_time desc
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
+	<select id="getBusinessCount" parameterClass="map" resultClass="int">
+		SELECT COUNT(1) 
+		<include refid="businessCondition"/>
+	</select>
+	
+	<select id="getBusinessByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      ACTIVITY_ID 
+	   FROM 
+		  (SELECT 
+		     T.ACTIVITY_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT a.ACTIVITY_ID
+		     	 <include refid="businessCondition"/> 
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<select id="getCount" parameterClass="map" resultClass="int">
+		SELECT COUNT(1) 
+		  FROM USER_ACTIVITY
+		 WHERE 1 = 1 
+		 <include refid="whereCondition"/>
+	</select>
+	
+	<select id="getByBlogId" parameterClass="int" resultClass="Integer">
+		SELECT ACTIVITY_ID
+		  FROM USER_ACTIVITY
+		 WHERE BLOG_ID = #blogId#
+		   AND ROWNUM &lt; 2
+	</select>
+	
+	<select id="getByWhere" parameterClass="map" resultClass="Integer">
+		SELECT ACTIVITY_ID
+		  FROM USER_ACTIVITY
+		 WHERE 1 = 1
+		 <include refid="whereCondition"/>
+	</select>
+	
+	<select id="getActivityIdByBlogId" parameterClass="Integer" resultClass="Integer">
+		SELECT ACTIVITY_ID
+		  FROM USER_ACTIVITY
+		 WHERE BLOG_ID = #blogId#
+		   AND ROWNUM &lt; 2
+	</select>
+	
+	<select id="getTop" resultClass="int" parameterClass="map">
+		SELECT ACTIVITY_ID
+		  FROM (SELECT ACTIVITY_ID,
+		               ROWNUM AS RN
+		          FROM USER_ACTIVITY
+		         WHERE other_user_visable = '1'
+		            OR (other_user_visable = '0' 
+		            	AND user_id = #userId#)
+		         ORDER BY ADD_TIME DESC)
+		 WHERE RN &lt;= #top#
+	</select>
+	
+	<select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      ACTIVITY_ID 
+	   FROM 
+		  (SELECT 
+		     T.ACTIVITY_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         ACTIVITY_ID 
+              FROM 
+                 USER_ACTIVITY
+              WHERE 
+                 1=1 <include refid="whereCondition"/> 
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="userActivity" parameterClass="int">
+		SELECT ACTIVITY_ID,
+		       BLOG_ID,
+		       USER_ID,
+		       NICK_NAME,
+		       CONTENT_TYPE,
+		       TITLE,
+		       CONTENT,
+		       ALL_LABEL,
+		       BOOK_ID,
+		       OTHER_USER_VISABLE,
+		       ADD_TIME,
+		       CLICK_COUNT,
+		       CLICK_COUNT_PREFIX,
+		       REF_ACTIVITY_ID,
+		       IS_RECOMMEND,
+		       DELETE_FLAG,
+		       IMG_FILE_LOCALPATH,
+		       IMG_FILE_URL,
+		       IS_TOP
+		  FROM USER_ACTIVITY
+		 WHERE ACTIVITY_ID = #id#
+	</select>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.UserActivityDTO">
+		UPDATE USER_ACTIVITY
+		<dynamic prepend="set">
+			BLOG_ID = #blogId#,
+			USER_ID = #userId#,
+			NICK_NAME = #nickName#,
+			CONTENT_TYPE = #contentType#,
+			TITLE = #title#,
+			CONTENT = #content#,
+			ALL_LABEL = #allLabel#,
+			BOOK_ID = #bookId#,
+			OTHER_USER_VISABLE = #otherUserVisable#,
+			ADD_TIME = #addTime#,
+			CLICK_COUNT = #clickCount#,
+			CLICK_COUNT_PREFIX = #clickCountPrefix#,
+			REF_ACTIVITY_ID = #refActivityId#,
+			IS_RECOMMEND = #isRecommend#,
+			DELETE_FLAG = #deleteFlag#,
+			IMG_FILE_LOCALPATH = #imgFileLocalPath#,
+			IMG_FILE_URL = #imgFileUrl#,
+			IS_TOP = #isTop#
+		</dynamic>
+		WHERE ACTIVITY_ID = #id#
+	</update>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UserActivityDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_USER_ACTIVITY.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO USER_ACTIVITY
+		  (ACTIVITY_ID,
+		   BLOG_ID,
+		   USER_ID,
+		   NICK_NAME,
+		   CONTENT_TYPE,
+		   TITLE,
+		   CONTENT,
+		   ALL_LABEL,
+		   BOOK_ID,
+		   OTHER_USER_VISABLE,
+		   ADD_TIME,
+		   CLICK_COUNT,
+		   CLICK_COUNT_PREFIX,
+		   REF_ACTIVITY_ID,
+		   IS_RECOMMEND,
+		   DELETE_FLAG,
+		   IMG_FILE_LOCALPATH,
+		   IMG_FILE_URL,
+		   IS_TOP)
+		VALUES
+		  (#id#,
+		   #blogId#,
+		   #userId#,
+		   #nickName#,
+		   #contentType#,
+		   #title#,
+		   #content#,
+		   #allLabel#,
+		   #bookId#,
+		   #otherUserVisable#,
+		   #addTime#,
+		   #clickCount#,
+		   #clickCountPrefix#,
+		   #refActivityId#,
+		   #isRecommend#,
+		   #deleteFlag#,
+		   #imgFileLocalPath#,
+		   #imgFileUrl#,
+		   #isTop#)
+	</insert>
+</sqlMap>

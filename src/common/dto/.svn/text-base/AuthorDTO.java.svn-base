@@ -1,0 +1,24 @@
+package cn.com.twsm.common.dto;
+
+public class AuthorDTO extends BasicDTO{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String trueName;					//真实姓名
+	private String penName;					//笔名
+
+
+	public void setTrueName(String trueName){
+		this.trueName = trueName;
+	}
+	public String getTrueName(){
+		return this.trueName;
+	}
+	public void setPenName(String penName){
+		this.penName = penName;
+	}
+	public String getPenName(){
+		return this.penName;
+	}
+}

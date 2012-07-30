@@ -1,0 +1,201 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.LabelDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 标签表DAO
+ * 
+ * @author QiaoGuangqing
+ * @date 2012-04-06
+ */
+public class LabelDAO extends BasicDAO<LabelDTO> {
+
+	private static LabelDAO labelDAO;
+
+	private LabelDAO() {
+		super();
+	}
+
+	public static LabelDAO getInstance() {
+		if (labelDAO == null) {
+			synchronized (LabelDAO.class) {
+				if (labelDAO == null) {
+					labelDAO = new LabelDAO();
+				}
+			}
+		}
+		return labelDAO;
+	}
+
+	/**
+	 * 获取热门标签总数量 add by QiaoGuangqing 2012-04-20
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getHotLabelCount() throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"Label.getHotLabelCount");
+	}
+
+	/**
+	 * 分页获取热门标签 add by QiaoGuangqing 2012-04-20
+	 * 
+	 * @param whereMap[start,end]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<LabelDTO> getHotLabelByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("Label.getHotLabelByPage", whereMap);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	/**
+	 * 获取记录数量
+	 * 
+	 * @param whereMap[userName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"Label.getCount", whereMap);
+	}
+
+	/*
+	 * add by chaizhaohui listlableid 标签id 返回参数：标签列表集合
+	 */
+	public List<LabelDTO> getByLableList(List<Integer> listlableid)
+			throws SQLException {
+		List<Integer> list = listlableid;
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	/*
+	 * 查询热门关键词物化视图 whereMap["start","end","hotLabel"]
+	 */
+	public List<LabelDTO> getByLableId(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"Label.getByLableId", whereMap);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	/**
+	 * 根据传入的条件结合配置文件进行查询
+	 * 
+	 * @param whereMap[labelName,labelNamePy]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<LabelDTO> getByWhere(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"Label.getByWhere", whereMap);
+		if (list != null && list.size() > 0) {
+			return this.getById(list);
+		}
+		return null;
+	}
+
+	/*
+	 * 根据书籍Id查询LableId add by ShiWeiyan bookId 书籍id 返回参数：标签列表集合
+	 */
+	public List<Integer> getByBookId(Integer bookId) throws SQLException {
+		List<Integer> lableIdList = SqlBuilder.getSqlMapClient().queryForList(
+				"Label.getLableId", bookId);
+		return lableIdList;
+	}
+
+	/**
+	 * 根据标签名称获取标签id
+	 * 
+	 * @param labelName
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getIdByName(String labelName) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"Label.getIdByName", labelName);
+	}
+
+	/**
+	 * 根据bookId分页查询该书籍对应的标签 add by Shi Weiyan
+	 * 
+	 * @param whereMap
+	 *            [cpage,pageSize,bookId]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<LabelDTO> getPageByLableList(Map<String, Object> whereMap)
+			throws SQLException {
+
+		List<Integer> list = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("Label.getPageByBook", whereMap);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	public List<LabelDTO> getLabelByBook(int bookId) throws SQLException {
+		List<Integer> list = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("Label.getLabelByBook", bookId);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	public List<LabelDTO> getLabelListByBookId(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("Label.getPageByBook", whereMap);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	/**
+	 * 根据传入的条件结合分页信息进行查询 add by xiaojin 20120421
+	 * 
+	 * @param whereMap[labelNamepy,start,end,orderbylabelsortdesc]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<LabelDTO> getByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"Label.getByPage", whereMap);
+		if (list != null && list.size() > 0) {
+			return this.getById(list);
+		}
+		return null;
+	}
+
+	/**
+	 * 获取记录数量
+	 * 
+	 * @param whereMap[userName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getLabelCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"Label.getLabelCount", whereMap);
+	}
+}

@@ -1,0 +1,288 @@
+package cn.com.twsm.common.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import cn.com.twsm.books.exception.BooksException;
+import cn.com.twsm.common.dao.BookSourceChapterDAO;
+import cn.com.twsm.common.dto.BookSourceChapterDTO;
+import cn.com.twsm.drm.DrmPackageImpl;
+import cn.com.twsm.system.service.AdminService;
+
+public class FileSave {
+
+private static FileSave fileSave = null;
+	
+	public static FileSave getInstance(){
+		if(fileSave == null){
+			synchronized(AdminService.class){
+				if(fileSave == null)
+					fileSave = new FileSave();
+			}
+		}
+		return fileSave;
+	}
+	public FileSave(){
+		
+	}
+	/*
+	 * 
+	 */
+	public String saveAudio(File uploadFile,Integer bookSourceId,String fileName) throws IOException{
+		String basePath = ConfigUtil.getProperty(ConfigUtil.AUDIOBOOKS_LOCALPATH_PREFIX);
+		return saveFile(basePath,uploadFile,String.valueOf(bookSourceId),fileName);
+	}
+	/*
+	 * 保存书的封面的文件
+	 */
+	public String saveCoverUrl(File uploadFile, String bookSourceId, String fileName) throws IOException{
+		String basePath = ConfigUtil.getProperty(ConfigUtil.BOOKCOVER_LOCALPATH_PREFIX);
+		return saveFile(basePath,uploadFile,bookSourceId,fileName);
+	}
+	/*
+	 * 保存书的文件
+	 */
+	public String saveBookFile(File uploadFile, String bookSourceId,String fileName) throws IOException{
+		String basePath = ConfigUtil.getProperty(ConfigUtil.BOOKS_LOCALPATH_PREFIX);
+		return saveFile(basePath,uploadFile,bookSourceId,fileName);
+	}
+	/**
+	 * 保存书的封面的文件
+	 */
+	public String saveCoverUrl(String httpUrl, String bookSourceId,
+			String fileName) throws IOException, BooksException {
+		String basePath = ConfigUtil
+				.getProperty(ConfigUtil.BOOKCOVER_LOCALPATH_PREFIX);
+		return saveFile(basePath, httpUrl, bookSourceId, fileName);
+	}
+	/**
+	 * 保存音频总文件
+	 * @param httpUrl
+	 * @param bookSourceId
+	 * @return
+	 * @throws BooksException
+	 * @throws IOException
+	 */
+	public String saveAudioChapter(String httpUrl, Integer bookSourceId)
+			throws BooksException, IOException {
+		// TODO Auto-generated method stub
+		String basePath = ConfigUtil
+				.getProperty(ConfigUtil.AUDIOBOOKS_LOCALPATH_PREFIX);
+		String fileName = getFileNameByUrl(httpUrl);
+		return saveFile(basePath, httpUrl, String.valueOf(bookSourceId),
+				fileName);
+	}
+	/**
+	 * 保存音频文件
+	 * @param httpUrl
+	 * @param bookSourceId
+	 * @return
+	 * @throws BooksException
+	 * @throws IOException
+	 */
+	public String saveAudio(String httpUrl, Integer bookSourceId)
+			throws BooksException, IOException {
+		String basePath = ConfigUtil
+				.getProperty(ConfigUtil.AUDIOBOOKS_LOCALPATH_PREFIX);
+		String fileName = getFileNameByUrl(httpUrl);
+		return saveFile(basePath, httpUrl, String.valueOf(bookSourceId),
+				fileName);
+	}
+	public String getFileNameByUrl(String url){
+		int pos = url.lastIndexOf("/");
+		return url.substring(pos+1);
+	}
+	/**
+	 * 保存epub书的文件
+	 */
+	public String saveBookFile(String httpUrl, String bookSourceId,
+			String fileName) throws IOException, BooksException {
+		String basePath = ConfigUtil
+				.getProperty(ConfigUtil.BOOKS_LOCALPATH_PREFIX);
+		return saveFile(basePath, httpUrl, bookSourceId, fileName);
+	}
+	private String getFileTimePath(){
+		Calendar calendar = Calendar.getInstance();
+		return ""+calendar.get(Calendar.YEAR)+calendar.get(Calendar.MONTH);
+	}
+	private String getFileName(String bookId){
+		return System.currentTimeMillis()+bookId;
+	}
+	private String saveFile(String basePath, String httpUrl,
+			String bookSourceId, String originalFileName) throws IOException,
+			BooksException {
+
+		String timePath = getFileTimePath();
+		String fileName = getFileName(bookSourceId);
+		String folder = basePath + timePath;
+		// String
+		// absoluteFolder=ServletActionContext.getServletContext().getRealPath(folder);
+
+		File folderFile = new File(folder);
+		if (!folderFile.exists()) {
+			folderFile.mkdirs();
+		}
+		// 获得扩展名
+		int dotPosition = originalFileName.lastIndexOf(".");
+		String ext = originalFileName.substring(dotPosition);// 带点
+		String realPath = folder + "/" + fileName + ext;
+		File localFile = new File(realPath);
+		/*
+		 * if(!localFile.exists()){ localFile.createNewFile(); }
+		 */
+		InputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			URL url = new URL(httpUrl);
+			URLConnection connection = url.openConnection();
+			fis = connection.getInputStream();
+
+			fos = new FileOutputStream(localFile);
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while ((len = fis.read(buffer)) != -1) {
+				fos.write(buffer, 0, len);
+			}
+		} catch (IOException e) {
+			throw new BooksException(this.getClass(), "远程文件抓取失败", 51);
+		} finally {
+			if (fis != null) {
+				fis.close();
+			}
+			if (fos != null) {
+				fos.close();
+			}
+		}
+		return "/" + timePath + "/" + fileName + ext;
+	}
+	private String saveFile(String basePath,File uploadFile, String bookSourceId,String originalFileName) throws IOException {
+		
+		String timePath = getFileTimePath();
+		String fileName = getFileName(bookSourceId);
+		String folder = basePath+timePath;
+		//String absoluteFolder=ServletActionContext.getServletContext().getRealPath(folder);
+		File folderFile =new File(folder);
+		if(!folderFile.exists()){       
+			folderFile.mkdirs();
+		}
+		int dotPosition= originalFileName.lastIndexOf(".");
+		String ext = originalFileName.substring(dotPosition);//带点
+		String realPath =folder+"/"+fileName+ext;
+		File localFile = new File(realPath);
+		if(!localFile.exists()){
+			localFile.createNewFile();
+		}
+		FileInputStream fis=null;
+		FileOutputStream fos=null;
+		try{
+			fis = new FileInputStream(uploadFile);
+			fos = new FileOutputStream(localFile);
+			byte[] buffer = new byte[1024];
+			int len=0;
+			while((len = fis.read(buffer))!=-1){
+				fos.write(buffer,0,len);
+			}
+		}finally{
+			if(fis!=null){
+				fis.close();
+			}
+			if(fos!=null){
+				fos.close();
+			}
+		}
+		return "/"+timePath+"/"+fileName+ext;
+	}
+	/**
+	 * 章节保存
+	 * @return
+	 * @throws BooksException 
+	 * @throws Exception 
+	 */
+	public void saveChapter(String localPath,int bookSourceId,BookSourceChapterDAO bookSourceChapterDAO,String bookId) throws BooksException {
+		List<String> chapterList = null;
+		BookSourceChapterDTO bookSourceChapterDTO = null;
+		List<BookSourceChapterDTO> bookSourceChaterDTOList ;
+		String chapterUrl="";
+		String chapterName="";
+		BigDecimal chapterSort;
+		try{
+			chapterList= EpubUtil.getNeedEncryptChapters(localPath,0,bookId);
+			if(chapterList==null){
+				throw new BooksException(this.getClass(),"没有章节信息!",51);
+			}
+			 bookSourceChaterDTOList = new ArrayList<BookSourceChapterDTO>();
+			for(int i=0;i<chapterList.size();i++){
+				chapterUrl = chapterList.get(i);
+				chapterName = this.getFileNameByUrl(chapterUrl);
+				chapterSort = new BigDecimal(i);
+				bookSourceChapterDTO = new BookSourceChapterDTO();
+				bookSourceChapterDTO.setBookSourceId(bookSourceId);
+				bookSourceChapterDTO.setChapterName(chapterName);
+				bookSourceChapterDTO.setChapterSort(chapterSort);
+				bookSourceChapterDTO.setChapterType("1");
+				bookSourceChapterDTO.setLocalPath(chapterUrl);
+				bookSourceChaterDTOList.add(bookSourceChapterDTO);
+			}
+			bookSourceChapterDAO.insert(bookSourceChaterDTOList);
+		}catch(Exception e){
+			throw new BooksException(this.getClass(),"获得章节信息失败!",51);
+		}
+	}
+	public String saveFile(String basePath, String httpUrl,
+			String bookSourceId, String originalFileName,String fileName) throws IOException,
+			BooksException {
+
+		String timePath = DrmPackageImpl.getYYYYMMDD();
+		//String fileName = getFileName(bookSourceId);
+		String folder = basePath +"/"+timePath;
+		// String
+		// absoluteFolder=ServletActionContext.getServletContext().getRealPath(folder);
+
+		File folderFile = new File(folder);
+		if (!folderFile.exists()) {
+			folderFile.mkdirs();
+		}
+		// 获得扩展名
+		int dotPosition = originalFileName.lastIndexOf(".");
+		String ext = originalFileName.substring(dotPosition);// 带点
+		String realPath = folder + "/" + fileName + ext;
+		File localFile = new File(realPath);
+		/*
+		 * if(!localFile.exists()){ localFile.createNewFile(); }
+		 */
+		InputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			URL url = new URL(httpUrl);
+			URLConnection connection = url.openConnection();
+			fis = connection.getInputStream();
+
+			fos = new FileOutputStream(localFile);
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while ((len = fis.read(buffer)) != -1) {
+				fos.write(buffer, 0, len);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BooksException(this.getClass(), "远程文件抓取失败", 51);
+		} finally {
+			if (fis != null) {
+				fis.close();
+			}
+			if (fos != null) {
+				fos.close();
+			}
+		}
+		return "/" + timePath + "/" + fileName + ext;
+	}
+}

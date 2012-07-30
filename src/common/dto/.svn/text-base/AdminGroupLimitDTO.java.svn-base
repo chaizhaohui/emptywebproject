@@ -1,0 +1,34 @@
+package cn.com.twsm.common.dto;
+
+public class AdminGroupLimitDTO extends BasicDTO {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2444140800092215414L;
+	
+	private int groupId;
+	
+	private int limitId;
+
+	public int getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
+
+	public int getLimitId() {
+		return limitId;
+	}
+
+	public void setLimitId(int limitId) {
+		this.limitId = limitId;
+	}
+	
+	
+	
+	
+	
+}

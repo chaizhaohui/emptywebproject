@@ -1,0 +1,69 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BlogLabelDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 博客标签表DAO
+ * @author lixinglei
+ * @date 2012-04-09
+ * @version 1.0.0.1
+ */
+public class BlogLabelDAO extends BasicDAO<BlogLabelDTO> {
+
+	private static BlogLabelDAO blogLabelDAO;
+
+	private BlogLabelDAO() {
+		super();
+	}
+
+	public static BlogLabelDAO getInstance() {
+		if (blogLabelDAO == null) {
+			synchronized (BlogLabelDAO.class) {
+				if (blogLabelDAO == null) {
+					blogLabelDAO = new BlogLabelDAO();
+				}
+			}
+		}
+		return blogLabelDAO;
+	}
+	
+	/**
+	 * 根据传入的条件结合配置文件进行查询
+	 * add by lixinglei 20120504
+	 * @param whereMap[userId,bookId,refActivityId,otherUserVisable,toSns]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<BlogLabelDTO> getByWhere(Map<String,Object> whereMap) throws SQLException {
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("BlogLabel.getByWhere",whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	/**
+	 * 根据条件获得记录的总数
+	 * @param whereMap[labelName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("BlogLabel.getCount",whereMap);
+	}
+	 
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * @param whereMap[labelName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Integer>  getByPage(Map<String,Object> whereMap) throws SQLException{
+		return SqlBuilder.getSqlMapClient().queryForList("BlogLabel.getByPage", whereMap);
+	}
+	
+}

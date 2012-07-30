@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ClientVersion">
+	<resultMap class="cn.com.twsm.common.dto.ClientVersionDTO" id="clientVersion">
+		<result column="CLIENT_VERSION_ID" property="id" jdbcType="INTEGER"/>
+		<result column="CLIENT_VERSION_NAME" property="clientVersionName" jdbcType="VARCHAR"/>
+		<result column="CLIENT_VERSION_NUM" property="clientVersionNum" jdbcType="VARCHAR"/>
+		<result column="PACKAGE_TYPE" property="packageType" jdbcType="VARCHAR"/>
+		<result column="FORCE_UPGRADE" property="forceUpgrade" jdbcType="VARCHAR"/>
+		<result column="TARGET_VERSION_NUM" property="targetVersionNum" jdbcType="VARCHAR"/>
+		<result column="VERSION_DESC" property="versionDesc" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="ADMIN_ID" property="adminId" jdbcType="INTEGER"/>
+		<result column="DOWNLOAD_URL" property="downloadUrl" jdbcType="VARCHAR"/>
+		<result column="DOWNLOAD_COUNT" property="downloadCount" jdbcType="INTEGER"/>
+		<result column="INVALID" property="invalid" jdbcType="VARCHAR"/>
+		<result column="LOCAL_PATH" property="localPath" jdbcType="VARCHAR"/>
+		<result column="CLIENT_VERSION_CODE" property="clientVersionCode" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="clientVersionNum">
+				CLIENT_VERSION_NUM=#clientVersionNum#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="clientVersionName">
+				CLIENT_VERSION_NAME=#clientVersionName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="clientVersionCode">
+				CLIENT_VERSION_CODE=#clientVersionCode#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="getByWhere" resultClass="Integer" parameterClass="map">
+		<![CDATA[
+	    SELECT 
+		   CLIENT_VERSION_ID
+		FROM 
+		    CLIENT_VERSION
+		 WHERE 1 = 1
+		 ]]>
+		 <include refid="whereCondition"/>
+	</select>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   CLIENT_VERSION 
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+   <select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      CLIENT_VERSION_ID 
+	   FROM 
+		  (SELECT 
+		     T.CLIENT_VERSION_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         CLIENT_VERSION_ID 
+              FROM 
+                 CLIENT_VERSION 
+              WHERE 
+                 1=1 <include refid="whereCondition"/>
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	<select id="getVersionId" resultClass="int" parameterClass="map">
+        SELECT 
+            CLIENT_VERSION_ID
+        FROM 
+            CLIENT_VERSION
+        WHERE
+            CLIENT_VERSION_NUM > #clientVersion#
+        AND
+            CLIENT_VERSION_NAME = #clientType#
+        AND
+            INVALID = '1'
+        ORDER BY CLIENT_VERSION_NUM DESC
+    </select>
+	<!-- ********************************************************************************************** -->
+	<select id="getById" resultMap="clientVersion" parameterClass="int">
+        SELECT 
+              CLIENT_VERSION_ID,
+              CLIENT_VERSION_NAME,
+              CLIENT_VERSION_NUM,
+              PACKAGE_TYPE,
+              FORCE_UPGRADE,
+              TARGET_VERSION_NUM,
+              VERSION_DESC,
+              ADD_TIME,
+              ADMIN_ID,
+              DOWNLOAD_URL,
+              DOWNLOAD_COUNT,
+              INVALID,
+              LOCAL_PATH,
+              CLIENT_VERSION_CODE
+         FROM 
+              CLIENT_VERSION
+         WHERE
+              CLIENT_VERSION_ID = #id#
+    </select>
+    
+	<update id="update" parameterClass="cn.com.twsm.common.dto.ClientVersionDTO">
+		UPDATE CLIENT_VERSION
+		<dynamic prepend="set">
+			CLIENT_VERSION_NAME = #clientVersionName#,
+			CLIENT_VERSION_NUM = #clientVersionNum#,
+			PACKAGE_TYPE = #packageType#,
+			FORCE_UPGRADE = #forceUpgrade#,
+			TARGET_VERSION_NUM = #targetVersionNum#,
+			VERSION_DESC = #versionDesc#,
+			ADD_TIME = #addTime#,
+			ADMIN_ID = #adminId#,
+			DOWNLOAD_URL = #downloadUrl#,
+			DOWNLOAD_COUNT = #downloadCount#,
+			INVALID = #invalid#,
+			LOCAL_PATH = #localPath#,
+			CLIENT_VERSION_CODE=#clientVersionCode#
+		</dynamic>
+		WHERE CLIENT_VERSION_ID = #id#
+	</update>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.ClientVersionDTO">
+		<selectKey keyProperty="id" resultClass="int">
+			SELECT SEQ_CLIENT_VERSION.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO CLIENT_VERSION
+		(
+		      CLIENT_VERSION_ID,
+		      CLIENT_VERSION_NAME,
+		      CLIENT_VERSION_NUM,
+		      PACKAGE_TYPE,
+		      FORCE_UPGRADE,
+		      TARGET_VERSION_NUM,
+		      VERSION_DESC,
+		      ADD_TIME,
+		      ADMIN_ID,
+		      DOWNLOAD_URL,
+		      DOWNLOAD_COUNT,
+		      INVALID,
+		      LOCAL_PATH,
+		      CLIENT_VERSION_CODE
+		)
+		VALUES
+		(
+		      #id#,
+		      #clientVersionName#,
+		      #clientVersionNum#,
+		      #packageType#,
+		      #forceUpgrade#,
+		      #targetVersionNum#,
+		      #versionDesc#,
+		      #addTime#,
+		      #adminId#,
+		      #downloadUrl#,
+		      #downloadCount#,
+		      #invalid#,
+		      #localPath#,
+		      #clientVersionCode#
+		 )
+	</insert>
+</sqlMap>

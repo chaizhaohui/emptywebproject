@@ -1,0 +1,84 @@
+package cn.com.twsm.common.action;
+
+import java.io.IOException;
+
+import cn.com.twsm.common.exception.LoginException;
+import cn.com.twsm.common.service.LoginService;
+import cn.com.twsm.common.utils.General;
+import cn.com.twsm.common.utils.MD5;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+/**
+ * 用户登录Action
+ * @author QiaoGuangqing
+ * @date 2012-04-18
+ */
+public class LoginAction extends BasicAction {
+	
+	private String userName;	//用户名
+	private String userPwd;		//用户密码
+	
+	private String result;		//登录动作返回结果 成功时为success
+	
+	private String verifiCode;  //验证码
+
+	/**
+	 * 跳转到用户登录页面
+	 * @return
+	 */
+	public String toLogin(){
+		return ActionSupport.SUCCESS;
+	}
+	
+	/**
+	 * 用户登录动作ajax
+	 * @return
+	 * @throws IOException 
+	 */
+	public String doLogin() throws IOException{
+		if(General.isEmpty(this.userName) || General.isEmpty(this.userPwd)){
+			this.result = "用户名或密码不能为空";
+			return ActionSupport.SUCCESS;
+		}
+		
+		/*if (General.isEmpty(this.verifiCode)
+				|| !this.verifiCode.equalsIgnoreCase((String)this.getSession().getAttribute(
+						ConfigUtil.SESSION_VERIFICODE))) {
+			this.result = "验证码未输入或输入错误！";
+			return ActionSupport.SUCCESS;
+		}*/
+		
+		LoginService loginService = LoginService.getInstance();
+		try{
+			loginService.doLogin(this.userName, new MD5().getMD5(this.userPwd));
+			this.result = "success";
+			return ActionSupport.SUCCESS;
+		} catch(LoginException ex){
+			this.result = ex.getMessage();
+			return ActionSupport.SUCCESS;
+		}
+	}
+
+	public String getResult() {
+		return result;
+	}
+	
+	public String getVerifiCode() {
+		return verifiCode;
+	}
+
+	public void setVerifiCode(String verifiCode) {
+		this.verifiCode = verifiCode;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public void setUserPwd(String userPwd) {
+		this.userPwd = userPwd;
+	}
+	public String getUserName() {
+		return userName;
+	}
+}

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserLabel">
+	<resultMap class="cn.com.twsm.common.dto.UserLabelDTO" id="userLabel">
+		<result column="USER_LABEL_ID" property="id" jdbcType="INTEGER"/>
+		<result column="USER_ID" property="userId" jdbcType="INTEGER"/>
+		<result column="LABEL_ID" property="labelId" jdbcType="INTEGER"/>
+		<result column="LABEL_NAME" property="labelName" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+	</resultMap>
+	
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="userId">				
+				USER_ID = #userId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="labelId">				
+				LABEL_ID = #labelId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="labelName">				
+				LABEL_NAME = #labelName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="addTime">				
+				ADD_TIME = #addTime#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="getByLableColligation" resultClass="int"  parameterClass="int">
+		SELECT 
+		     LABEL_ID
+		  FROM 
+		     USER_LABEL 
+		 WHERE 1 = 1
+		 AND LABEL_ID = #labelId#
+	</select>
+	
+	<select id="getByLableId" resultClass="int"  parameterClass="int">
+		SELECT 
+		     LABEL_ID
+		  FROM 
+		     USER_LABEL 
+		 WHERE 1 = 1
+		 AND USER_ID = #userId#
+	</select>
+	
+	<select id="getByWhere" resultClass="Integer" parameterClass="map">
+		<![CDATA[
+	    SELECT 
+		   USER_LABEL_ID
+		FROM 
+		    USER_LABEL
+		 WHERE 1 = 1
+		 ]]>
+		 <include refid="whereCondition"/>
+	</select>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   USER_LABEL 
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+   <select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      USER_LABEL_ID 
+	   FROM 
+		  (SELECT 
+		     T.USER_LABEL_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         USER_LABEL_ID 
+              FROM 
+                 USER_LABEL
+              WHERE 
+                 1=1 <include refid="whereCondition"/> 
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	<!-- ***************************************************************** -->
+	<select id="select" resultMap="userLabel">
+		SELECT 
+		   USER_LABEL_ID,
+		   USER_ID,
+		   LABEL_ID,
+		   LABEL_NAME,
+		   ADD_TIME 
+		FROM 
+		   USER_LABEL
+	</select>
+
+	<select id="getById" resultMap="userLabel" parameterClass="Integer">
+		SELECT 
+		   USER_LABEL_ID,
+		   USER_ID,
+		   LABEL_ID,
+		   LABEL_NAME,
+		   ADD_TIME 
+		FROM 
+		   USER_LABEL
+	    WHERE USER_LABEL_ID = #id#
+	</select>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UserLabelDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			select SEQ_USER_LABEL.NEXTVAL from dual
+        </selectKey>
+		INSERT INTO USER_LABEL
+		(
+		    USER_LABEL_ID,
+		    USER_ID,
+		    LABEL_ID,
+		    LABEL_NAME,
+		    ADD_TIME
+		)
+		VALUES
+		(
+		  #id#,
+		  #userId#,
+		  #labelId#,
+		  #labelName#,
+		  #addTime#
+		)
+	</insert>
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM USER_LABEL WHERE USER_LABEL_ID = #id#
+	</delete>
+</sqlMap>

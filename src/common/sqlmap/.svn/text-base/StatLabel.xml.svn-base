@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="StatLabel">
+	<resultMap class="cn.com.twsm.common.dto.StatLabelDTO" id="statLabel">
+		<result column="STAT_ID" property="id" jdbcType="INTEGER"/>
+		<result column="LABEL_ID" property="labelId" jdbcType="INTEGER"/>
+		<result column="SUBSCRIBE_COUNT" property="subscribeCount" jdbcType="INTEGER"/>
+		<result column="UNSUBSCRIBE_COUNT" property="unsubscribeCount" jdbcType="INTEGER"/>
+		<result column="SUBSCRIBE_TOTAL_COUNT" property="subscribeTotalCount" jdbcType="INTEGER"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="YEAR" property="year" jdbcType="VARCHAR"/>
+		<result column="MONTH" property="month" jdbcType="VARCHAR"/>
+		<result column="DAY" property="day" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap class="cn.com.twsm.common.dto.StatLabelDTO" id="statLabelMonth">
+        <result column="LABEL_ID" property="labelId" jdbcType="INTEGER"/>
+        <result column="SUBSCRIBE_COUNT" property="subscribeCount" jdbcType="INTEGER"/>
+        <result column="UNSUBSCRIBE_COUNT" property="unsubscribeCount" jdbcType="INTEGER"/>
+        <result column="SUBSCRIBE_TOTAL_COUNT" property="subscribeTotalCount" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <resultMap class="cn.com.twsm.common.dto.StatLabelDTO" id="statLabelInfo">
+        <result column="DAY" property="day" jdbcType="VARCHAR"/>
+        <result column="LABEL_ID" property="labelId" jdbcType="INTEGER"/>
+        <result column="SUBSCRIBE_COUNT" property="subscribeCount" jdbcType="INTEGER"/>
+        <result column="UNSUBSCRIBE_COUNT" property="unsubscribeCount" jdbcType="INTEGER"/>
+        <result column="SUBSCRIBE_TOTAL_COUNT" property="subscribeTotalCount" jdbcType="INTEGER"/>
+    </resultMap>
+	
+	<sql id="whereCondition">
+        <isNotNull prepend="AND" property="labelId">
+            LABEL_ID = #labelId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="subscribeCount">
+            SUBSCRIBE_COUNT = #subscribeCount#
+        </isNotNull>
+        <isNotNull prepend="AND" property="unsubscribeCount">
+            UNSUBSCRIBE_COUNT = #unsubscribeCount#
+        </isNotNull>
+        <isNotNull prepend="AND" property="subscribeTotalCount">
+            SUBSCRIBE_TOTAL_COUNT = #subscribeTotalCount#
+        </isNotNull>
+        <isNotNull prepend="AND" property="year">
+            YEAR = #year#
+        </isNotNull>
+        <isNotNull prepend="AND" property="month">
+            MONTH = #month#
+        </isNotNull>
+        <isNotNull prepend="AND" property="day">
+            DAY = #day#
+        </isNotNull>
+        <isNotNull prepend="AND" property="beginTime">
+             ADD_TIME &gt;= #beginTime#
+        </isNotNull>
+        <isNotNull prepend="AND" property="endTime">
+             ADD_TIME &lt;= #endTime#
+        </isNotNull>
+    </sql>
+	
+	<select id="getDayCount" resultClass="int" parameterClass="map">
+        SELECT 
+           STAT_ID
+        FROM
+        (
+           SELECT
+                 STAT_ID,SUBSCRIBE_COUNT
+           FROM  STAT_LABEL
+           WHERE 1 = 1 
+                <include refid="whereCondition"/>
+           ORDER BY SUBSCRIBE_COUNT DESC
+        ) 
+        WHERE ROWNUM &lt;=#end# AND ROWNUM &gt; #start#
+    </select>
+	
+	   <select id="getMonthCount" resultMap="statLabelMonth" parameterClass="map">
+        SELECT 
+           LABEL_ID,SUBSCRIBE_COUNT,UNSUBSCRIBE_COUNT,SUBSCRIBE_TOTAL_COUNT
+        FROM
+        (
+           SELECT 
+	           LABEL_ID,
+	           SUM(SUBSCRIBE_COUNT) SUBSCRIBE_COUNT,
+	           SUM(UNSUBSCRIBE_COUNT) UNSUBSCRIBE_COUNT,
+	           MAX(SUBSCRIBE_TOTAL_COUNT) SUBSCRIBE_TOTAL_COUNT
+           FROM STAT_LABEL
+           WHERE 1 = 1
+               <include refid="whereCondition"/>
+           GROUP BY LABEL_ID
+           ORDER BY SUBSCRIBE_COUNT DESC
+        ) 
+       WHERE ROWNUM &lt;=#end# AND ROWNUM &gt; #start#
+    </select>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+       SELECT 
+            COUNT(1)
+       FROM
+       ( 
+            SELECT 
+                 STAT_ID
+            FROM 
+                 STAT_LABEL 
+            WHERE 
+                 1 = 1 <include refid="whereCondition"/>
+            GROUP BY LABEL_ID
+       )
+    </select>
+	<select id="getTimeCount" resultClass="int" parameterClass="map">
+       SELECT 
+            COUNT(1)
+       FROM
+       ( 
+            SELECT 
+                 DAY
+            FROM 
+                 CODE_DAY 
+            WHERE 
+                 YEAR = #year#
+                 
+            AND  MONTH = #month#
+       )
+    </select>
+	<select id="getCountInfo"  resultMap="statLabelInfo" parameterClass="map">
+	    SELECT  DAY,
+		        LABEL_ID,
+		        SUBSCRIBE_COUNT,
+		        UNSUBSCRIBE_COUNT,
+		        SUBSCRIBE_TOTAL_COUNT
+        FROM    (SELECT ROWNUM RN,
+		                DAY,
+		                LABEL_ID,
+		                SUBSCRIBE_COUNT,
+		                UNSUBSCRIBE_COUNT,
+                        SUBSCRIBE_TOTAL_COUNT
+                 FROM (SELECT a.DAY DAY,
+	                          LABEL_ID,
+	                          SUBSCRIBE_COUNT,
+	                          UNSUBSCRIBE_COUNT,
+	                          SUBSCRIBE_TOTAL_COUNT
+                       FROM (SELECT DAY,MONTH,YEAR
+                             FROM CODE_DAY t
+                             WHERE YEAR = #year#
+                             AND MONTH = #month#) a
+                       LEFT JOIN STAT_LABEL b ON a.DAY = b.DAY AND a.MONTH = b.MONTH AND a.YEAR = b.YEAR
+                                         AND b.LABEL_ID = #labelId#
+                       ORDER BY DAY))
+        WHERE RN &lt;= #end# AND RN &gt; #start#
+    </select>
+	
+	<!-- *************************************************************************************** -->
+	<select id="getById" resultMap="statLabel" parameterClass="int">
+		SELECT
+			 STAT_ID,
+			 LABEL_ID,
+			 SUBSCRIBE_COUNT,
+			 UNSUBSCRIBE_COUNT,
+			 SUBSCRIBE_TOTAL_COUNT,
+			 ADD_TIME,
+			 YEAR,
+			 MONTH,
+			 DAY
+	   FROM  STAT_LABEL
+	   WHERE STAT_ID = #id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.StatLabelDTO">
+		<selectKey resultClass="int" keyProperty="id">
+            SELECT SEQ_LABEL_SUBSCRIBE_LOG.NEXTVAL FROM DUAL
+        </selectKey>
+		INSERT INTO STAT_LABEL
+		(
+			STAT_ID,
+			LABEL_ID,
+			SUBSCRIBE_COUNT,
+			UNSUBSCRIBE_COUNT,
+			SUBSCRIBE_TOTAL_COUNT,
+			ADD_TIME,
+			YEAR,
+			MONTH,
+			DAY
+		)
+		VALUES
+		(
+			#id#,
+			#labelId#,
+			#subscribeCount#,
+			#unsubscribeCount#,
+			#subscribeTotalCount#,
+			#addTime#,
+			#year#,
+			#month#,
+			#day#
+		)
+	</insert>
+</sqlMap>

@@ -1,0 +1,48 @@
+package cn.com.twsm.common.dto;
+
+import cn.com.twsm.common.dto.BasicDTO;
+/**
+ * 设备DTO
+ * @author QiaoGuangqing
+ * @date 2012-04-06
+ */
+public class DeviceDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+	
+	private String deviceNum;		//设备编号[必填][唯一]
+	private String clientType;		//设备类型[必填]原Header中Client-Agent:T61/1.0.0.1中的T61 
+	private String clientVersion;	//设备软件版本[必填]原Header中Client-Agent:T61/1.0.0.1中的1.0.0.1
+	private Long addTime;			//创建时间[必填]
+	private Long lastUseTime;		//最后使用时间[必填]
+	
+	public String getDeviceNum() {
+		return deviceNum;
+	}
+	public void setDeviceNum(String deviceNum) {
+		this.deviceNum = deviceNum;
+	}
+	public String getClientType() {
+		return clientType;
+	}
+	public void setClientType(String clientType) {
+		this.clientType = clientType;
+	}
+	public String getClientVersion() {
+		return clientVersion;
+	}
+	public void setClientVersion(String clientVersion) {
+		this.clientVersion = clientVersion;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public Long getLastUseTime() {
+		return lastUseTime;
+	}
+	public void setLastUseTime(Long lastUseTime) {
+		this.lastUseTime = lastUseTime;
+	}
+}

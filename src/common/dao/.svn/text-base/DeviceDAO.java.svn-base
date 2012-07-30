@@ -1,0 +1,29 @@
+package cn.com.twsm.common.dao;
+
+import cn.com.twsm.common.dto.DeviceDTO;
+
+/**
+ * 设备表DAO
+ * 
+ * @author QiaoGuangqing
+ * @date 2012-04-06
+ */
+public class DeviceDAO extends BasicDAO<DeviceDTO> {
+
+	private static DeviceDAO deviceDAO;
+
+	private DeviceDAO() {
+		super();
+	}
+
+	public static DeviceDAO getInstance() {
+		if (deviceDAO == null) {
+			synchronized (DeviceDAO.class) {
+				if (deviceDAO == null) {
+					deviceDAO = new DeviceDAO();
+				}
+			}
+		}
+		return deviceDAO;
+	}
+}

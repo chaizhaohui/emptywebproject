@@ -1,0 +1,69 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.StatLabelDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+
+/**
+ * 统计标签表DAO
+ * 
+ * @author Shi weiyan
+ * @date 2012-6-11 
+ */
+public class StatLabelDAO extends BasicDAO<StatLabelDTO> {
+
+	private static StatLabelDAO statLabelDAO;
+
+	private StatLabelDAO() {
+		super();
+	}
+
+	public static StatLabelDAO getInstance() {
+		if (statLabelDAO == null) {
+			synchronized (StatLabelDAO.class) {
+				if (statLabelDAO == null) {
+					statLabelDAO = new StatLabelDAO();
+				}
+			}
+		}
+		return statLabelDAO;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<StatLabelDTO> getStatLabelDayCountList(Map<String, Object> whereMap) throws SQLException{
+		List<Integer> idList = SqlBuilder.getSqlMapClient().queryForList("StatLabel.getDayCount", whereMap);
+		if(idList != null && idList.size() > 0){
+			return this.getById(idList);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<StatLabelDTO> getStatLabelMonthCountList(Map<String, Object> whereMap) throws SQLException{
+		return SqlBuilder.getSqlMapClient().queryForList("StatLabel.getMonthCount", whereMap);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<StatLabelDTO> getStatLabelMonthCountInfo(Map<String, Object> whereMap) throws SQLException{
+		return SqlBuilder.getSqlMapClient().queryForList("StatLabel.getCountInfo", whereMap);
+	}
+	
+	/**
+	 * 查询所有的记录总数
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getCount(Map<String, Object> whereMap) throws SQLException{
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject("StatLabel.getCount", whereMap);
+	}
+	
+	public Integer getDayCount(Map<String, Object> whereMap) throws SQLException{
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject("StatLabel.getTimeCount", whereMap);
+	}
+
+}

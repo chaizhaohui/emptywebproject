@@ -1,0 +1,85 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.CoveryMsgDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 每日寄语DAO
+ * 
+ * @author ZhangChengpeng
+ * @date 2012-04-09
+ */
+public class CoveryMsgDAO extends BasicDAO<CoveryMsgDTO> {
+
+	private static CoveryMsgDAO coveryMsgDAO;
+
+	private CoveryMsgDAO() {
+		super();
+	}
+
+	public static CoveryMsgDAO getInstance() {
+		if (coveryMsgDAO == null) {
+			synchronized (CoveryMsgDAO.class) {
+				if (coveryMsgDAO == null) {
+					coveryMsgDAO = new CoveryMsgDAO();
+				}
+			}
+		}
+		return coveryMsgDAO;
+	}
+
+	/**
+	 * 根据条件获取列表
+	 * 
+	 * @param whereMap[msgId]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<CoveryMsgDTO> getByWhere(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("CoveryMsg.getByWhere", whereMap);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	/**
+	 * 分页获取记录
+	 * 
+	 * @param whereMap[msgId,start,end]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<CoveryMsgDTO> getByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("CoveryMsg.getByPage", whereMap);
+		if (list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+	/**
+	 * 获取记录数量
+	 * 
+	 * @param whereMap[msgId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"CoveryMsg.getCount", whereMap);
+	}
+
+	public List<CoveryMsgDTO> getCoveryMsgDTOList(Map<String, Object> whereMap)
+			throws SQLException {
+		return getByPage(whereMap);
+	}
+}

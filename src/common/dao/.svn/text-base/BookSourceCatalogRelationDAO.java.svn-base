@@ -1,0 +1,54 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+import cn.com.twsm.common.dto.BookSourceCatalogRelationDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * Admins表DAO
+ * @author QiaoGuangqing
+ * @date 2012-04-19
+ */
+public class BookSourceCatalogRelationDAO extends BasicDAO<BookSourceCatalogRelationDTO> {
+	
+	private static BookSourceCatalogRelationDAO bookSourceCatalogRelationDAO;
+	public static  BookSourceCatalogRelationDAO getInstance(){
+		if(bookSourceCatalogRelationDAO == null){
+			synchronized(BookSourceCatalogRelationDAO.class){
+				if(bookSourceCatalogRelationDAO == null){
+					bookSourceCatalogRelationDAO = new BookSourceCatalogRelationDAO();
+				}
+			}
+		}
+		return bookSourceCatalogRelationDAO;
+	}
+	/**
+	 * 依据条件获取记录数量
+	 * @param whereMap[userName,adminId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Admins.getCount", whereMap);
+	}
+	
+	public List<BookSourceCatalogRelationDTO> getByWhere(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("BookSourceCatalogRelation.getByWhere",whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookSourceCatalogRelationDAO() {
+		super();
+	}
+
+}

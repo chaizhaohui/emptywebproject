@@ -1,0 +1,37 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import cn.com.twsm.common.dto.AdminGroupLimitDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * ADMIN_GROUP_LIMIT  ----管理员角色权限表
+ * @author Guo Tianci
+ *
+ */
+public class AdminGroupLimitDAO extends BasicDAO<AdminGroupLimitDTO> {
+
+	private static AdminGroupLimitDAO adminGroupLimitDAO;
+
+	public static AdminGroupLimitDAO getInstance() {
+
+		if (adminGroupLimitDAO == null) {
+			synchronized (AdminGroupLimitDAO.class) {
+				if (adminGroupLimitDAO == null) {
+					adminGroupLimitDAO = new AdminGroupLimitDAO();
+				}
+			}
+		}
+
+		return adminGroupLimitDAO;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByGroupIds(int groupId) throws SQLException {
+		List<Integer> ids = SqlBuilder.getSqlMapClient().queryForList("AdminGroupLimit.selectByGroupId", groupId);
+		return ids;
+	}
+
+}

@@ -1,0 +1,94 @@
+package cn.com.twsm.common.dao;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import cn.com.twsm.common.dto.BookSourceDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+/**
+ * 书籍表DAO
+ * @author lixinglei
+ * @date 2012-04-11
+ * @version 1.0.0.1
+ */
+public class BookSourceDAO extends BasicDAO<BookSourceDTO> {
+	
+	private static BookSourceDAO bookSourceDAO;
+	public static  BookSourceDAO getInstance(){
+		if(bookSourceDAO == null){
+			synchronized(BookSourceDAO.class){
+				if(bookSourceDAO == null){
+					bookSourceDAO = new BookSourceDAO();
+				}
+			}
+		}
+		return bookSourceDAO;
+	}	
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookSourceDAO() {
+		super();
+	}
+
+
+	/*
+	 * kangbaoxing
+	 * 获得bookSource的总数
+	 */
+	public Integer getBookSourceCount() throws SQLException {
+		// TODO Auto-generated method stub
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("BookSource.getBookSourceCount");
+	}
+	/**
+	 * 获得分页数量
+	 * @param whereMap[start,end]
+	 * @return
+	 * @throws SQLException 
+	 */
+	public List<BookSourceDTO> showBookSourceList(Map whereMap) throws SQLException {
+		// TODO Auto-generated method stub
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("BookSource.showBookSourceList",whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据CPBookId获取相应bookSource
+	 * @param cpBookId
+	 * @return
+	 * @throws SQLException 
+	 */
+	public BookSourceDTO getByCpBookId(String cpBookId) throws SQLException {
+		// TODO Auto-generated method stub
+		Integer bookSourceId = (Integer)SqlBuilder.getSqlMapClient().queryForObject("BookSource.getByCpBookId",cpBookId);
+		if(bookSourceId!=null){
+			return this.getById(bookSourceId);
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param whereMap[authorId]
+	 * @return
+	 * @throws SQLException 
+	 */
+	public List<BookSourceDTO> getByWhere(Map<String, Object> whereMap) throws SQLException {
+		return showBookSourceList(whereMap);
+	}
+
+	public int getCountByWhere(Map<String, Object> whereMap) throws SQLException {
+		// TODO Auto-generated method stub
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("BookSource.getCountByWhere",whereMap);
+	}
+	public int getBookSourceCatalogId(Integer bookSourceId) throws SQLException{
+		Integer catalogId = (Integer)SqlBuilder.getSqlMapClient().queryForObject("BookSource.getBookSourceCatalogId",bookSourceId);
+		return catalogId;
+	}
+}

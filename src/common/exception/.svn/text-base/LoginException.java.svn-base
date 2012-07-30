@@ -1,0 +1,17 @@
+package cn.com.twsm.common.exception;
+/**
+ * 后台用户登录异常
+ * @author QiaoGuangqing
+ * @date 2012-04-18
+ */
+public class LoginException extends BasicException {
+	private static final long serialVersionUID = 1L;
+	
+	public LoginException(Class<?> clazz, String msg){
+		super(clazz, msg);
+	}
+	
+	public LoginException(Class<?> clazz, String msg, Throwable t){
+		super(clazz, msg, t);
+	}
+}

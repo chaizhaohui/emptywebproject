@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BookLabelRelation">
+	<resultMap class="cn.com.twsm.common.dto.BookLabelRelationDTO" id="bookLabelRelation">
+		<result column="RELATION_ID" property="id" jdbcType="INTEGER"/>
+		<result column="BOOK_ID" property="bookId" jdbcType="INTEGER"/>
+		<result column="LABEL_ID" property="labelId" jdbcType="INTEGER"/>
+	</resultMap>
+
+    <select id="getById" resultMap="bookLabelRelation">
+        SELECT RELATION_ID, 
+               BOOK_ID,
+               LABEL_ID
+          FROM BOOK_LABEL_RELATION
+         WHERE RELATION_ID = #id#
+    </select>
+    
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookLabelRelationDTO">
+        <selectKey keyProperty="id" resultClass="int">
+            SELECT SEQ_BOOK_LABEL_RELATION.Nextval FROM DUAL
+        </selectKey>
+        INSERT INTO BOOK_LABEL_RELATION
+          (RELATION_ID, 
+          BOOK_ID,
+          LABEL_ID)
+        VALUES
+          (#id#, 
+          #bookId#, 
+          #labelId#)
+    </insert>
+</sqlMap>

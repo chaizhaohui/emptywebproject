@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Promotion">
+	<resultMap class="cn.com.twsm.common.dto.PromotionDTO" id="promotion">
+		<result column="PROMOTION_ID" property="id" jdbcType="INTEGER"/>
+		<result column="PROMOTION_GROUP" property="promotionGroup" jdbcType="VARCHAR"/>
+		<result column="PROMOTION_NAME" property="promotionName" jdbcType="VARCHAR"/>
+		<result column="PROMOTION_DESC" property="promotionDesc" jdbcType="VARCHAR"/>
+		<result column="IMAGE_URL" property="imageUrl" jdbcType="VARCHAR"/>
+		<result column="LOCAL_PATH" property="localPath" jdbcType="VARCHAR"/>
+		<result column="JUMP_TYPE" property="jumpType" jdbcType="VARCHAR"/>
+		<result column="PROMOTION_SORT" property="promotionSort" jdbcType="DECIMAL"/>
+		<result column="DISABLED" property="disabled" jdbcType="VARCHAR"/>
+		<result column="JUMP_DETAIL" property="jumpDetail" jdbcType="VARCHAR"/>
+		<result column="SUMMARY" property="summary" jdbcType="VARCHAR"/>
+		<result column="DETAIL" property="detail" jdbcType="VARCHAR"/>
+		<result column="PERIODICAL_NUM" property="periodicalNum" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="SHOW_DATE" property="showDate" jdbcType="VARCHAR"/>
+		<result column="IS_HOT" property="isHot" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				PROMOTION_ID=#id#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="promotionGroup">
+				PROMOTION_GROUP=#promotionGroup#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="promotionName">
+				PROMOTION_NAME=#promotionName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="promotionDesc">
+				PROMOTION_DESC=#promotionDesc#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="imageUrl">
+				IMAGE_URL=#imageUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="localPath">
+				LOCAL_PATH=#localPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="jumpType">
+				JUMP_TYPE=#jumpType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="promotionSort">
+				PROMOTION_SORT=#promotionSort#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="disabled">
+				DISABLED=#disabled#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="jumpDetail">
+				JUMP_DETAIL=#jumpDetail#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="summary">
+				SUMMARY=#summary#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="detail">
+				DETAIL=#detail#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="periodicalNum">
+				PERIODICAL_NUM=#periodicalNum#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="exceptType">
+				JUMP_TYPE &lt;&gt; #exceptType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="showDate">
+				SHOW_DATE = #showDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isHot">
+				IS_HOT = #isHot#
+			</isNotEmpty>
+		    <isNotNull prepend="AND" property="addDateStart">
+				PROMOTION.ADD_TIME &gt;= #addDateStart#
+			</isNotNull>
+			<isNotNull prepend="AND" property="addDateEnd">
+				PROMOTION.ADD_TIME &lt;= #addDateEnd#
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
+	<select id="getId" resultClass="int">
+		SELECT 
+			PROMOTION_ID
+		FROM 
+		    PROMOTION
+	</select>
+	
+	<select id="getById" resultMap="promotion"  parameterClass="int">
+		SELECT 
+			PROMOTION_ID,
+			PROMOTION_GROUP,
+			PROMOTION_NAME,
+			PROMOTION_DESC,
+			IMAGE_URL,
+			LOCAL_PATH,
+			JUMP_TYPE,
+			PROMOTION_SORT,
+			DISABLED,
+			JUMP_DETAIL,
+			SUMMARY,
+			DETAIL,
+			PERIODICAL_NUM,
+			ADD_TIME,
+			SHOW_DATE,
+			IS_HOT
+		FROM 
+		    PROMOTION
+		WHERE
+			PROMOTION_ID = #PROMOTION_ID#
+	</select>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   PROMOTION 
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+   <select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      PROMOTION_ID 
+	   FROM 
+		  (SELECT 
+		     T.PROMOTION_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         PROMOTION_ID 
+              FROM 
+                 PROMOTION 
+              WHERE 
+                 1=1 <include refid="whereCondition"/> ORDER BY PROMOTION_SORT DESC,PROMOTION_ID DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.PromotionDTO">
+	      UPDATE PROMOTION
+         <dynamic prepend="set">
+			PROMOTION_ID = #id#,
+			PROMOTION_GROUP = #promotionGroup#,
+			PROMOTION_NAME  = #promotionName#,
+			PROMOTION_DESC  = #promotionDesc#,
+			IMAGE_URL       = #imageUrl#,
+			LOCAL_PATH      = #localPath#,
+			JUMP_TYPE       = #jumpType#,
+			PROMOTION_SORT  = #promotionSort#,
+			DISABLED        = #disabled#,
+			JUMP_DETAIL     = #jumpDetail#,
+			SUMMARY         = #summary#,
+			DETAIL          = #detail#,
+			PERIODICAL_NUM  = #periodicalNum#,
+			ADD_TIME        = #addTime#,
+			SHOW_DATE       = #showDate#,
+			IS_HOT          = #isHot#
+		</dynamic>
+			WHERE PROMOTION_ID = #id#
+	</update>
+	<!-- ********************************************************************************** -->
+	<select id="select" resultMap="promotion">
+		SELECT 
+			PROMOTION_ID,
+            PROMOTION_GROUP,
+            PROMOTION_NAME,
+            PROMOTION_DESC,
+            IMAGE_URL,
+            LOCAL_PATH,
+            JUMP_TYPE,
+            PROMOTION_SORT,
+            DISABLED,
+            JUMP_DETAIL,
+            SUMMARY,
+            DETAIL,
+            PERIODICAL_NUM,
+            ADD_TIME,
+			SHOW_DATE,
+			IS_HOT
+		FROM 
+		    PROMOTION
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.PromotionDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			select SEQ_PROMOTION.NEXTVAL from dual
+        </selectKey>
+		INSERT INTO PROMOTION
+		(
+		   PROMOTION_ID,
+            PROMOTION_GROUP,
+            PROMOTION_NAME,
+            PROMOTION_DESC,
+            IMAGE_URL,
+            LOCAL_PATH,
+            JUMP_TYPE,
+            PROMOTION_SORT,
+            DISABLED,
+            JUMP_DETAIL,
+            SUMMARY,
+            DETAIL,
+            PERIODICAL_NUM,
+            ADD_TIME,
+			SHOW_DATE,
+			IS_HOT
+		 )
+		VALUES
+		(
+		   #id#,
+		   #promotionGroup#,
+		   #promotionName#,
+		   #promotionDesc#,
+		   #imageUrl#,
+		   #localPath#,
+		   #jumpType#,
+		   #promotionSort#,
+		   #disabled#,
+		   #jumpDetail#,
+		   #summary#,
+		   #detail#,
+		   #periodicalNum#,
+		   #addTime#,
+		   #showDate#,
+		   #isHot#
+		  )
+	</insert>
+	
+	
+</sqlMap>

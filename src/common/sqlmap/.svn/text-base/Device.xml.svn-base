@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Device">
+	<resultMap class="cn.com.twsm.common.dto.DeviceDTO" id="device">
+		<result column="DEVICE_ID" property="id" jdbcType="Integer"/>
+		<result column="DEVICE_NUM" property="deviceNum" jdbcType="VARCHAR"/>
+		<result column="CLIENT_TYPE" property="clientType" jdbcType="VARCHAR"/>
+		<result column="CLIENT_VERSION" property="clientVersion" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+		<result column="LAST_USE_TIME" property="lastUseTime" jdbcType="DECIMAL"/>
+	</resultMap>
+	
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="device" parameterClass="int">
+		SELECT DEVICE_ID,
+			   DEVICE_NUM,
+			   CLIENT_TYPE,
+			   CLIENT_VERSION,
+			   ADD_TIME,
+			   LAST_USE_TIME
+		  FROM DEVICE
+		 WHERE DEVICE_ID = #id#
+	</select>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.DeviceDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_DEVICE.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO DEVICE(
+			   DEVICE_ID,
+			   DEVICE_NUM,
+			   CLIENT_TYPE,
+			   CLIENT_VERSION,
+			   ADD_TIME,
+			   LAST_USE_TIME
+			   )
+		VALUES (
+			   #id#,
+			   #deviceNum#,
+			   #clientType#,
+			   #clientVersion#,
+			   #addTime#,
+			   #lastUseTime#
+			   )
+	</insert>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.DeviceDTO">
+	    UPDATE DEVICE
+	    <dynamic prepend="SET">
+	    	DEVICE_NUM     = #deviceNum#,
+	    	CLIENT_TYPE    = #clientType#,
+	    	CLIENT_VERSION = #clientVersion#,
+	    	ADD_TIME 	   = #addTime#,
+	    	LAST_USE_TIME  = #lastUseTime#
+	    </dynamic>
+	     WHERE DEVICE_ID = #id#
+	</update>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM DEVICE WHERE DEVICE_ID = #id#
+	</delete>
+</sqlMap>
+

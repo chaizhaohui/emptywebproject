@@ -1,0 +1,20 @@
+package cn.com.twsm.common.dto;
+
+public class BookSourceAuthorRelationDTO extends BasicDTO{
+	private int bookSourceId;					//书籍源ID: 外键
+	private int authorId;					//作家ID: 主键 自增
+	public int getBookSourceId() {
+		return bookSourceId;
+	}
+	public void setBookSourceId(int bookSourceId) {
+		this.bookSourceId = bookSourceId;
+	}
+	public int getAuthorId() {
+		return authorId;
+	}
+	public void setAuthorId(int authorId) {
+		this.authorId = authorId;
+	}
+
+
+}

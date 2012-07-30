@@ -1,0 +1,54 @@
+package cn.com.twsm.common.dto;
+
+import java.math.BigDecimal;
+
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.General;
+
+public class BookSourceChapterDTO extends BasicDTO{
+	private int bookSourceId;					//外键 必填
+	private String chapterType;					//章节类型 1:文本 2:语音 必填
+	private String chapterName;					//章节名称 必填
+	private BigDecimal chapterSort;					//章节排序 必填
+	private String localPath;//本地路径 必填
+
+	public String getFullLocalPath(){
+		if(General.isEmpty(localPath)){
+			return null;
+		}
+		return General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.AUDIOBOOKS_URL_PREFIX)) + this.getLocalPath();
+	}
+	
+	
+	public int getBookSourceId() {
+		return bookSourceId;
+	}
+	public void setBookSourceId(int bookSourceId) {
+		this.bookSourceId = bookSourceId;
+	}
+	public String getChapterType() {
+		return chapterType;
+	}
+	public void setChapterType(String chapterType) {
+		this.chapterType = chapterType;
+	}
+	public String getChapterName() {
+		return chapterName;
+	}
+	public void setChapterName(String chapterName) {
+		this.chapterName = chapterName;
+	}
+	public BigDecimal getChapterSort() {
+		return chapterSort;
+	}
+	public void setChapterSort(BigDecimal chapterSort) {
+		this.chapterSort = chapterSort;
+	}
+	public String getLocalPath() {
+		return localPath;
+	}
+	public void setLocalPath(String localPath) {
+		this.localPath = localPath;
+	}
+
+}

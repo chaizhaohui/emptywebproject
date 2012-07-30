@@ -1,0 +1,170 @@
+package cn.com.twsm.common.interceptor;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.ServletActionContext;
+
+import cn.com.twsm.common.dto.AdminsDTO;
+import cn.com.twsm.common.service.LoginService;
+import cn.com.twsm.common.utils.ConfigUtil;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+
+/**
+ * 后台登录拦截器
+ * 
+ * @author QiaoGuangqing
+ * @date 2012-04-18
+ * @description 后台用户登录统一拦截器
+ */
+public class Login extends AbstractInterceptor {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 拦截器主方法 实现未登录跳出和白名单权限验证
+	 */
+	@Override
+	public String intercept(ActionInvocation actionInvocation) throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpSession session = request.getSession();
+		
+		String nameSpace = actionInvocation.getProxy().getNamespace();
+		
+		String actionName = "";
+		
+		if (nameSpace != null && nameSpace.equals("/")) {
+			actionName = "/"
+			+ actionInvocation.getProxy().getActionName();
+		} else {
+			actionName = nameSpace + "/"
+			+ actionInvocation.getProxy().getActionName();
+		}
+
+		// 尝试从Session中获取用户信息 获取成功表示用户已登录 未成功尝试Cookie自动登录。如果依然未成功则自动跳转到登录页面
+		Object object = session.getAttribute(ConfigUtil
+				.getProperty(ConfigUtil.SESSION_USER_KEY));
+		if (object != null) {
+			// session中用户对象不为空 已登录
+			if (!haveLimit(actionName, (AdminsDTO) object)) {
+				// 没有相关权限 提示完后退
+				noLimitMsg(response);
+				return null;
+			} else {
+				return actionInvocation.invoke();
+			}
+		} else {
+			// session中不存在用户对象 尝试cookie自动登录
+			LoginService loginService = LoginService.getInstance();
+			if (loginService.doCookieLogin()) {
+				// cookie自动登录成功 已登录 将来在此做权限过滤
+				object = session.getAttribute(ConfigUtil
+							.getProperty(ConfigUtil.SESSION_USER_KEY));
+				if (!haveLimit(actionName, (AdminsDTO) object)) {
+					// 没有相关权限 提示完后退
+					noLimitMsg(response);
+					return null;
+				} else {
+					return actionInvocation.invoke();
+				}
+			} else {
+				// session和cookie登录都不成功 跳转到登录页
+				actionInvocation.getStack().set("backurl",
+						request.getRequestURL().toString());
+				return "toLogin";
+			}
+		}
+	}
+
+	/**
+	 * 私有方法 无权限时提示无权限并跳转
+	 * 
+	 * @param response
+	 * @throws IOException
+	 */
+	private static void noLimitMsg(HttpServletResponse response)
+			throws IOException {
+		String str = "<script>alert('您没有相关权限。');history.go(-1);</script>";
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		response.setHeader("Expires", "0");
+		ServletOutputStream out = response.getOutputStream();
+		out.write(str.getBytes("utf-8"));
+		out.flush();
+		out.close();
+	}
+
+	/**
+	 * 私有方法 判断用户是否有该权限
+	 * 
+	 * @param actionName
+	 * @return
+	 * @throws SQLException
+	 */
+	private static boolean haveLimit(String actionName, AdminsDTO adminsDTO)
+			throws SQLException {
+
+		if (isAdministrator(adminsDTO)) {
+			return true;
+		}
+
+
+		if (hasLimit(actionName, adminsDTO)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private static boolean hasLimit(String actionName, AdminsDTO adminsDTO) {
+		if (adminsDTO != null && adminsDTO.getLimitURLs() != null
+				&& adminsDTO.getLimitURLs().contains(actionName)) {
+			return true;
+		}
+		return false;
+	}
+
+//	private static Set<String> publicLimitURLs = null;
+
+//	private static boolean isPublicAction(String actionName)
+//			throws SQLException {
+//		if (publicLimitURLs == null) {
+//			synchronized (Login.class) {
+//				if (publicLimitURLs == null) {
+//					SystemLimitService service = SystemLimitService
+//							.getInstance();
+//					List<SystemLimitDTO> publicLimits = service
+//							.getPublicLimits();
+//					publicLimitURLs = new HashSet<String>();
+//					if (publicLimits != null) {
+//						for (SystemLimitDTO pLimit : publicLimits) {
+//							publicLimitURLs.add(pLimit.getUrl());
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		if (publicLimitURLs.contains(actionName)) {
+//			return true;
+//		}
+//
+//		return false;
+//	}
+
+	private static boolean isAdministrator(AdminsDTO adminsDTO) {
+		if (adminsDTO != null && adminsDTO.getUserName() != null
+				&& adminsDTO.getUserName().equalsIgnoreCase("ADMINISTRATOR")) {
+			return true;
+		}
+		return false;
+	}
+
+}

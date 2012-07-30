@@ -1,0 +1,168 @@
+package cn.com.twsm.common.dto;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+
+/**
+ * SYSTEM_LIMIT 表 DTO
+ * @author Guo Tianci
+ * @date 2012-06-13
+ */
+public class SystemLimitDTO extends BasicDTO{
+	
+	private static final long serialVersionUID = -913975342290317544L;
+
+	/**
+	 * 权限名称
+	 */
+	private String name;
+	
+	/**
+	 * action的URL
+	 */
+	private String url;
+	
+	/**
+	 * 是否为公共权限 0:否 1:是 默认为0
+	 */
+	private String publicLimit = "0";
+	
+	/**
+	 * 权限级别 必填 默认为1
+	 */
+	private int level = 1;
+	
+	/**
+	 * 上级权限ID
+	 */
+	private int parentId;
+	
+	/**
+	 * 权限排序 默认为1000
+	 */
+	private BigDecimal sort = BigDecimal.valueOf(1000);
+	
+	/**
+	 * 下级权限
+	 */
+	private List<SystemLimitDTO> children;
+	
+	/**
+	 * 添加一个下级权限
+	 * @param child
+	 */
+	public void addChild(SystemLimitDTO child) {
+		
+		if (child == null) {
+			return;
+		}
+		
+		if (children == null) {
+			children = new ArrayList<SystemLimitDTO>();
+		}
+		
+		children.add(child);
+		
+	}
+	
+	/**
+	 * 添加下级权限
+	 * @param children
+	 */
+	public void addChildren(Collection<SystemLimitDTO> children) {
+		if (children == null || children.isEmpty()) {
+			return;
+		}
+		
+		if (this.children == null) {
+			this.children = new ArrayList<SystemLimitDTO>();
+		}
+		
+		this.children.addAll(children);
+	}
+	
+	public boolean hasChildren() {
+		return (children != null && children.size() > 0);
+	}
+
+	public SystemLimitDTO() {
+		super();
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
+	public String getPublicLimit() {
+		return publicLimit;
+	}
+
+
+	public void setPublicLimit(String publicLimit) {
+		this.publicLimit = publicLimit;
+	}
+
+
+	public int getLevel() {
+		return level;
+	}
+
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+
+	public int getParentId() {
+		return parentId;
+	}
+
+
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
+	}
+
+
+	public BigDecimal getSort() {
+		return sort;
+	}
+
+
+	public void setSort(BigDecimal sort) {
+		this.sort = sort;
+	}
+
+
+	public List<SystemLimitDTO> getChildren() {
+		return children;
+	}
+
+
+	public void setChildren(List<SystemLimitDTO> children) {
+		this.children = children;
+	}
+
+	
+	
+
+}

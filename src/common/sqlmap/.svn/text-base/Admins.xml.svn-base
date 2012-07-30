@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Admins">
+	<resultMap class="cn.com.twsm.common.dto.AdminsDTO" id="adminsDTO">
+		<result column="ADMIN_ID" property="id" jdbcType="Integer"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+		<result column="USER_PWD" property="userPwd" jdbcType="VARCHAR"/>
+		<result column="GROUP_ID" property="groupId" jdbcType="Integer"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotNull prepend="AND" property="userName">
+				ADMINS.USER_NAME = #userName#
+			</isNotNull>
+			<isNotNull prepend="AND" property="adminId">
+				ADMINS.ADMIN_ID = #adminId#
+			</isNotNull>
+		</dynamic>
+	</sql>
+	<select id="getByUserName" resultClass="int" parameterClass="String">
+		SELECT ADMIN_ID
+		  FROM ADMINS
+		 WHERE USER_NAME = #userName#
+	</select>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT COUNT(1) FROM ADMINS WHERE 1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+	<select id="getByPage" resultClass="int" parameterClass="map">
+		SELECT ADMIN_ID FROM (SELECT t.ADMIN_ID,ROWNUM as RN FROM (
+            SELECT ADMIN_ID
+              FROM ADMINS
+             WHERE 1 = 1
+                   <include refid="whereCondition"/>
+            ORDER BY ADMINS.ADMIN_ID DESC 
+            ) t )
+        WHERE RN &gt; #start# AND RN &lt;= #end#
+	</select>
+		
+	<select id="getByGroupId" resultClass="int" parameterClass="int">
+		SELECT ADMIN_ID
+		  FROM ADMINS
+		 WHERE GROUP_ID = #groupId#
+	</select>
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="adminsDTO" parameterClass="int">
+		SELECT ADMIN_ID,
+			   USER_NAME,
+			   USER_PWD,
+			   GROUP_ID
+		  FROM ADMINS
+		 WHERE ADMIN_ID = #adminId#
+	</select>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.AdminsDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_ADMINS.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO ADMINS(
+			   ADMIN_ID,
+			   USER_NAME,
+			   USER_PWD,
+			   GROUP_ID
+			   )
+		VALUES (
+			   #id#,
+			   #userName#,
+			   #userPwd#,
+			   #groupId#
+			   )
+	</insert>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.AdminsDTO">
+	    UPDATE ADMINS
+	    <dynamic prepend="SET">
+	    	USER_NAME = #userName#,
+	    	USER_PWD  = #userPwd#,
+	    	GROUP_ID =  #groupId#
+	    </dynamic>
+	     WHERE ADMIN_ID = #id#
+	</update>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM ADMINS WHERE ADMIN_ID = #id#
+	</delete>
+</sqlMap>
+

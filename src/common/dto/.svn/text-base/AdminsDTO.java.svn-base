@@ -1,0 +1,62 @@
+package cn.com.twsm.common.dto;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Admins表DTO
+ * @author QiaoGuangqing
+ * @date 2012-04-18
+ */
+public class AdminsDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+	
+	private String userName;		//用户名
+	private String userPwd;			//加密后的密码
+	private Integer groupId;			
+	
+	/**
+	 * 权限URL
+	 * Added by Guo Tianci 
+	 */
+	private Set<String> limitURLs;  
+	
+	public void addLimitURL(String url) {
+		if (url != null) {
+			if (limitURLs == null) {
+				limitURLs = new HashSet<String>();
+			}
+			limitURLs.add(url);
+		}
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getUserPwd() {
+		return userPwd;
+	}
+	public void setUserPwd(String userPwd) {
+		this.userPwd = userPwd;
+	}
+	public Set<String> getLimitURLs() {
+		return limitURLs;
+	}
+	public void setLimitURLs(Set<String> limitURLs) {
+		this.limitURLs = limitURLs;
+	}
+
+	public Integer getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Integer groupId) {
+		this.groupId = groupId;
+	}
+	
+	
+	
+}

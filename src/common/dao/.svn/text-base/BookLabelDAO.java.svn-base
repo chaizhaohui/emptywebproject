@@ -1,0 +1,66 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookLabelDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+/**
+ * 书籍标签表DAO
+ * @author zhangmeng
+ * @date 2012-04-28
+ * @version 1.0.0.1
+ */
+public class BookLabelDAO extends BasicDAO<BookLabelDTO> {
+	private static BookLabelDAO bookLabelDAO; 
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookLabelDAO(){
+		super();
+	}
+	public static BookLabelDAO getInstance(){
+		if(bookLabelDAO == null){
+			synchronized(BookLabelDAO.class){
+				if(bookLabelDAO == null){
+					bookLabelDAO = new BookLabelDAO();
+				}
+			}
+		}
+		return bookLabelDAO;
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * @param whereMap[labelName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("BookLabel.getCount",whereMap);
+	}
+	 
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * @param whereMap[labelName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Integer>  getByPage(Map<String,Object> whereMap) throws SQLException{
+		return SqlBuilder.getSqlMapClient().queryForList("BookLabel.getByPage", whereMap);
+	}
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * @param whereMap[labelName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Integer>  getByWhere(Map<String,Object> whereMap) throws SQLException{
+		return SqlBuilder.getSqlMapClient().queryForList("BookLabel.getByWhere", whereMap);
+	}
+
+}

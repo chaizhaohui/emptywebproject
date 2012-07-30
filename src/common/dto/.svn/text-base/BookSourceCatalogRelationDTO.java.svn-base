@@ -1,0 +1,27 @@
+package cn.com.twsm.common.dto;
+
+public class BookSourceCatalogRelationDTO extends BasicDTO{
+	private int bookSourceId;					//书籍源ID:外键
+	private int catalogId;					//书籍类别ID:外键
+	private String catalogName;             //书籍类别名称
+	public int getBookSourceId() {
+		return bookSourceId;
+	}
+	public void setBookSourceId(int bookSourceId) {
+		this.bookSourceId = bookSourceId;
+	}
+	public int getCatalogId() {
+		return catalogId;
+	}
+	public void setCatalogId(int catalogId) {
+		this.catalogId = catalogId;
+	}
+	public String getCatalogName() {
+		return catalogName;
+	}
+	public void setCatalogName(String catalogName) {
+		this.catalogName = catalogName;
+	}
+
+	
+}

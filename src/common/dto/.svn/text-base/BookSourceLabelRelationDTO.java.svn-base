@@ -1,0 +1,18 @@
+package cn.com.twsm.common.dto;
+
+public class BookSourceLabelRelationDTO extends BasicDTO{
+	private int labelId;					//标签ID:外键 必填
+	private int bookSourceId;
+	public int getBookSourceId() {
+		return bookSourceId;
+	}
+	public void setBookSourceId(int bookSourceId) {
+		this.bookSourceId = bookSourceId;
+	}
+	public int getLabelId() {
+		return labelId;
+	}
+	public void setLabelId(int labelId) {
+		this.labelId = labelId;
+	}
+}

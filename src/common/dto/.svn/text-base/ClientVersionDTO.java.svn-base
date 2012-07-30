@@ -1,0 +1,122 @@
+package cn.com.twsm.common.dto;
+
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.General;
+
+/**
+ * 客户端DTO
+ * @author shiweiyan
+ * @date 2012-04-11
+ * @version 1.0.0.1
+ */
+public class ClientVersionDTO extends BasicDTO {
+
+	private static final long serialVersionUID = 1L;
+	private String clientVersionName;					//版本名称:huawei_S7
+	private String clientVersionNum;					//版本号:1.0.0.1
+	private String packageType;							//包类型:1:完整客户端 2:升级包
+	private String forceUpgrade;						//是否强制升级:0:否 1:是
+	private String targetVersionNum;					//针对待升级客户端版本号:|xxx|xxx|格式
+	private String versionDesc;							//版本描述:
+	private Long addTime;								//创建时间:
+	private Integer adminId;							//创建管理员ID:
+	private String downloadUrl;							//下载路径:
+	private Integer downloadCount;						//下载次数:
+	private String invalid;								//是否有效:0:否 1:是
+	private String localPath;                           //本地路径： 必填
+	private Integer clientVersionCode;                   //版本号编码：必填
+	/**
+	 * 获取下载路径的全路径
+	 * @return
+	 */
+	public String getFullDownLoadUrl(){
+		return General.isEmpty(this.downloadUrl)?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.CLIENT_URL_PREFIX)) + this.downloadUrl;
+	}
+	/**
+	 * 获取本地路径的全路径
+	 * @return
+	 */
+	public String getFullLocalPath(){
+		return General.isEmpty(this.localPath)?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.CLIENT_LOCALPATH_PREFIX)) + this.localPath;
+	}
+	
+	public void setClientVersionName(String clientVersionName){
+		this.clientVersionName = clientVersionName;
+	}
+	public String getClientVersionName(){
+		return this.clientVersionName;
+	}
+	public void setClientVersionNum(String clientVersionNum){
+		this.clientVersionNum = clientVersionNum;
+	}
+	public String getClientVersionNum(){
+		return this.clientVersionNum;
+	}
+	public void setPackageType(String packageType){
+		this.packageType = packageType;
+	}
+	public String getPackageType(){
+		return this.packageType;
+	}
+	public void setForceUpgrade(String forceUpgrade){
+		this.forceUpgrade = forceUpgrade;
+	}
+	public String getForceUpgrade(){
+		return this.forceUpgrade;
+	}
+	public void setTargetVersionNum(String targetVersionNum){
+		this.targetVersionNum = targetVersionNum;
+	}
+	public String getTargetVersionNum(){
+		return this.targetVersionNum;
+	}
+	public void setVersionDesc(String versionDesc){
+		this.versionDesc = versionDesc;
+	}
+	public String getVersionDesc(){
+		return this.versionDesc;
+	}
+	public void setAddTime(Long addTime){
+		this.addTime = addTime;
+	}
+	public Long getAddTime(){
+		return this.addTime;
+	}
+	public void setAdminId(Integer adminId){
+		this.adminId = adminId;
+	}
+	public Integer getAdminId(){
+		return this.adminId;
+	}
+	public void setDownloadUrl(String downloadUrl){
+		this.downloadUrl = downloadUrl;
+	}
+	public String getDownloadUrl(){
+		return this.downloadUrl;
+	}
+	public void setDownloadCount(Integer downloadCount){
+		this.downloadCount = downloadCount;
+	}
+	public Integer getDownloadCount(){
+		return this.downloadCount;
+	}
+	public void setInvalid(String invalid){
+		this.invalid = invalid;
+	}
+	public String getInvalid(){
+		return this.invalid;
+	}
+	public String getLocalPath() {
+		return localPath;
+	}
+	public void setLocalPath(String localPath) {
+		this.localPath = localPath;
+	}
+	public Integer getClientVersionCode() {
+		return clientVersionCode;
+	}
+	public void setClientVersionCode(Integer clientVersionCode) {
+		this.clientVersionCode = clientVersionCode;
+	}
+	
+}

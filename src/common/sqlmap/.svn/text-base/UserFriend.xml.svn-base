@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserFriend">
+	<resultMap class="cn.com.twsm.common.dto.UserFriendDTO" id="userFriend">
+		<result column="FRIEND_ID" property="id" jdbcType="Integer"/>
+		<result column="USER_ID" property="userId" jdbcType="Integer"/>
+		<result column="FRIEND_USER_ID" property="friendUserId" jdbcType="Integer"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="userId">				
+				USER_ID = #userId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="friendUserId">				
+				FRIEND_USER_ID = #friendUserId#
+			</isNotEmpty>			
+			<isNotEmpty prepend="AND" property="startDate">				
+				ADD_TIME &gt; #startDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="endDate">				
+				ADD_TIME &lt;= #endDate#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   USER_FRIEND 
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+   <select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      FRIEND_ID 
+	   FROM 
+		  (SELECT 
+		     T.FRIEND_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         FRIEND_ID 
+              FROM 
+                 USER_FRIEND
+              WHERE 
+                 1=1 <include refid="whereCondition"/> 
+              ORDER BY ADD_TIME DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	
+	<!-- ***************************************************************** -->
+	<select id="getById" resultMap="userFriend">
+		SELECT 
+			FRIEND_ID,
+			USER_ID,
+			FRIEND_USER_ID,
+			ADD_TIME 
+		FROM 
+			USER_FRIEND
+		WHERE
+			FRIEND_ID = #id#	
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UserFriendDTO">
+		<selectKey keyProperty="id" resultClass="int">
+			SELECT SEQ_USER_FRIEND.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO USER_FRIEND
+		(
+			FRIEND_ID,
+			USER_ID,
+			FRIEND_USER_ID,
+			ADD_TIME
+		)
+		VALUES
+		(
+			#id#,
+			#userId#,
+			#friendUserId#,
+			#addTime#
+		)
+	</insert>
+	
+	<delete id="delete" parameterClass="map">
+        DELETE FROM USER_FRIEND WHERE USER_ID = #userId# AND FRIEND_USER_ID = #friendUserId#
+    </delete>
+</sqlMap>

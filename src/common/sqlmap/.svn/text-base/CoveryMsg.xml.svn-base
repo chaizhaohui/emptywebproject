@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CoveryMsg">
+	<resultMap class="cn.com.twsm.common.dto.CoveryMsgDTO" id="coveryMsgDTO">
+		<result column="MSG_ID" property="id" jdbcType="INTEGER"/>
+		<result column="TITLE" property="title" jdbcType="VARCHAR"/>
+		<result column="CONTENT" property="content" jdbcType="VARCHAR"/>
+		<result column="IMG_URL" property="imgUrl" jdbcType="VARCHAR"/>
+		<result column="IMG_LOCAL_PATH" property="imgLocalPath" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="ADMIN_ID" property="adminId" jdbcType="INTEGER"/>
+		<result column="IS_SHOW" property="isShow" jdbcType="VARCHAR"/>
+		<result column="SHOW_TIME" property="showTime" jdbcType="NUMBER"/>
+	</resultMap>
+	   
+    <sql id="whereCondition">
+        <dynamic>
+            <isNotEmpty prepend="AND" property="showTime">
+            	SHOW_TIME &lt;= #showTime#
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="title">
+            	TITLE = #title#
+            </isNotEmpty>
+            <isNotNull prepend="AND" property="addDateStart">
+				COVERY_MSG.ADD_TIME &gt;= #addDateStart#
+			</isNotNull>
+			<isNotNull prepend="AND" property="addDateEnd">
+				COVERY_MSG.ADD_TIME &lt;= #addDateEnd#
+			</isNotNull>
+        </dynamic>
+    </sql>
+    
+	<select id="getByPage" parameterClass="map" resultClass="int">
+	<![CDATA[
+		SELECT MSG_ID 
+		  FROM 
+		       (SELECT T.MSG_ID,ROWNUM AS RN 
+		          FROM (
+                        SELECT MSG_ID 
+                          FROM COVERY_MSG
+                         WHERE 1=1
+    ]]>
+    <include refid="whereCondition"/>
+    <![CDATA[
+                        ) T
+                )
+        WHERE RN > #start# AND RN <= #end#
+    ]]>
+	</select>
+	
+	<select id="getByWhere" resultClass="int" parameterClass="map">
+	    SELECT MSG_ID
+		  FROM COVERY_MSG
+		 WHERE 1 = 1
+		 <include refid="whereCondition"/>
+	</select>
+	
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT COUNT(1) FROM COVERY_MSG WHERE 1 = 1
+		 <include refid="whereCondition"/>
+	</select>
+	<!-- ***************************************************************************************************************************************** -->
+	
+	<select id="getById" resultMap="coveryMsgDTO" parameterClass="int">
+		SELECT 	MSG_ID,
+				TITLE,
+				CONTENT,
+				IMG_URL,
+				IMG_LOCAL_PATH,
+				ADD_TIME,
+				ADMIN_ID,
+				IS_SHOW,
+				SHOW_TIME
+		  FROM COVERY_MSG
+		 WHERE MSG_ID = #id#
+	</select>
+	
+		<insert id="insert" parameterClass="cn.com.twsm.common.dto.CoveryMsgDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_COVERY_MSG.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO COVERY_MSG(
+			  	MSG_ID,
+				TITLE,
+				CONTENT,
+				IMG_URL,
+				IMG_LOCAL_PATH,
+				ADD_TIME,
+				ADMIN_ID,
+				IS_SHOW,
+				SHOW_TIME
+			   )
+		VALUES (
+			   #id#,
+			   #title#,
+			   #content#,
+			   #imgUrl#,
+			   #imgLocalPath#,
+			   #addTime#,
+			   #adminId#,
+			   #isShow#,
+			   #showTime#
+			   )
+	</insert>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.CoveryMsgDTO">
+	    UPDATE COVERY_MSG
+	    <dynamic prepend="SET">
+	    	TITLE = #title#,
+			CONTENT = #content#,
+			IMG_URL = #imgUrl#,
+			IMG_LOCAL_PATH = #imgLocalPath#,
+			ADD_TIME = #addTime#,
+			ADMIN_ID = #adminId#,
+			IS_SHOW = #isShow#,
+			SHOW_TIME = #showTime#
+	    </dynamic>
+	     WHERE MSG_ID = #id#
+	</update>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM COVERY_MSG WHERE MSG_ID = #id#
+	</delete>
+</sqlMap>
+

@@ -1,0 +1,28 @@
+package cn.com.twsm.common.dto;
+
+public class UserFriendDTO extends BasicDTO {				
+	
+	private static final long serialVersionUID = 1L;
+	private Integer userId;					//用户ID:外键 必填
+	private Integer friendUserId;					//关注用户ID:外键 必填
+	private Long addTime;					//关注时间: 必填
+
+	public void setUserId(Integer userId){
+		this.userId = userId;
+	}
+	public Integer getUserId(){
+		return this.userId;
+	}
+	public void setFriendUserId(Integer friendUserId){
+		this.friendUserId = friendUserId;
+	}
+	public Integer getFriendUserId(){
+		return this.friendUserId;
+	}
+	public void setAddTime(Long addTime){
+		this.addTime = addTime;
+	}
+	public Long getAddTime(){
+		return this.addTime;
+	}
+}

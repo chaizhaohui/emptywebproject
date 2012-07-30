@@ -1,0 +1,58 @@
+package cn.com.twsm.common.dao;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.UserBlogDiscussDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 用户博客评论DAO
+ * @author ZhangChengpeng
+ * @date 2012-04-12
+ */
+public class UserBlogDiscussDAO extends BasicDAO<UserBlogDiscussDTO>{
+
+	private static UserBlogDiscussDAO userBlogDiscussDAO; 
+	private UserBlogDiscussDAO(){super();}
+	public static UserBlogDiscussDAO getInstance(){
+		if(userBlogDiscussDAO == null){
+			synchronized(UserBlogDiscussDAO.class){
+				if(userBlogDiscussDAO == null){
+					userBlogDiscussDAO = new UserBlogDiscussDAO();
+				}
+			}
+		}
+		return userBlogDiscussDAO;
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by lixinglei
+	 * 2012-04-26
+	 * @param whereMap[blogId, userId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("UserBlogDiscuss.getCount",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * add by lixinglei
+	 * 2012-04-13
+	 * @param whereMap[blogId, userId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<UserBlogDiscussDTO>  getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserBlogDiscuss.getByPage", whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+}

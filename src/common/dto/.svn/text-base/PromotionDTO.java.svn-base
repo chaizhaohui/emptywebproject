@@ -1,0 +1,182 @@
+package cn.com.twsm.common.dto;
+
+import java.math.BigDecimal;
+
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.General;
+
+public class PromotionDTO extends BasicDTO {
+
+	private static final long serialVersionUID = 1L;
+	public final static String PROMOTION_DISABLED_YES = "1";
+	public final static String PROMOTION_DISABLED_NO = "0";
+
+	public final static String PROMOTION_ISHOT_YES = "1";
+	public final static String PROMOTION_ISHOT_NO = "0";
+	
+	public final static String PROMOTION_JUMPTYPE_BOOK = "bookDetail";
+	public final static String PROMOTION_JUMPTYPE_PROMOTION = "promotionDetail";
+	public final static String PROMOTION_JUMPTYPE_LISTEN = "listenBookDetail";
+	public final static String PROMOTION_JUMPTYPE_USERINDEX = "userIndex";
+	public final static String PROMOTION_JUMPTYPE_LABELRESULT = "labelResult";
+
+	// private BigDecimal promotionId; //专题ID 主键 自增
+	private String promotionGroup; // 专题组名称 必填
+	private String promotionName; // 专题名称 必填
+	private String promotionDesc; // 专题备注
+	private String imageUrl; // 图片URL
+	private String localPath; // 图片本地路径
+	private String jumpType; // 跳转类型 必填 bookDetail:书籍详情 promotionDetail:专题详情
+								// listenBookDetail:听书详情 userIndex:用户首页
+								// labelResult:标签结果页
+	private BigDecimal promotionSort; // 专题排序 必填
+	private String disabled; // 0:否 1:是 必填
+	private String jumpDetail; // 跳转详情 必填
+	private String summary; // 专题简介 非必填
+	private String detail; // 专题详情 非必填
+	private String periodicalNum; // 专题期数 非必填
+	private String showDate; // 发布时间 非必填
+	private String isHot = "0";	//是否为热门专题:0:否 1:是 默认为0 必填
+	private Long addTime;	//添加时间
+	// public void setPromotionId(BigDecimal promotionId){
+	// this.promotionId = promotionId;
+	// }
+	// public BigDecimal getPromotionId(){
+	// return this.promotionId;
+	// }
+	/**
+	 * 获取专题图片URL全路径
+	 * @return
+	 */
+	public String getFullImageUrl(){
+		return General.isEmpty(this.getImageUrl())?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.PROMOTION_URL_PREFIX)) + this.getImageUrl();
+	}
+	
+	/**
+	 * 获取专题图片本地路径全路径
+	 * @return
+	 */
+	public String getFullLocalPath(){
+		return General.isEmpty(this.getLocalPath())?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.PROMOTION_LOCALPATH_PREFIX)) + this.getLocalPath();
+	}
+	public void setPromotionGroup(String promotionGroup) {
+		this.promotionGroup = promotionGroup;
+	}
+
+	public String getPromotionGroup() {
+		return this.promotionGroup;
+	}
+
+	public void setPromotionName(String promotionName) {
+		this.promotionName = promotionName;
+	}
+
+	public String getPromotionName() {
+		return this.promotionName;
+	}
+
+	public void setPromotionDesc(String promotionDesc) {
+		this.promotionDesc = promotionDesc;
+	}
+
+	public String getPromotionDesc() {
+		return this.promotionDesc;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getImageUrl() {
+		return this.imageUrl;
+	}
+
+	public void setLocalPath(String localPath) {
+		this.localPath = localPath;
+	}
+
+	public String getLocalPath() {
+		return this.localPath;
+	}
+
+	public void setJumpType(String jumpType) {
+		this.jumpType = jumpType;
+	}
+
+	public String getJumpType() {
+		return this.jumpType;
+	}
+
+	public void setPromotionSort(BigDecimal promotionSort) {
+		this.promotionSort = promotionSort;
+	}
+
+	public BigDecimal getPromotionSort() {
+		return this.promotionSort;
+	}
+
+	public void setDisabled(String disabled) {
+		this.disabled = disabled;
+	}
+
+	public String getDisabled() {
+		return this.disabled;
+	}
+
+	public void setJumpDetail(String jumpDetail) {
+		this.jumpDetail = jumpDetail;
+	}
+
+	public String getJumpDetail() {
+		return this.jumpDetail;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	public String getPeriodicalNum() {
+		return periodicalNum;
+	}
+
+	public void setPeriodicalNum(String periodicalNum) {
+		this.periodicalNum = periodicalNum;
+	}
+
+	public String getShowDate() {
+		return showDate;
+	}
+
+	public void setShowDate(String showDate) {
+		this.showDate = showDate;
+	}
+
+	public String getIsHot() {
+		return isHot;
+	}
+
+	public void setIsHot(String isHot) {
+		this.isHot = isHot;
+	}
+
+	public Long getAddTime() {
+		return addTime;
+	}
+
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+
+}

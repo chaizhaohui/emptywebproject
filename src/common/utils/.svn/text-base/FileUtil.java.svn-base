@@ -1,0 +1,1293 @@
+package cn.com.twsm.common.utils;
+
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import javax.imageio.IIOException;
+import javax.imageio.ImageIO;
+
+import magick.ImageInfo;
+import magick.MagickImage;
+
+import org.apache.log4j.Logger;
+
+import cn.com.twsm.drm.DrmPackageImpl;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
+
+/**
+ * 文件操作工具类
+ * @author lixinglei
+ * @date 2012-04-10
+ * @description 封装对于文件操作的各种常用方法
+ */
+public class FileUtil {
+	private static Logger logger = Logger.getLogger(FileUtil.class);
+
+	/**
+	 * 空串
+	 */
+	public static final String EMPTY = "";
+
+	/**
+	 * 未查找到
+	 */
+	public static final int INDEX_NOT_FOUND = -1;
+	/**
+	 * 文件上传失败返回
+	 */
+	private static final String UPLOAD_FAILTURE = "failture";
+
+	/**
+	 * 缓冲大小 
+	 */
+	public static final int BUFFER_SIZE = 4096;
+
+	/**
+	 * 临时文件夹目录
+	 */
+	public static final String TEMP_DIR = "/temp";
+
+	/**
+	 * 临时文件夹目录
+	 */
+	public static final String ZIP_SUFFIX = ".zip";
+
+	/**
+	 * 文件路径分隔符
+	 */
+	public static final String FILE_SEPARATOR = "/";
+
+	/**
+	 * windows下的文件路径分隔符
+	 */
+	public static final String FILE_SEPARATOR_WINDOWS = "\\";
+
+	
+	public static final int BOOKCOVER_HEIGHT_FOR_PAD = 800;
+	
+	public static final int BOOKCOVER_WIDTH_FOR_PAD = 600;
+	
+	public static final int BOOKCOVER_HEIGHT_FOR_PHONE = 320;
+	
+	public static final int BOOKCOVER_WIDTH_FOR_PHONE = 240;
+	
+	/**
+	 * 根据环境判断是否使用JMagick来处理图片
+	 */
+	private static final boolean useJMagick;
+	static{  
+        //不能漏掉这个，不然jmagick.jar的路径找不到  
+        System.setProperty("jmagick.systemclassloader","no");  
+        System.out.println("java.library.path："+System.getProperty("java.library.path"));
+        useJMagick = false;
+    }
+	
+	
+	/**
+	 * 压缩书籍封面图片，压缩一个大图，一个小图
+	 * @param srcFilePath 源书籍封面图片全名
+	 * @param destFilePath 压缩后的书籍封面图片全名
+	 * @return
+	 * @throws IOException
+	 *//*
+	public static boolean compressRecoverImage(String srcFilePath,
+			String destFilePath) throws IOException {
+		return compressRecoverImage(new File(srcFilePath), new File(destFilePath));
+	}
+
+	*//**
+	 * 压缩书籍封面图片，压缩一个大图，一个小图
+	 * @param srcFilePath 源书籍封面图片全名
+	 * @param destFilePath 压缩后的书籍封面图片全名
+	 * @return
+	 * @throws IOException
+	 *//*
+	public static boolean compressRecoverImage(File srcFile, File destFile)
+			throws IOException {
+		return compressRecoverImageForPad(srcFile, destFile) && compressRecoverImageForPhone(srcFile, destFile);
+	}*/
+	
+	/**
+	 * 压缩书籍封面图片
+	 * @param srcFilePath 源书籍封面图片全名
+	 * @param destFilePath 压缩后的书籍封面图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressRecoverImageForPad(String srcFilePath, String destFilePath)
+			throws IOException {
+		return compressRecoverImageForPad(new File(srcFilePath), new File(destFilePath));
+	}
+	
+	/**
+	 * 压缩书籍封面图片
+	 * @param srcFilePath 源书籍封面图片全名
+	 * @param destFilePath 压缩后的书籍封面图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressRecoverImageForPad(File srcFile, File destFile)
+			throws IOException {
+		if(FileUtil.getImageHeight(srcFile) > FileUtil.getImageWeight(srcFile)){
+			return compressImage(srcFile, destFile, BOOKCOVER_WIDTH_FOR_PAD, BOOKCOVER_HEIGHT_FOR_PAD, 0.85f);
+		}else{
+			return compressImage(srcFile, destFile, BOOKCOVER_HEIGHT_FOR_PAD, BOOKCOVER_WIDTH_FOR_PAD, 0.85f);
+		}
+	}
+	
+	/**
+	 * 压缩书籍封面图片
+	 * @param srcFilePath 源书籍封面图片全名
+	 * @param destFilePath 压缩后的书籍封面图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressRecoverImageForPhone(String srcFilePath, String destFilePath)
+			throws IOException {
+		return compressRecoverImageForPhone(new File(srcFilePath), new File(destFilePath));
+	}
+	
+	/**
+	 * 压缩书籍封面图片
+	 * @param srcFilePath 源书籍封面图片全名
+	 * @param destFilePath 压缩后的书籍封面图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressRecoverImageForPhone(File srcFile, File destFile)
+			throws IOException {
+		if(FileUtil.getImageHeight(srcFile) > FileUtil.getImageWeight(srcFile)){
+			return compressImage(srcFile, destFile, BOOKCOVER_WIDTH_FOR_PHONE, BOOKCOVER_HEIGHT_FOR_PHONE,  0.85f);
+		}else{
+			return compressImage(srcFile, destFile, BOOKCOVER_HEIGHT_FOR_PHONE, BOOKCOVER_WIDTH_FOR_PHONE, 0.85f);
+		}
+	}
+	
+
+	/**
+	 * 压缩专题推荐图片
+	 * @param srcFilePath 源专题推荐图片全名
+	 * @param destFilePath 压缩后的专题推荐图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressPromotionImage(File srcFile, File destFile)
+			throws IOException {
+		if(FileUtil.getImageHeight(srcFile) > FileUtil.getImageWeight(srcFile)){
+			return compressImage(srcFile, destFile, 240, 320,  0.85f);
+		}else{
+			return compressImage(srcFile, destFile, 320, 240, 0.85f);
+		}
+			
+	}
+
+	/**
+	 * 压缩专题推荐图片
+	 * @param srcFilePath 源专题推荐图片全名
+	 * @param destFilePath 压缩后的专题推荐图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressPromotionImage(String srcFilePath,
+			String destFilePath) throws IOException {
+		File srcFile = new File(srcFilePath);
+		if(FileUtil.getImageHeight(srcFile) > FileUtil.getImageWeight(srcFile)){
+			return compressImage(srcFilePath, destFilePath, 240, 320,  0.85f);
+		}else{
+			return compressImage(srcFilePath, destFilePath, 320, 240, 0.85f);
+		}
+	}
+
+	/**
+	 * 压缩客户端皮肤图片
+	 * @param srcFilePath 源客户端皮肤图片全名
+	 * @param destFilePath 压缩后的客户端皮肤图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressSkinImage(String srcFilePath,
+			String destFilePath) throws IOException {
+		return compressImage(srcFilePath, destFilePath, 300, 400, 0.85f);
+	}
+
+	/**
+	 * 压缩客户端皮肤图片
+	 * @param srcFilePath 源客户端皮肤图片
+	 * @param destFilePath 压缩后的客户端皮肤图片
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean compressSkinImage(File srcFile, File destFile)
+			throws IOException {
+		return compressImage(srcFile, destFile, 300, 400, 0.85f);
+	}
+
+	/**
+	 * 获取图片的高度
+	 * @param imgFile 图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static int getImageHeight(String imgFilePath) throws IOException {
+		return getImageHeight(new File(imgFilePath));
+	}
+
+	/**
+	 * 获取图片的高度
+	 * @param imgFile 图片文件
+	 * @return
+	 * @throws IOException
+	 */
+	public static int getImageHeight(File imgFile) throws IOException {
+		InputStream in = null;
+		try{
+			in = new FileInputStream(imgFile);
+			return JPEGCodec.createJPEGDecoder(in).decodeAsBufferedImage().getHeight();
+		}catch(Exception e){
+			logger.error("获取图片" + imgFile.getCanonicalPath() + "的高度失败");
+			e.printStackTrace();
+			return -1;
+		}finally{
+			FileUtil.close(in);
+		}
+	}
+
+	/**
+	 * 获取图片的宽度
+	 * @param imgFilePath 图片全名
+	 * @return
+	 * @throws IOException
+	 */
+	public static int getImageWeight(String imgFilePath) throws IOException {
+		return getImageWeight(new File(imgFilePath));
+	}
+
+	/**
+	 * 获取图片的宽度
+	 * @param imgFile 图片文件
+	 * @return
+	 * @throws IOException
+	 */
+	public static int getImageWeight(File imgFile) throws IOException {
+		InputStream in = null;
+		try{
+			in = new FileInputStream(imgFile);
+			return JPEGCodec.createJPEGDecoder(in).decodeAsBufferedImage().getWidth();
+		}catch(Exception e){
+			logger.error("获取图片" + imgFile.getCanonicalPath() + "的宽度失败");
+			e.printStackTrace();
+			return -1;
+		}finally{
+			FileUtil.close(in);
+		}
+	}
+
+	/**
+	 * 压缩图片
+	 * 
+	 * @param srcFilePath
+	 *            源图片全名
+	 * @param destFilePath
+	 *            压缩后的图片全名
+	 * @param width
+	 *            压缩宽
+	 * @param height
+	 *            压缩长
+	 * @param quality
+	 *            压缩清晰度 <b>建议为0.85</b>
+	 * @return
+	 */
+	private static boolean compressImage(String srcFilePath,
+			String destFilePath, int width, int height, float quality)
+			throws IOException {
+		return compressImage(new File(srcFilePath), new File(destFilePath),
+				width, height, quality);
+	}
+
+	/**
+	 * 使用ImageMagick高质量压缩图片，如果是变大，则直接复制
+	 * @param srcFile
+	 * @param destFile
+	 * @param width
+	 * @param height
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean compressImage(File srcFile, File destFile,
+			int width, int height) throws IOException{
+		return compressImage(srcFile.getCanonicalPath(),destFile.getCanonicalPath(),width, height);
+	}
+	
+	/**
+	 * 使用ImageMagick高质量压缩图片，如果是变大，则直接复制
+	 * @param srcFile
+	 * @param destFile
+	 * @param width
+	 * @param height
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean compressImage(String srcFile, String destFile,
+			int width, int height) throws IOException{
+		//如果目标文件和源文件是同一个，则将源文件复制一份成临时文件，避免同时对一个文件又读又写操作
+		boolean needTemp = false;
+		if(srcFile.equals(destFile)){
+			String tempFile = substringBeforLast(srcFile, ".") + "_temp." + substringAfterLast(srcFile, ".");
+			FileUtil.copyFile(srcFile, tempFile);
+			srcFile = tempFile;
+			needTemp = true;
+		}
+		
+		ImageInfo info = null;  
+        MagickImage image = null;  
+        Dimension imageDim = null;  
+        MagickImage scaled = null;  
+        try{  
+            info = new ImageInfo(srcFile);  
+            image = new MagickImage(info);  
+            imageDim = image.getDimension();  
+            int srcWidth = imageDim.width;  
+            int scrHeight = imageDim.height;  
+            boolean changeSmall = srcWidth > width || scrHeight > height;//判断图片是压大还是压小
+            if(changeSmall){
+                if((double)srcWidth/width < (double)scrHeight/height){
+                	height = (int) (scrHeight/((double)srcWidth/width));
+                }else{
+                	width = (int) (srcWidth/((double)scrHeight/height));
+                } 
+                
+                scaled = image.scaleImage(width, height);//小图片文件的大小.  
+                // clear all the metadata
+                scaled.profileImage("*", null);
+                /*
+                //如果需要进一步控制图片大小，则需要调节以下内容
+                QuantizeInfo quantizeInfo = new QuantizeInfo(); 
+                quantizeInfo.setColorspace( scaled.getColorspace());//XYZColorspace
+                quantizeInfo.setNumberColors(8);
+                quantizeInfo.setTreeDepth(1); 
+                quantizeInfo.setColorspace(0);
+                quantizeInfo.setDither(0);
+                scaled.quantizeImage(quantizeInfo);
+                */
+                scaled.setFileName(destFile);  
+                scaled.writeImage(info);  
+            }else{
+            	//如果是变大，则直接复制
+            	FileUtil.copyFile(srcFile, destFile);
+            }
+        }catch(Throwable e){
+        	logger.error("剪切图片'" + srcFile + "'失败，直接复制一份");
+        	e.printStackTrace();
+        	FileUtil.copyFile(srcFile, destFile);
+        }
+        finally{   
+        	if(image != null){  
+        		image.destroyImages();  
+            }  
+            if(scaled != null){  
+                scaled.destroyImages();  
+            }  
+            //如果用到了临时文件，则删除
+            if(needTemp)
+            	deleteFile(new File(srcFile));
+        }    
+        return true;
+	}
+	
+	/**
+	 * 压缩图片，优先使用java原生压缩，如果不能处理，则调用ImageMagick来压缩
+	 * 
+	 * @param srcFile
+	 *            源图片
+	 * @param destFile
+	 *            压缩后的图片
+	 * @param width
+	 *            压缩宽
+	 * @param height
+	 *            压缩长
+	 * @param quality
+	 *            压缩清晰度 <b>建议为0.85</b>
+	 * @return
+	 */
+	private static boolean compressImage(File srcFile, File destFile,
+			int width, int height, float quality) throws IOException {
+		//如果目标文件和源文件是同一个，则将源文件复制一份成临时文件，避免同时对一个文件又读又写操作
+		boolean needTemp = false;
+		String sourceFilePath = srcFile.getCanonicalPath();
+		if(sourceFilePath.equals(destFile.getCanonicalPath())){
+			File tempFile = new File(substringBeforLast(sourceFilePath, ".") + "_temp." + substringAfterLast(sourceFilePath, "."));
+			FileUtil.copyFile(srcFile, tempFile);
+			srcFile = tempFile;
+			needTemp = true;
+		}
+		
+		FileOutputStream out = null;
+		try {
+			/** 读取文件进行图片处理 */
+			BufferedImage srcImage = ImageIO.read(srcFile);
+			int new_w = 0, new_h = 0;
+			//获取图片的实际大小 高度
+			int h = srcImage.getHeight();
+			//获取图片的实际大小 宽度
+			int w = srcImage.getWidth();
+			// 为等比缩放计算输出的图片宽度及高度
+			double rate = 0;//算出图片比例值
+			boolean changeSmall = (((double)w)>(double)width)||(((double)h)>(double)height);//判断图片是压大还是压小
+			//只有是变小，才切割
+			if(changeSmall){
+				//当宽度大于高度, 且是变小
+				//或 当宽度小于高度, 且是变大
+				if (w > h ) {
+					rate = ((double) w) / (double) width;
+				}else{
+					rate = ((double) h) / (double) height;
+				}
+	            
+				//构造新的比例的图片高度与宽度值
+				new_w = (int) (((double) w) / rate);
+				new_h = (int) (((double) h) / rate);
+				/** 宽,高设定 */
+				BufferedImage tag = new BufferedImage(new_w, new_h,
+						srcImage.getType());
+				tag.getGraphics().drawImage(srcImage, 0, 0, new_w, new_h, null);
+
+				/** 压缩之后存放位置 */
+				out = new FileOutputStream(destFile);
+				JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+				JPEGEncodeParam jep = JPEGCodec.getDefaultJPEGEncodeParam(tag);
+				/** 压缩质量 */
+				jep.setQuality(quality, true);
+				encoder.encode(tag, jep);
+				srcImage.flush();
+			}else{
+				//否则直接复制
+				copyFile(srcFile, destFile);
+			}
+		}catch(Exception e){
+			//处理异常则通过ImageMagick剪切
+			compressImage(srcFile, destFile, width, height);
+		}finally {
+			close(out);
+			if(needTemp)
+				deleteFile(srcFile);
+		}
+		return true;
+	}
+
+	/**
+	 * 根据文件路径进行文件下载
+	 * @param filePath 文件原始路径
+	 */
+	public static byte[] downloadFile(String filePath) throws IOException {
+		return getBytes(filePath);
+	}
+
+	/**
+	 * 根据文件路径进行文件下载
+	 * @param file 
+	 */
+	public static byte[] downloadFile(File file) throws IOException {
+		return getBytes(file);
+	}
+
+	/**
+	 * 根据文件路径返回该文件的一个byte[]。
+	 * 
+	 * @param fullFilePath
+	 * @return
+	 */
+	public static byte[] getBytes(String fullFilePath) throws IOException {
+		return getBytes(new File(fullFilePath));
+	}
+
+	/**
+	 * 将文件转换成byte[]返回
+	 * 
+	 * @param file
+	 * @return byte[]
+	 */
+	public static byte[] getBytes(File file) throws IOException {
+
+		long size = file.length();
+		if (size > Integer.MAX_VALUE) {
+			throw new IllegalArgumentException("该文件过大：" + file.getName() + "--"
+					+ size);
+		}
+		InputStream in = new FileInputStream(file);
+		byte[] buffer = new byte[(int) size];
+		int offset = 0;
+		int readed;
+		while (offset < size
+				&& (readed = in.read(buffer, offset, (int) size)) != -1) {
+			offset += readed;
+		}
+
+		if (offset != size) {
+			throw new IOException("无法正常读取文件！ 读取大小为: " + offset + ", 源文件大小为: "
+					+ size);
+		}
+
+		return buffer;
+	}
+
+	/**
+	 * 上传文件到目标文件夹
+	 * @param sourceFile
+	 * @param destDir
+	 * @throws IOException
+	 */
+	public static void uploadFileToDir(File sourceFile, File destDir)
+			throws IOException {
+		copyFileToDir(sourceFile, destDir);
+	}
+
+	/**
+	 * 上传文件到目标文件
+	 * @param sourceFile
+	 * @param destFile
+	 * @throws IOException
+	 */
+	public static void uploadFile(File sourceFile, File destFile)
+			throws IOException {
+		copyFile(sourceFile, destFile);
+	}
+
+	/**
+	 * 文件夹不存在则新建
+	 * @param dirPath 如"D:/Books"
+	 */
+	public static boolean mkdirs(String dirPath) throws FileNotFoundException {
+		if (isEmpty(dirPath)) {
+			throw new FileNotFoundException("指定文件夹" + dirPath + "为空，无法创建");
+		}
+		File file = new File(dirPath);
+		return mkdirs(file);
+
+	}
+
+	/**
+	 * 文件夹不存在则新建
+	 * @param directory 如"D:/Books"
+	 */
+	public static boolean mkdirs(File directory) {
+		if (!directory.exists()) {
+			return directory.mkdirs();
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * 获取sourceDir目录下所有后缀为suffix的文件（文件夹忽略，不返回），如果suffix为""或null，则返回全部文件条目
+	 * @param sourceDir
+	 * @param suffix
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<File> getFilesFromDir(File sourceDir, String suffix)
+			throws IOException {
+		//如果不是文件夹，则返回null
+		if (!sourceDir.isDirectory()) {
+			return null;
+		}
+		//如果fileName为""或null，则返回全部文件条目
+		boolean isAll = true;
+		if (!isEmpty(suffix)) {
+			isAll = false;
+		}
+		//如果文件夹下没有文件则返回空列表
+		File[] fileArray = sourceDir.listFiles();
+		if (fileArray == null || fileArray.length < 1) {
+			return new ArrayList<File>();
+		}
+
+		List<File> fileList = new ArrayList<File>();
+		//文件或文件夹的全路径名
+		for (int i = 0; i < fileArray.length; i++) {
+			File tempFile = fileArray[i];
+			//如果是文件
+			if (tempFile.isFile()) {
+				//如果要获取全部，或者后缀名匹配，则添加到列表
+				if (isAll || tempFile.getCanonicalPath().endsWith(suffix)) {
+					fileList.add(tempFile);
+				}
+			} else {
+				fileList.addAll(getFilesFromDir(tempFile, suffix));
+			}
+		}
+		return fileList;
+	}
+
+	/**
+	 * 获取targetDir目录下所有后缀为suffix的文件条目，如果suffix为""或null，则返回全部文件条目
+	 * @param targetDir
+	 * @return
+	 */
+	public static List<String> getFilesFromDir(String targetDir, String suffix)
+			throws IOException {
+		if (isEmpty(targetDir)) {
+			return null;
+		}
+
+		List<File> fileList = getFilesFromDir(new File(targetDir), suffix);
+		if (fileList == null || fileList.size() < 1) {
+			return null;
+		}
+
+		List<String> listFileName = new ArrayList<String>();
+		for (int i = 0; i < fileList.size(); i++) {
+			listFileName.add(fileList.get(i).getCanonicalPath());
+		}
+		return listFileName;
+
+	}
+
+	/**
+	 * 将指定的文件解压到当前目录下的temp文件夹中
+	 * @param zipFileName
+	 */
+	public static String uncompressFileToTemp(String zipFileName, String bookId)
+			throws IOException {
+		uncompressFileToDir(zipFileName, DrmPackageImpl.getFileUrl(zipFileName)
+				+ FILE_SEPARATOR + bookId);
+		//return substringBeforLast(zipFileName, FILE_SEPARATOR)+TEMP_DIR;
+		//解压文件路径改为YYYYMMDD/bookid/
+		return substringBeforLast(zipFileName, FILE_SEPARATOR) + FILE_SEPARATOR
+				+ bookId;
+	}
+
+	/**
+	 * 将指定路径的文件或文件夹在压缩为名为指定destCanonicalPath的压缩文件，
+	 * @param sourceCanonicalPath 要压缩的文件路径
+	 * @param destCanonicalPath 压缩后的文件全路径
+	 */
+	public static void compressFile(String sourceCanonicalPath,
+			String destCanonicalPath) throws IOException {
+		compressFile(new File(sourceCanonicalPath), destCanonicalPath);
+	}
+
+	/**
+	 * 将指定路径的文件或文件夹在压缩为名为指定destCanonicalPath的压缩文件，
+	 * @param sourceDir 要压缩的文件
+	 * @param destCanonicalPath 压缩后的文件全路径
+	 */
+	public static void compressFile(File sourceDir, String destCanonicalPath)
+			throws IOException {
+		if (!sourceDir.exists()) {
+			throw new FileNotFoundException("要压缩的文件不存在！");
+		}
+
+		InputStream in = null;
+		ZipOutputStream zipOut = null;
+		File tempFile = null;
+		try {
+			if (!sourceDir.isDirectory()) {
+				zipOut = new ZipOutputStream(new FileOutputStream(
+						destCanonicalPath));
+				zipOut.putNextEntry(new ZipEntry(sourceDir.getName()));
+				in = new FileInputStream(sourceDir);
+				copy(in, zipOut);
+			} else {
+				List<File> fileList = getFilesFromDir(sourceDir, null);
+				zipOut = new ZipOutputStream(new FileOutputStream(
+						destCanonicalPath));
+				String sourcePath = sourceDir.getCanonicalPath();
+				for (int i = 0; i < fileList.size(); i++) {
+					tempFile = fileList.get(i);
+					String entryName = tempFile.getCanonicalPath().replace(
+							sourcePath + File.separatorChar, "");
+					zipOut.putNextEntry(new ZipEntry(entryName));
+					in = new FileInputStream(tempFile);
+					copy(in, zipOut);
+					close(in);
+				}
+				close(zipOut);
+			}
+		} finally {
+			close(in);
+			close(zipOut);
+		}
+	}
+
+	/*public static void compressFile(String filePath, String fullEpubName) throws Exception{
+		if(isEmpty(filePath)){
+			//need logger
+			return ;
+		}
+		//格式化目录的结构，如为"f:/d/"则改为"f:/d"
+		if(filePath.endsWith(FILE_SEPARATOR)){
+			filePath = substringBeforLast(filePath, FILE_SEPARATOR);
+		}
+		//如果fullEpubName为""或null，则压缩为filePath,后缀名改为.zip
+		if(isEmpty(fullEpubName.trim())){
+			fullEpubName = substringBeforLast(filePath, ".") 
+					+ ZIP_SUFFIX;
+		}
+		
+		//zip压缩操作
+		FileInputStream in = null;
+		ZipOutputStream zipOut = null;
+		try{
+			//mkdirs(FileUtil.substringBeforLast(fullEpubName, File.separator));
+			
+			zipOut = new ZipOutputStream(new FileOutputStream(fullEpubName));
+			zipOut.setEncoding(ENCODING);
+			File file = new File(filePath);
+			//如果是个文件，则直接压缩
+			if(file.isFile()){
+				String zipEntryName = substringAfterLast(filePath, FILE_SEPARATOR);
+				zipOut.putNextEntry(new ZipEntry(zipEntryName));
+				in = new FileInputStream(filePath);
+				copy(in,zipOut);
+			}else if(file.isDirectory()){
+				List<String> zipEntryList = getFilesFromDir(filePath,"");
+				for(int i=0;i<zipEntryList.size();i++){
+					zipOut.putNextEntry(
+							new ZipEntry(substringAfterLast(zipEntryList.get(i), filePath + FILE_SEPARATOR)));
+					in = new FileInputStream(zipEntryList.get(i));
+					copy(in,zipOut);
+				}
+			}
+		}catch(IOException e){
+			//logger
+		}finally{
+			close(in);
+			//次处关闭输出流，一定要先关闭压缩文件的
+			close(zipOut);
+		}
+	}*/
+
+	/**
+	 * 解压zipFile到指定文件夹destDir
+	 * @param sourceZipFile
+	 * @param destDir
+	 * @throws IOException
+	 */
+	public static void uncompressFileToDir(ZipFile sourceZipFile, File destDir)
+			throws IOException {
+		InputStream in = null;
+		OutputStream out = null;
+		ZipEntry zipEntry = null;
+		File destFile = null;
+		try {
+			Enumeration enumeration = sourceZipFile.entries();
+			while (enumeration.hasMoreElements()) {
+				zipEntry = (ZipEntry) enumeration.nextElement();
+				if (zipEntry.isDirectory()) {
+					continue;
+				}
+				in = sourceZipFile.getInputStream(zipEntry);
+				destFile = new File(destDir, zipEntry.getName());
+				mkdirs(destFile.getParentFile());
+				out = new FileOutputStream(destFile);
+				copy(in, out);
+				close(in);
+				close(out);
+			}
+		} finally {
+			close(in);
+			close(out);
+		}
+	}
+
+	/**
+	 * 将指定的文件解压到指定目录的下
+	 * @param zipFileName
+	 * @param targetFilePath 为""或null则解压到当前目录的temp文件夹中
+	 */
+	public static void uncompressFileToDir(String zipFileName,
+			String targetFilePath) throws IOException {
+
+		if (isEmpty(zipFileName)) {
+			throw new FileNotFoundException("指定的文件" + zipFileName + "为空！");
+		}
+		if (isEmpty(targetFilePath)) {
+			targetFilePath = substringBeforLast(zipFileName, FILE_SEPARATOR)
+					+ TEMP_DIR + FILE_SEPARATOR;
+		}
+		File file = new File(targetFilePath);
+		if (!file.isDirectory()) {
+			file.mkdirs();
+		}
+		ZipFile zipFile = new ZipFile(zipFileName);
+		uncompressFileToDir(zipFile, file);
+		close(zipFile);
+	}
+
+	/**
+	 * 从一个输入流复制内容到一个输出流，不附带关闭流操作
+	 * @param in
+	 * @param out
+	 * @throws IOException
+	 */
+	public static void copy(InputStream in, OutputStream out)
+			throws IOException {
+		byte[] buffer = new byte[BUFFER_SIZE];
+		int count = 0;
+		while ((count = in.read(buffer)) != -1) {
+			out.write(buffer, 0, count);
+		}
+		out.flush();
+	}
+
+	/**
+	 * 将一个指定文件复制到另外一个文件，目标文件的父目录不存在，则抛异常
+	 * @param sourceFilePath
+	 * @param destFilePath
+	 * @throws IOException if the copying fails.
+	 */
+	public static void copyFile(String sourceFilePath, String destFilePath)
+			throws IOException {
+		copyFile(new File(sourceFilePath), new File(destFilePath));
+	}
+
+	/**
+	 * 将一个指定文件复制到另外一个文件，目标文件的父目录不存在，则抛异常
+	 * @param sourceFile
+	 * @param destFile
+	 * @throws IOException if the copying fails.
+	 */
+	public static void copyFile(File sourceFile, File destFile)
+			throws IOException {
+		copyFile(sourceFile, destFile, false);
+	}
+
+	/**
+	 * 将一个指定文件复制到另外一个文件,可以指定如果目标文件的父目录不存在，是否直接新建
+	 * @param sourceFilePath
+	 * @param destFilePath
+	 * @param autoMkdirs
+	 * @throws IOException if the copying fails.
+	 */
+	public static void copyFile(String sourceFilePath, String destFilePath,
+			boolean autoMkdirs) throws IOException {
+		copyFile(new File(sourceFilePath), new File(destFilePath), autoMkdirs);
+	}
+
+	/**
+	 * 将一个指定文件复制到另外一个文件,可以指定如果目标文件的父目录不存在，是否直接新建
+	 * @param sourceFile
+	 * @param destFile
+	 * @param autoMkdirs 
+	 * @throws IOException if the copying fails.
+	 */
+	public static void copyFile(File sourceFile, File destFile,
+			boolean autoMkdirs) throws IOException {
+		//如果源文件和目标文件是同一个，则直接返回
+		/*if(sourceFile.getCanonicalPath().equals(destFile.getCanonicalPath())){
+			return ;
+		}*/
+		
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		try {
+			if (autoMkdirs) {
+				mkdirs(destFile.getParent());
+			}
+			out = new FileOutputStream(destFile);
+			in = new FileInputStream(sourceFile);
+			copy(in, out);
+		} finally {
+			close(in);
+			close(out);
+		}
+	}
+
+	/**
+	 * 将文件copy到指定目录
+	 * @param sourceFilePath
+	 * @param destDirPath
+	 */
+	public static void copyFileToDir(String sourceFilePath, String destDirPath)
+			throws IOException {
+		copyFileToDir(new File(sourceFilePath), new File(destDirPath));
+	}
+
+	/**
+	 * 将一个指定文件复制到一个文件夹中
+	 * @param sourceFile
+	 * @param destDir
+	 * @throws IOException if the copying fails.
+	 */
+	public static void copyFileToDir(File sourceFile, File destDir)
+			throws IOException {
+		if (destDir == null) {
+			throw new NullPointerException("目标文件夹不能为空");
+		}
+		if (!destDir.exists() || !destDir.isDirectory()) {
+			throw new IllegalArgumentException(destDir + "不是一个文件夹");
+		}
+		File destFile = new File(destDir, sourceFile.getName());
+		copyFile(sourceFile, destFile);
+	}
+
+	/**
+	 * 复制文件夹到另外一个文件夹
+	 * @param sourceDir
+	 * @param destDir
+	 * @throws IOException
+	 */
+	public static void copyDirectory(File sourceDir, File destDir)
+			throws IOException {
+		if (sourceDir == null || !sourceDir.exists()) {
+			throw new IOException("源文件夹为空或不存在！");
+		}
+		if (destDir == null || !destDir.exists()) {
+			throw new IOException("目标文件夹为空或不存在！");
+		}
+		if (!sourceDir.isDirectory()) {
+			throw new IOException(sourceDir + "源文件夹不是一个文件夹！");
+		}
+		if (sourceDir.getCanonicalPath().equals(destDir.getCanonicalPath())) {
+			throw new IOException("源文件夹和目标文件夹是同一个文件夹！");
+		}
+
+		File[] sourceFiles = sourceDir.listFiles();
+		if (sourceFiles != null && sourceFiles.length > 0) {
+			for (File sourceFile : sourceFiles) {
+				File copiedFile = new File(destDir, sourceFile.getName());
+				if (sourceFile.isDirectory()) {
+					copyDirectory(sourceFile, new File(destDir, sourceFile
+							.getName()));
+				} else {
+					copyFile(sourceFile, copiedFile, true);
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * 重命名文件
+	 * @param scrFile 源文件
+	 * @param destFile 改为的文件
+	 */
+	public static boolean rename(File scrFile, File destFile) {
+		return scrFile.renameTo(destFile);
+	}
+	
+	/**
+	 * 重命名文件
+	 * @param scrFilePath
+	 * @param destFilePath
+	 */
+	public static boolean rename(String scrFilePath, String destFilePath) {
+		return new File(scrFilePath).renameTo(new File(destFilePath));
+	}
+
+	/**
+	 * 判断指定文件的类型
+	 * @param filePath
+	 */
+	public static void checkFileType(String filePath) {
+
+	}
+
+	/**
+	 * 关闭ZipFile,忽略关闭时的异常,用于finally块
+	 * @param device
+	 */
+	public static void close(ZipFile device) {
+		if (null != device) {
+			try {
+				device.close();
+			} catch (IOException e) {
+				//logger
+			}
+		}
+	}
+
+	/**
+	 * flush之后关闭Writer,忽略关闭时的异常,用于finally块
+	 * @param device
+	 */
+	public static void close(Writer device) {
+		if (null != device) {
+			try {
+				device.flush();
+				device.close();
+			} catch (IOException e) {
+				//logger
+			}
+		}
+	}
+
+	/**
+	 * 关闭Reader,忽略关闭时的异常,用于finally块
+	 * @param device
+	 */
+	public static void close(Reader device) {
+		if (null != device) {
+			try {
+				device.close();
+			} catch (IOException e) {
+				//logger
+			}
+		}
+	}
+
+	/**
+	 * flush，然后关闭OutputStream,忽略关闭时的异常,用于finally块
+	 * @param device
+	 */
+	public static void close(OutputStream device) {
+		if (null != device) {
+			try {
+				device.flush();
+				device.close();
+			} catch (IOException e) {
+				//logger
+			}
+		}
+	}
+
+	/**
+	 * 关闭InputStream,忽略关闭时的异常,用于finally块
+	 * @param device
+	 */
+	public static void close(InputStream device) {
+		if (null != device) {
+			try {
+				device.close();
+			} catch (IOException e) {
+				//logger
+			}
+		}
+	}
+
+	/**
+	 * 删除一个非空文件，如果要删除的文件为空，则不做操作
+	 * @param file
+	 */
+	public static void deleteFile(File file) {
+		if (file != null && file.exists()) {
+			file.delete();
+		}
+	}
+
+	/**
+	 * 返回str的子串，起始位置为separator最后一次出现之后
+	 * @param str
+	 * @param separator
+	 * @return
+	 */
+	public static String substringAfterLast(String str, String separator) {
+		if (isEmpty(str)) {
+			return str;
+		}
+		if (isEmpty(separator)) {
+			return EMPTY;
+		}
+		int pos = str.lastIndexOf(separator);
+
+		if ((pos == INDEX_NOT_FOUND)
+				|| (pos == str.length() - separator.length())) {
+			return EMPTY;
+		}
+
+		return str.substring(pos + separator.length());
+	}
+
+	/**
+	 * 返回str的子串，结束位置为separator最后一次出现之前
+	 * @param str
+	 * @param separator
+	 * @return
+	 */
+	public static String substringBeforLast(String str, String separator) {
+		if (isEmpty(str)) {
+			return str;
+		}
+		if (isEmpty(separator)) {
+			return EMPTY;
+		}
+		int pos = str.lastIndexOf(separator);
+
+		if ((pos == INDEX_NOT_FOUND)
+				|| (pos == str.length() - separator.length())) {
+			return EMPTY;
+		}
+
+		return str.substring(0, pos);
+	}
+
+	/**
+	 * 将指定文件路径根据系统信息格式化
+	 * @param filePath
+	 * @return
+	 */
+	public static String getCanonicalPath(String filePath) {
+		return filePath.replace('/', File.separatorChar).replace('/',
+				File.separatorChar);
+	}
+
+	/**
+	 * 检查一个字符串是否为null或空串""
+	 * @param str
+	 * @return
+	 */
+	public static boolean isEmpty(String str) {
+		return str == null || str.length() == 0;
+	}
+
+	/**
+	 * 移动指定路径的文件到指定目录，类似于剪切（存根）
+	 * @param filePath 文件原始路径
+	 * @param targetDir 要移动到的目标目录
+	 */
+	private static void moveFileToDir(String filePath, String targetDir) {
+
+	}
+
+	/**
+	 * 批量将指定路径的文件上传到服务器指定目录（存根）
+	 * @param filePath
+	 * @param targetDir
+	 */
+	private static void batchUploadFile(String filePath, String targetDir) {
+
+	}
+
+	public static void main(String args[]) throws Exception {
+		String targetDir = "C:\\Users\\Administrator\\Desktop\\epub\\9787543862876_1320572889323_src";
+		String targetFile = "D:/Books/-1/Epub/20120327/1332829210565/1.txt";
+		String targetFile1 = "D:/Books/-1/Epub/20120327/1332829210565/1/1.txt";
+		String fullEpubName = "C:\\Users\\Administrator\\Desktop\\epub\\9787543862876_1320572889323_src\\1.zip";
+
+		String scrFilePath = "D:/Books/-1/Epub/20120327/1332829210565/temp/1.epub";
+		String destDir = "D:/Books/-1/Epub/20120327/1332829210565/temp/1.epub";
+
+		String sourceDirPath = "D:/Books/-1/Epub/20120327/1332829210565";
+		String destDirPath = "D:/Books/-2/Epub/20120327/1332829210565";
+
+		String srcDir = "E:/bookcover/bookcover/201205";
+		
+		String srcFile = "C:/Users/Administrator/Desktop/1.jpg";
+		String srcFile0 = "C:/Users/Administrator/Desktop/1001394_1340585908906.jpg";
+		
+		String srcFile1 = "C:/Users/Administrator/Desktop/1000349_1336802722941.jpg";
+		String destFile = "C:/Users/Administrator/Desktop/1001100_1336805517193_dest.jpg";
+		String destFile1 = "C:/Users/Administrator/Desktop/1000349_1336802722941_dest.jpg";
+		String dest1File = "D:/sns_index_life_pic04.jpg";
+		String src3File =  "C:/Users/Administrator/Desktop/62ae8128-c860-460e-9e76-66e1eddb92c0.jpg";
+		String dest3File =  "C:/Users/Administrator/Desktop/62ae8128-c860-460e-9e76-66e1eddb92c0_dest.jpg";
+		String dest2File = "D:/sns_index_life_pic04_dest.jpg";
+		
+		File dFile = new File(srcFile);
+		File dFile0 = new File(srcFile0);
+		
+		//System.out.println(dFile.renameTo(dFile0));
+		
+		//FileUtil.compressRecoverImage(src3File, dest3File);
+		//FileUtil.compressImage(src3File, dest3File, 120, 160, 0.85f);
+		
+		/*InputStream in = new FileInputStream(srcFile);
+		  BufferedImage src = JPEGCodec.createJPEGDecoder(in).decodeAsBufferedImage();
+		     int height = src.getHeight();
+		     int width  = src.getWidth(); 
+		     int[] rgb = new int [4];
+		     //去的(660,0)的像素值
+		     int pixel = 0;
+		     
+		     for(int i =0;i<width;i++){
+		    	 for(int j =0;j<height;j++){
+		    		 //int p = src.getRGB(i, j);
+		    		 pixel = src.getRGB(i, j);
+		    	     rgb[0] = (pixel & 0xff000000)>>24;//屏蔽低位，并移位到最低位
+		    	     rgb[1] = (pixel & 0xff0000) >> 16;
+		    	     rgb[2] = (pixel & 0xff00) >> 8;
+		    	     rgb[3] = (pixel & 0xff);
+		    	     //给像素进行赋值(rgb[1]/2)<<15
+		    		src.setRGB(i, j,((rgb[0]<<24)|((rgb[1]/2)<<15)|(rgb[2]<<8)|(rgb[3])));
+		    	 }
+		    	 System.out.println();
+		     }
+
+		     ImageIO.write(src, "JPEG", new File(destFile));// 输出到文件流
+		
+		     FileUtil.close(in);*/
+		//FileUtil.compressRecoverImage(srcFile1, destFile1);
+		
+		/*System.out.println("Type:——————————————");
+		System.out.println("BufferedImage.TYPE_INT_RGB:"+BufferedImage.TYPE_INT_RGB);
+		System.out.println("BufferedImage.TYPE_INT_ARGB:"+BufferedImage.TYPE_INT_ARGB);
+		System.out.println("Type:——————————————");*/
+		
+		
+		
+		//FileUtil.rename(srcFile, "D:/test_src.jpg");
+		//Thread.sleep(3000);
+		//FileUtil.rename("D:/test_src.jpg", srcFile);
+		//System.out.println(General.timeLong2Str(1337087377273l, "yyyy-MM-dd hh:mm:dd"));
+		//System.out.println(System.currentTimeMillis());
+		
+		
+		//FileUtil.uncompressFileToDir(new ZipFile(fullEpubName), new File(targetDir));
+		//FileUtil.uncompressFile(fullEpubName, targetDir);
+		//FileUtil.compressFile(targetDir, fullEpubName);
+		//FileUtil.zipFile(targetFile, fullEpubName);
+		//		File fromFile = new File(fullEpubName);
+		//		File toFile = new File(toFilePath);
+		//		File dir = new File(targetDir);
+		/*FileUtil.copyFile(fromFile, toFile);
+		FileUtil.mkdirs(targetDir);*/
+
+		/*	File sourceDir = new File(sourceDirPath);
+			File destDir = new File(destDirPath);
+			//FileUtil.copyFile(sourceDir, destDir);
+			FileUtil.copyDirectory(sourceDir, destDir);*/
+		
+
+		/*List<File> fileList = FileUtil.getFilesFromDir(new File(srcDir), null);
+		
+		System.out.println(fileList.size());
+		int i = 0;
+		int height = 0;
+		int weight = 0;
+		for(File scrFile:fileList){
+			height = FileUtil.getImageHeight(fileName);
+			weight = FileUtil.getImageWeight(fileName);
+			if(height != -1 && weight != -1){
+				System.out.println(fileName + " height:" + height + " weight:"  + weight);
+				i++;
+			}
+			FileUtil.compressRecoverImage(scrFile.getCanonicalPath(), scrFile.getParentFile() +"/dest/" +scrFile.getName());
+			i++;
+		}
+		System.out.println(i);*/
+		/*try{
+		System.out.println(FileUtil.getImageHeight("E:/bookcover/bookcover/1.png"));
+		}catch(IOException e){
+			e.printStackTrace();
+		}*/
+		//FileUtil.compressRecoverImageForPad("E:/bookcover/bookcover/Cover.jpg", "E:/bookcover/bookcover/Cover_1.jpg");
+		//FileUtil.compressImage("C:/Users/Administrator/Desktop/111.jpg", "C:/Users/Administrator/Desktop/111_dest.jpg", 500, 1000);
+		//System.out.println((double)5/4);
+		//copyFile("C:/Users/Administrator/Desktop/111.jpg", "C:/Users/Administrator/Desktop/111.jpg");
+		BufferedImage srcImage = ImageIO.read(new File("C:/Users/Administrator/Desktop/111.jpg"));
+		int new_w = 0, new_h = 0;
+		//获取图片的实际大小 高度
+		int h = srcImage.getHeight();
+		
+		
+	}
+
+}

@@ -1,0 +1,29 @@
+package cn.com.twsm.common.dto;
+
+/**
+ * 书籍标签表DTO
+ * @author zhangmeng
+ * @date 2012-04-28
+ * @version 1.0.0.1
+ */
+public class BookLabelDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+	
+	private Integer bookId;							//书籍ID 外键 必填
+	private Integer labelId;						//标签ID 外键 必填
+	public Integer getBookId() {
+		return bookId;
+	}
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+	public Integer getLabelId() {
+		return labelId;
+	}
+	public void setLabelId(Integer labelId) {
+		this.labelId = labelId;
+	}
+
+	
+			
+}

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="CpBook">
+	<resultMap class="cn.com.twsm.common.dto.CpBookDTO" id="cpBook">
+		<result column="ID" property="id" jdbcType="INTEGER"/>
+		<result column="CP_BOOK_ID" property="cpBookId" jdbcType="VARCHAR"/>
+		<result column="CP_USER_ID" property="cpUserId" jdbcType="NUMBER"/>
+		<result column="CP_CATALOG_ID" property="cpCatalogId" jdbcType="VARCHAR"/>
+		<result column="SUGGEST" property="suggest" jdbcType="VARCHAR"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="READ" property="read" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="DECIMAL"/>
+		<result column="ADMIN_ID" property="adminId" jdbcType="INTEGER"/>
+		<result column="ADMIN_TIME" property="adminTime" jdbcType="DECIMAL"/>
+		<result column="XML_CONTENT" property="xmlContent" jdbcType="VARCHAR"/>
+		<result column="ON_DOWN_STACK" property="onDownStack" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="cpBookId">
+				CP_BOOK_ID=#cpBookId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cpUserId">
+				CP_USER_ID=#cpUserId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cpCatalogId">
+				CP_CATALOG_ID=#cpCatalogId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="suggest">
+				SUGGEST=#suggest#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="status">
+				STATUS=#status#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="read">
+				READ=#read#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="addTime">
+				ADD_TIME=#addTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="adminId">
+				ADMIN_ID=#adminId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="adminTime">
+				ADMIN_TIME=#adminTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="startDate">				
+				ADD_TIME &gt; #startDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="endDate">				
+				ADD_TIME &lt;= #endDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="onDownStack">
+				ON_DOWN_STACK=#onDownStack#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   CP_BOOK
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	<select id="getByWhere" resultClass="int" parameterClass="map">
+		SELECT
+			ID
+		FROM 
+			CP_BOOK
+		WHERE
+			1=1
+		<include refid="whereCondition"/> 
+	</select>
+	<select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      ID 
+	   FROM 
+		  (SELECT 
+		     T.ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         ID 
+              FROM 
+                 CP_BOOK
+              WHERE 
+                 1=1 <include refid="whereCondition"/>
+              ORDER BY ADD_TIME DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	<select id="getById" resultMap="cpBook" parameterClass="int">
+		SELECT 
+			ID,
+			CP_BOOK_ID,
+			CP_USER_ID,
+			CP_CATALOG_ID,
+			SUGGEST,
+			STATUS,
+			READ,
+			ADD_TIME,
+			ADMIN_ID,
+			ADMIN_TIME,
+			XML_CONTENT,
+			ON_DOWN_STACK
+		FROM CP_BOOK
+		WHERE 
+			ID = #id#
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.CpBookDTO">
+		UPDATE CP_BOOK SET
+			CP_BOOK_ID = #cpBookId#,
+			CP_USER_ID = #cpUserId#,
+			CP_CATALOG_ID = #cpCatalogId#,
+			SUGGEST = #suggest#,
+			STATUS = #status#,
+			READ = #read#,
+			ADD_TIME = #addTime#,
+			ADMIN_ID = #adminId#,
+			ADMIN_TIME = #adminTime#,
+			XML_CONTENT = #xmlContent#,
+			ON_DOWN_STACK =#onDownStack#
+		WHERE 
+			ID = #id#
+	</update>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.CpBookDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_CP_BOOK.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO CP_BOOK(ID,CP_BOOK_ID,CP_USER_ID,CP_CATALOG_ID,SUGGEST,STATUS,READ,ADD_TIME,ADMIN_ID,ADMIN_TIME,ON_DOWN_STACK,XML_CONTENT)
+		VALUES(#id#,#cpBookId#,#cpUserId#,#cpCatalogId#,#suggest#,#status#,#read#,#addTime#,#adminId#,#adminTime#,#onDownStack#,xmltype(#xmlContent#))
+	</insert>
+</sqlMap>

@@ -1,0 +1,64 @@
+package cn.com.twsm.common.dto;
+
+/**
+ * 用户博客评论DTO
+ * @author ZhangChengpeng
+ * @date 2012-04-12
+ *
+ */
+public class UserBlogDiscussDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+	private Integer blogId; 		// 博客ID:外键 必填
+	private Integer userId; 		// 评论用户ID:外键 必填
+	private String content; 		// 评论内容:必填
+	private Long addTime; 			// 发布时间:必填
+	private String isRead = "0"; 	// 管理员是否已读:0:否 1:是 默认为0 必填
+	private Integer refUserId; // 引用用户ID:外键
+	public Integer getRefUserId() {
+		return refUserId;
+	}
+
+	public void setRefUserId(Integer refUserId) {
+		this.refUserId = refUserId;
+	}
+
+	public Integer getBlogId() {
+		return blogId;
+	}
+
+	public void setBlogId(Integer blogId) {
+		this.blogId = blogId;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Long getAddTime() {
+		return addTime;
+	}
+
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+
+	public String getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(String isRead) {
+		this.isRead = isRead;
+	}
+}

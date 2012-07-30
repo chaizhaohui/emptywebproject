@@ -1,0 +1,434 @@
+package common.interceptor;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
+
+
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.opensymphony.xwork2.interceptor.NoParameters;
+import com.opensymphony.xwork2.interceptor.ParameterNameAware;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.OgnlContextState;
+import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.ValueStack;
+
+import common.utils.General;
+import common.utils.MessageUtil;
+import common.utils.ParamType;
+import common.utils.TerminalCodes;
+import common.utils.XMLUtils;
+import common.utils.ParamType.PARAM_TYPE;
+
+public class ParametersInterceptor extends AbstractInterceptor {
+	private static final Log log = LogFactory.getLog(ParametersInterceptor.class);
+	private static final long serialVersionUID = 1L;
+	
+	boolean ordered = false;
+    Set<Pattern> excludeParams = Collections.EMPTY_SET;
+    static boolean devMode = false;
+    
+    @Inject(value = "devMode", required = false)
+    public static void setDevMode(String mode) {
+        devMode = "true".equals(mode);
+    }
+    
+    /** Compares based on number of '.' characters (fewer is higher) */
+    static final Comparator rbCollator = new Comparator() {
+        public int compare(Object arg0, Object arg1) {
+            String s1 = (String) arg0;
+            String s2 = (String) arg1;
+            int l1=0, l2=0;
+            for( int i=s1.length()-1; i>=0; i--) {
+                if( s1.charAt(i) == '.') l1++;
+            }
+            for( int i=s2.length()-1; i>=0; i--) {
+                if( s2.charAt(i) == '.') l2++;
+            }
+            return l1 < l2 ? -1 : ( l2 < l1 ? 1 : s1.compareTo(s2));
+        };
+    };
+
+	@Override
+	public String intercept(ActionInvocation invocation) throws Exception {
+		Object action = invocation.getAction();
+		if(action instanceof NoParameters)
+			invocation.invoke();
+		
+		ActionContext actionContext = invocation.getInvocationContext();
+		final Map<?,?> parameters = actionContext.getParameters();
+		
+		HttpServletRequest request = (HttpServletRequest)actionContext.get("com.opensymphony.xwork2.dispatcher.HttpServletRequest");
+		if("application/xml".equalsIgnoreCase(request.getHeader("content-type"))){
+			if(request.getContentLength() > 0){
+				//参数使用xml文件流形式传送且传入了XML流 调用xml解析器进行参数填充
+				try{
+					setParametersByXML(action, actionContext.getValueStack(), parameters, request.getInputStream(), invocation);
+				} catch(Exception ex){
+					ex.printStackTrace();
+					log.error("ParametersInterceptor - [setParametersByXML]: inputStream to XML failed. cause by:" + ex.getMessage(), ex);
+					this.setErrorMsg(TerminalCodes.INVALID_PARAMETER, invocation);
+					return null;
+				}
+			}
+		}
+		
+		if (parameters != null) {
+        	Map<?,?> contextMap = actionContext.getContextMap();
+            try {
+            	OgnlContextState.setCreatingNullObjects(contextMap, true);
+            	OgnlContextState.setDenyMethodExecution(contextMap, true);
+            	OgnlContextState.setReportingConversionErrors(contextMap, true);
+
+                ValueStack stack = actionContext.getValueStack();
+                setParameters(action, stack, parameters);
+            } finally {
+            	OgnlContextState.setCreatingNullObjects(contextMap, false);
+            	OgnlContextState.setDenyMethodExecution(contextMap, false);
+            	OgnlContextState.setReportingConversionErrors(contextMap, false);
+            }
+        }
+		
+		return invocation.invoke();
+	}
+	
+	/**
+	 * 设置普通请求参数 忽略大小写
+	 * @param action
+	 * @param stack
+	 * @param parameters
+	 */
+	private void setParameters(Object action, ValueStack stack, final Map<?,?> parameters){
+		ParameterNameAware parameterNameAware = (action instanceof ParameterNameAware) ? (ParameterNameAware) action : null;
+		
+		Map params = null;
+        if( ordered ) {
+            params = new TreeMap(getOrderedComparator());
+            params.putAll(parameters);
+        } else {
+            params = new TreeMap(parameters); 
+        }
+
+        String name = "";
+        Field []fields = action.getClass().getDeclaredFields();
+        
+        for (Iterator iterator = params.entrySet().iterator(); iterator.hasNext();) {
+        	Map.Entry entry = (Map.Entry) iterator.next();
+            name = entry.getKey().toString();
+            
+            Field field = getFieldByName(fields, name);
+            if(field == null)
+            	continue;
+                
+            if(field.isAnnotationPresent(ParamType.class)){
+               	if(field.getAnnotation(ParamType.class).value().equals(PARAM_TYPE.OUT)){
+               		continue;
+               	}else{
+               		boolean acceptableName = acceptableName(name) && (parameterNameAware == null || parameterNameAware.acceptableParameterName(name));
+   		            if (acceptableName) {
+   		                Object value = entry.getValue();
+   		                try {
+   		                    stack.setValue(field.getName(), value);
+   		                } catch (RuntimeException e) {
+   		                    if (devMode) {
+   		                        String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{e.getMessage()});
+   		                        log.error(developerNotification);
+   		                        if (action instanceof ValidationAware) {
+   		                            ((ValidationAware) action).addActionMessage(developerNotification);
+  		                        }
+   		                    } else {
+   		                    	log.error("ParametersInterceptor - [setParameters]: Unexpected Exception caught setting '"+field.getName()+"' on '"+action.getClass()+": " + e.getMessage());
+   		                    }
+   		                }
+   		            }
+               	}
+            }else{
+               	boolean acceptableName = acceptableName(name) && (parameterNameAware == null || parameterNameAware.acceptableParameterName(name));
+	            if (acceptableName) {
+	                Object value = entry.getValue();
+	                try {
+	                    stack.setValue(field.getName(), value);
+	                } catch (RuntimeException e) {
+	                    if (devMode) {
+	                        String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{e.getMessage()});
+	                        log.error(developerNotification);
+	                        if (action instanceof ValidationAware) {
+	                            ((ValidationAware) action).addActionMessage(developerNotification);
+	                        }
+	                    } else {
+	                    	log.error("ParametersInterceptor - [setParameters]: Unexpected Exception caught setting '"+field.getName()+"' on '"+action.getClass()+": " + e.getMessage());
+	                    }
+	                }
+	            }
+            }
+        }
+	}
+	
+	/**
+	 * xml流作为参数请求 封装Action成员变量 忽略xml节点大小写
+	 * @param action
+	 * @param stack
+	 * @param parameters
+	 * @param inputStream
+	 */
+	private void setParametersByXML(Object action, ValueStack stack, final Map<?,?> parameters, InputStream inputStream, ActionInvocation invocation) throws Exception{
+		Document document = null;
+		SAXReader saxReader = new SAXReader();
+		saxReader.setEncoding("utf8");
+//		saxReader.setEncoding("gb2312");
+		
+		document = saxReader.read(inputStream);
+		String xmlString = document.asXML();
+		System.out.println(xmlString);
+		Field []fields = action.getClass().getDeclaredFields();
+		if(fields == null || fields.length < 1)
+			return ;
+		
+		Map<String,Field> paramFieldMap = new HashMap<String,Field>();
+		for(int i=0;i<fields.length;i++){
+			Field field = fields[i];
+			if("serialVersionUID".equals(field.getName()))
+				continue;
+			if("xmlString".equals(field.getName())){
+				stack.setValue("xmlString", xmlString);//向值战中加入xmlString
+				continue;
+			}
+			if(field.isAnnotationPresent(ParamType.class)){
+				if(field.getAnnotation(ParamType.class).value().equals(PARAM_TYPE.OUT))
+					continue;
+			}
+			paramFieldMap.put(field.getName().toLowerCase(), field);
+		}
+		
+		xmlLoad(paramFieldMap, document, stack);
+	}
+	
+	private static void xmlLoad(Map<String,Field> paramFieldMap, Document document, ValueStack valueStack){
+		Set<String> keySet = paramFieldMap.keySet();
+		for(Iterator<String> iterator = keySet.iterator();iterator.hasNext();){
+			String name = iterator.next();
+			Field field = paramFieldMap.get(name);
+			Object obj = XMLUtils.getContent(document.getRootElement(), name, field.getGenericType());
+			if(obj != null){
+				valueStack.setValue(field.getName(), obj);
+			}
+		}
+	}
+	
+	private static Field getFieldByName(Field []fields, String name){
+		if(fields == null || fields.length < 1)
+			return null;
+		
+		Field field = null;
+		for(int i=0;i<fields.length;i++){
+			field = fields[i];
+			if(field.getName().equalsIgnoreCase(name))
+				return field;
+		}
+		return null;
+	}
+	
+	/**
+     * Gets an instance of the comparator to use for the ordered sorting.  Override this
+     * method to customize the ordering of the parameters as they are set to the 
+     * action.
+     * 
+     * @return A comparator to sort the parameters
+     */
+    protected Comparator getOrderedComparator() {
+        return rbCollator;
+    }
+    
+    private String getParameterLogMap(Map parameters) {
+        if (parameters == null) {
+            return "NONE";
+        }
+
+        StringBuffer logEntry = new StringBuffer();
+        for (Iterator paramIter = parameters.entrySet().iterator(); paramIter.hasNext();) {
+            Map.Entry entry = (Map.Entry) paramIter.next();
+            logEntry.append(String.valueOf(entry.getKey()));
+            logEntry.append(" => ");
+            if (entry.getValue() instanceof Object[]) {
+                Object[] valueArray = (Object[]) entry.getValue();
+                logEntry.append("[ ");
+                for (int indexA = 0; indexA < (valueArray.length - 1); indexA++) {
+                    Object valueAtIndex = valueArray[indexA];
+                    logEntry.append(valueAtIndex);
+                    logEntry.append(String.valueOf(valueAtIndex));
+                    logEntry.append(", ");
+                }
+                logEntry.append(String.valueOf(valueArray[valueArray.length - 1]));
+                logEntry.append(" ] ");
+            } else {
+                logEntry.append(String.valueOf(entry.getValue()));
+            }
+        }
+
+        return logEntry.toString();
+    }
+    
+    protected boolean acceptableName(String name) {
+    	boolean foundMatch=false;  
+        foundMatch = name.contains("\\u0023");  
+        if(foundMatch){  
+            return false;  
+        }
+        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1
+                || name.indexOf(':') != -1 || isExcluded(name)) {
+            return false;
+        } else {
+            return true;
+        } 
+//        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1
+//                || name.indexOf(':') != -1 || isExcluded(name)) {
+//            return false;
+//        } else {
+//            return true;
+//        }
+    }
+    
+    protected boolean isExcluded(String paramName) {
+        if (!this.excludeParams.isEmpty()) {
+            for (Pattern pattern : excludeParams) {
+                Matcher matcher = pattern.matcher(paramName);
+                if (matcher.matches()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Whether to order the parameters or not
+     * 
+     * @return True to order
+     */
+    public boolean isOrdered() {
+        return ordered;
+    }
+    
+    /**
+     * Set whether to order the parameters by object depth or not
+     * 
+     * @param ordered True to order them
+     */
+    public void setOrdered(boolean ordered) {
+        this.ordered = ordered;
+    }
+    
+    /**
+     * Gets a set of regular expressions of parameters to remove
+     * from the parameter map
+     * 
+     * @return A set of compiled regular expression patterns
+     */
+    protected Set getExcludeParamsSet() {
+        return excludeParams;
+    }
+    
+    /**
+     * Sets a comma-delimited list of regular expressions to match 
+     * parameters that should be removed from the parameter map.
+     * 
+     * @param commaDelim A comma-delimited list of regular expressions
+     */
+    public void setExcludeParams(String commaDelim) {
+        Collection<String> excludePatterns = asCollection(commaDelim);
+        if (excludePatterns != null) {
+            excludeParams = new HashSet<Pattern>();
+            for (String pattern : excludePatterns) {
+                excludeParams.add(Pattern.compile(pattern));
+            }
+        }
+    }
+    
+    /**
+     * Return a collection from the comma delimited String.
+     *
+     * @param commaDelim
+     * @return A collection from the comma delimited String.
+     */
+    private Collection asCollection(String commaDelim) {
+        if (commaDelim == null || commaDelim.trim().length() == 0) {
+            return null;
+        }
+        return TextParseUtil.commaDelimitedStringToSet(commaDelim);
+    }
+    
+    private void setErrorMsg(int errorCode, ActionInvocation invocation) throws IOException{
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		
+		String result = General.convertNullToEmpty(request.getHeader(HeaderIF.RESULT_TYPE));
+		if(result.equalsIgnoreCase("json")){
+			StringBuffer jsonStr = new StringBuffer(32);
+			jsonStr.append("{").append("\"resultCode\":").append(errorCode).append(",\"resultMsg\":\"").append(MessageUtil.getProperty(errorCode)).append("\"}");
+			response.setHeader("Content-Type", "text/html");
+			PrintWriter printWriter = response.getWriter();
+			printWriter.println(jsonStr.toString());
+			printWriter.flush();
+			printWriter.close();
+		}else{
+			String actionName = invocation.getAction().getClass().getSimpleName() + "Rsp";
+			StringBuffer body = new StringBuffer(32);
+			body.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+			body.append("<").append(actionName).append(">");
+			body.append("<resultCode>").append(errorCode).append("</resultCode>");
+			body.append("<resultMsg><![CDATA[").append(MessageUtil.getProperty(errorCode)).append("]]></resultMsg>");
+			body.append("</").append(actionName).append(">");
+			
+			response.setHeader("Content-Type", "application/xml");
+			ByteArrayOutputStream baseOut = new ByteArrayOutputStream(512);
+			OutputStream outputStream = baseOut;
+			
+			String acceptGzip = request.getHeader("Encoding-Type");
+			if("gzip".equalsIgnoreCase(acceptGzip)){
+				response.setHeader("Encoding-Type", "gzip");
+				outputStream = new GZIPOutputStream(baseOut);
+			}
+			
+			byte []byteXml = body.toString().getBytes("UTF-8");
+			outputStream.write(byteXml);
+			outputStream.close();
+			
+			response.setHeader("Content-Length", String.valueOf(baseOut.size()));
+			response.setHeader("Or-Content-Length", String.valueOf(byteXml.length));
+			response.setCharacterEncoding("UTF-8");
+			baseOut.writeTo(response.getOutputStream());
+			baseOut.close();
+		}
+	}
+
+}

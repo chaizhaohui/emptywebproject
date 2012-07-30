@@ -1,0 +1,43 @@
+package cn.com.twsm.common.dto;
+
+/**
+ * admin 权限组
+ * @author Guo Tianci
+ *
+ */
+public class AdminGroupDTO extends BasicDTO {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 角色组名称 必填
+	 */
+	private String name;
+	
+	/**
+	 * 摘要
+	 */
+	private String desc;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	
+	
+
+}

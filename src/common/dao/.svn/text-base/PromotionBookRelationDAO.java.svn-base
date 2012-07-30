@@ -1,0 +1,63 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.PromotionBookRelationDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 
+ * @author ZhangChengpeng
+ * @date 2012-04-11
+ * 
+ */
+public class PromotionBookRelationDAO extends
+		BasicDAO<PromotionBookRelationDTO> {
+
+	private static PromotionBookRelationDAO promotionBookRelationDAO;
+
+	private PromotionBookRelationDAO() {
+		super();
+	}
+
+	public static PromotionBookRelationDAO getInstance() {
+		if (promotionBookRelationDAO == null) {
+			synchronized (LabelDAO.class) {
+				if (promotionBookRelationDAO == null) {
+					promotionBookRelationDAO = new PromotionBookRelationDAO();
+				}
+			}
+		}
+		return promotionBookRelationDAO;
+	}
+
+	public List<PromotionBookRelationDTO> getByPromotionId(Integer promotionId)
+			throws SQLException {
+		return SqlBuilder.getSqlMapClient().queryForList(
+				"PromotionBookRelation.getByPromotionId", promotionId);
+	}
+
+	public int getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"PromotionBookRelation.getCount", whereMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"PromotionBookRelation.getByPage", whereMap);
+		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByWhere(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"PromotionBookRelation.getByWhere", whereMap);
+		return list;
+	}
+
+}

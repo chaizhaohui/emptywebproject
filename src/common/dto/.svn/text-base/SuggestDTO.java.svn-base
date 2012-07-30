@@ -1,0 +1,78 @@
+package cn.com.twsm.common.dto;
+
+public class SuggestDTO extends BasicDTO{
+	private static final long serialVersionUID = 1L;
+	
+	/**处理标识-未处理*/
+	public static final String DEAL_UNDEAL = "undeal";
+	/**处理标识-已处理*/
+	public static final String DEAL_DEAL = "deal";
+	
+	private Integer userId;					//用户ID: 外键
+	private Integer deviceId;				//设备ID: 外键
+	private String content;					//反馈内容: 必填
+	private String contactWay;				//联系方式: 必填
+	private Long addTime;					//添加时间: 必填
+	private String deal = SuggestDTO.DEAL_UNDEAL;	//处理标识:管理员处理标识 必填 未处理:undeal 已处理:deal
+	private String dealRemark;				//处理备注:管理员处理备注
+	private Long dealTime;					//处理时间
+	private Integer adminId;				//处理人ID:外键
+	
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getContactWay() {
+		return contactWay;
+	}
+	public void setContactWay(String contactWay) {
+		this.contactWay = contactWay;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public String getDeal() {
+		return deal;
+	}
+	public void setDeal(String deal) {
+		this.deal = deal;
+	}
+	public String getDealRemark() {
+		return dealRemark;
+	}
+	public void setDealRemark(String dealRemark) {
+		this.dealRemark = dealRemark;
+	}
+
+	public Long getDealTime() {
+		return dealTime;
+	}
+	public void setDealTime(Long dealTime) {
+		this.dealTime = dealTime;
+	}
+	public Integer getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+
+	
+}

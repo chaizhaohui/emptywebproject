@@ -1,0 +1,20 @@
+package cn.com.twsm.common.dto;
+
+public class CpCatalogRelationDTO extends BasicDTO{
+	private String cpCatalogId;					//CP书籍分类ID
+	private int bookCatalogId;					//书籍分类ID: 外键 
+	public String getCpCatalogId() {
+		return cpCatalogId;
+	}
+	public void setCpCatalogId(String cpCatalogId) {
+		this.cpCatalogId = cpCatalogId;
+	}
+	public int getBookCatalogId() {
+		return bookCatalogId;
+	}
+	public void setBookCatalogId(int bookCatalogId) {
+		this.bookCatalogId = bookCatalogId;
+	}
+
+
+}

@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+        
+<sqlMap namespace="Book">
+	<resultMap class="cn.com.twsm.common.dto.BookDTO" id="book">
+		<result column="BOOK_ID" property="id" jdbcType="INTEGER"/>
+		<result column="BOOK_SOURCE_ID" property="bookSourceId" jdbcType="INTEGER"/>
+		<result column="BOOK_NAME" property="bookName" jdbcType="VARCHAR"/>
+		<result column="AUTHOR_ID" property="authorId" jdbcType="INTEGER"/>
+		<result column="AUTHOR_NAME" property="authorName" jdbcType="VARCHAR"/>
+		<result column="BOOK_TYPE" property="bookType" jdbcType="VARCHAR"/>
+		<result column="BOOK_SIZE" property="bookSize" jdbcType="INTEGER"/>
+		<result column="SUMMARY" property="summary" jdbcType="VARCHAR"/>
+		<result column="DOWNLOAD_COUNT" property="downloadCount" jdbcType="INTEGER"/>
+		<result column="DOWNLOAD_COUNT_PREFIX" property="downloadCountPrefix" jdbcType="INTEGER"/>
+		<result column="DISCUSS_COUNT" property="discussCount" jdbcType="INTEGER"/>
+		<result column="DISCUSS_COUNT_PREFIX" property="discussCountPrefix" jdbcType="INTEGER"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="ADMIN_ID" property="adminId" jdbcType="INTEGER"/>
+		<result column="UP_STACK" property="upStack" jdbcType="VARCHAR"/>
+		<result column="DEL_MARK" property="delMark" jdbcType="VARCHAR"/>
+		<result column="ENCRYPTION_TYPE" property="encryptionType" jdbcType="VARCHAR"/>
+		<result column="BOOK_URL" property="bookUrl" jdbcType="VARCHAR"/>
+		<result column="LOCAL_PATH" property="localPath" jdbcType="VARCHAR"/>
+		<result column="ENCRYPTION_START_CAPTER" property="encryptionStartCapter" jdbcType="INTEGER"/>
+		<result column="COVER_IMG_URL" property="coverImgUrl" jdbcType="VARCHAR"/>
+		<result column="COVER_IMG_LOCAL_PATH" property="coverImgLocalPath" jdbcType="VARCHAR"/>
+		<result column="BOOK_COMMENT" property="bookComment" jdbcType="VARCHAR"/>
+		<result column="IS_HOT" property="isHot" jdbcType="VARCHAR"/>
+		<result column="ALL_LABEL" property="allLabel" jdbcType="VARCHAR"/>
+		<result column="BOOK_NAME_PY" property="bookNamePy" jdbcType="VARCHAR"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="LONG_NOMINATEINFOR" property="longNominateinfor" jdbcType="VARCHAR"/>
+		<result column="SHORT_NOMINATEINFOR" property="shortNominateinfor" jdbcType="VARCHAR"/>
+		<result column="CELEBRITY_RECOMMEND" property="celebrityRecommend" jdbcType="VARCHAR"/>
+		<result column="MEDIA_RECOMMEND" property="mediaRecommend" jdbcType="VARCHAR"/>
+		<result column="BOOK_SORT" property="bookSort" jdbcType="DECIMAL"/>
+		<result column="IS_REFINED" property="isRefined" jdbcType="VARCHAR"/>
+		<result column="TOTAL_PAGE" property="totalPage" jdbcType="INTEGER"/>
+		<result column="TOTAL_WORDS" property="totalWords" jdbcType="INTEGER"/>
+		<result column="IS_FREE" property="isFree" jdbcType="VARCHAR"/>
+		<result column="PRICE" property="price" jdbcType="DECIMAL"/>
+	</resultMap>
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="bookId">
+				BOOK_ID=#bookId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookSourceId">
+				BOOK_SOURCE_ID=#bookSourceId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookName">
+				BOOK_NAME like '%'||#bookName#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="authorId">
+				AUTHOR_ID=#authorId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="authorName">
+				AUTHOR_NAME=#authorName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookType">
+				BOOK_TYPE=#bookType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookSize">
+				BOOK_SIZE=#bookSize#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="summary">
+				SUMMARY=#summary#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="downloadCount">
+				DOWNLOAD_COUNT=#downloadCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="downloadCountPrefix">
+				DOWNLOAD_COUNT_PREFIX=#downloadCountPrefix#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="discussCount">
+				DISCUSS_COUNT=#discussCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="discussCountPrefix">
+				DISCUSS_COUNT_PREFIX=#discussCountPrefix#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="addTime">
+				ADD_TIME=#addTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="adminId">
+				ADMIN_ID=#adminId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="upStack">
+				UP_STACK=#upStack#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="delMark">
+				DEL_MARK=#delMark#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="encryptionType">
+				ENCRYPTION_TYPE=#encryptionType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookUrl">
+				BOOK_URL=#bookUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="localPath">
+				LOCAL_PATH=#localPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND"
+				property="encryptionStartCapter">
+				ENCRYPTION_START_CAPTER=#encryptionStartCapter#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="coverImgUrl">
+				COVER_IMG_URL=#coverImgUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="coverImgLocalPath">
+				COVER_IMG_LOCAL_PATH=#coverImgLocalPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookComment">
+				BOOK_COMMENT=#bookComment#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isHot">
+				IS_HOT=#isHot#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="status">
+				STATUS=#status#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNamePyBlur">
+				BOOK_NAME_PY like #bookNamePyBlur#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNameBlur">
+				BOOK_NAME like #bookNameBlur#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="longNominateinfor">
+				LONG_NOMINATEINFOR=#longNominateinfor#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="shortNominateinfor">
+				SHORT_NOMINATEINFOR=#shortNominateinfor#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="celebrityRecommend">
+				CELEBRITY_RECOMMEND=#celebrityRecommend#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="mediaRecommend">
+				MEDIA_RECOMMEND=#mediaRecommend#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isRefined">
+				IS_REFINED=#isRefined#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	<sql id="whereConditionCatalog">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="bookId">
+				BOOK_ID=#bookId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookSourceId">
+				BOOK_SOURCE_ID=#bookSourceId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookName">
+				BOOK_NAME like '%'||#bookName#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="authorId">
+				AUTHOR_ID=#authorId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="authorName">
+				AUTHOR_NAME=#authorName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookType">
+				BOOK_TYPE=#bookType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookSize">
+				BOOK_SIZE=#bookSize#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="summary">
+				SUMMARY=#summary#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="downloadCount">
+				DOWNLOAD_COUNT=#downloadCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="downloadCountPrefix">
+				DOWNLOAD_COUNT_PREFIX=#downloadCountPrefix#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="discussCount">
+				DISCUSS_COUNT=#discussCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="discussCountPrefix">
+				DISCUSS_COUNT_PREFIX=#discussCountPrefix#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="addTime">
+				ADD_TIME=#addTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="adminId">
+				ADMIN_ID=#adminId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="upStack">
+				UP_STACK=#upStack#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="delMark">
+				DEL_MARK=#delMark#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="encryptionType">
+				ENCRYPTION_TYPE=#encryptionType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookUrl">
+				BOOK_URL=#bookUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="localPath">
+				LOCAL_PATH=#localPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND"
+				property="encryptionStartCapter">
+				ENCRYPTION_START_CAPTER=#encryptionStartCapter#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="coverImgUrl">
+				COVER_IMG_URL=#coverImgUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="coverImgLocalPath">
+				COVER_IMG_LOCAL_PATH=#coverImgLocalPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookComment">
+				BOOK_COMMENT=#bookComment#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isHot">
+				IS_HOT=#isHot#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="status">
+				STATUS=#status#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNamePyBlur">
+				BOOK_NAME_PY like #bookNamePyBlur#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNameBlur">
+				BOOK_NAME like #bookNameBlur#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="catalogId">
+				EXISTS (SELECT 1
+				  FROM BOOK_CATALOG_RELATION A
+				 WHERE CATALOG_ID=#catalogId# 
+				  AND A.BOOK_ID = T.BOOK_ID )
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="longNominateinfor">
+				LONG_NOMINATEINFOR=#longNominateinfor#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="shortNominateinfor">
+				SHORT_NOMINATEINFOR=#shortNominateinfor#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="celebrityRecommend">
+				CELEBRITY_RECOMMEND=#celebrityRecommend#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="mediaRecommend">
+				MEDIA_RECOMMEND=#mediaRecommend#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isRefined">
+				IS_REFINED=#isRefined#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	<sql id="whereConditionLabel">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="bookId">
+				BOOK_ID=#bookId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookSourceId">
+				BOOK_SOURCE_ID=#bookSourceId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookName">
+				BOOK_NAME like '%'||#bookName#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="status">
+				STATUS=#status#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="authorId">
+				AUTHOR_ID=#authorId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="authorName">
+				AUTHOR_NAME=#authorName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookType">
+				BOOK_TYPE=#bookType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookSize">
+				BOOK_SIZE=#bookSize#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="summary">
+				SUMMARY=#summary#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="downloadCount">
+				DOWNLOAD_COUNT=#downloadCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="downloadCountPrefix">
+				DOWNLOAD_COUNT_PREFIX=#downloadCountPrefix#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="discussCount">
+				DISCUSS_COUNT=#discussCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="discussCountPrefix">
+				DISCUSS_COUNT_PREFIX=#discussCountPrefix#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="addTime">
+				ADD_TIME=#addTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="adminId">
+				ADMIN_ID=#adminId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="upStack">
+				UP_STACK=#upStack#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="delMark">
+				DEL_MARK=#delMark#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="encryptionType">
+				ENCRYPTION_TYPE=#encryptionType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookUrl">
+				BOOK_URL=#bookUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="localPath">
+				LOCAL_PATH=#localPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND"
+				property="encryptionStartCapter">
+				ENCRYPTION_START_CAPTER=#encryptionStartCapter#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="coverImgUrl">
+				COVER_IMG_URL=#coverImgUrl#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="coverImgLocalPath">
+				COVER_IMG_LOCAL_PATH=#coverImgLocalPath#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookComment">
+				BOOK_COMMENT=#bookComment#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isHot">
+				IS_HOT=#isHot#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="label">
+				EXISTS (SELECT 1
+				  FROM BOOK_LABEL_RELATION A, LABEL B
+				 WHERE A.LABEL_ID = B.LABEL_ID
+				   AND B.LABEL_NAME = #label#
+				   AND A.BOOK_ID = T.BOOK_ID)
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNamePyBlur">
+				BOOK_NAME_PY like #bookNamePyBlur#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNameBlur">
+				BOOK_NAME like #bookNameBlur#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="longNominateinfor">
+				LONG_NOMINATEINFOR=#longNominateinfor#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="shortNominateinfor">
+				SHORT_NOMINATEINFOR=#shortNominateinfor#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="celebrityRecommend">
+				CELEBRITY_RECOMMEND=#celebrityRecommend#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="mediaRecommend">
+				MEDIA_RECOMMEND=#mediaRecommend#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+
+	<!-- kangbaoxing getRelationBookCount -->
+	<select id="getRelationBookCount" parameterClass="String" resultClass="Integer">
+		SELECT COUNT(BOOK_ID)
+  			FROM (SELECT 
+  						BOOK_LABEL_RELATION.BOOK_ID, COUNT(LABEL_ID) CONT
+          		  	FROM BOOK_LABEL_RELATION,BOOK
+         			WHERE BOOK_LABEL_RELATION.BOOK_ID=BOOK.BOOK_ID
+         			AND LABEL_ID IN (SELECT LABEL_ID
+                              FROM BOOK_LABEL_RELATION
+                             WHERE BOOK_ID = #bookId#)
+                    AND UP_STACK=1
+         GROUP BY BOOK_LABEL_RELATION.BOOK_ID) T
+ WHERE BOOK_ID &gt; #bookId# or BOOK_ID &lt; #bookId#
+ ORDER BY T.CONT DESC
+	</select>
+	<!-- kangboaxing getRelationBook-->
+	<select id="getRelationBook" parameterClass="map" resultClass="Integer">
+			SELECT BOOK_ID
+  FROM (SELECT BOOK_ID,T.CONT
+          FROM (SELECT BOOK_LABEL_RELATION.BOOK_ID, COUNT(LABEL_ID) CONT
+                  FROM BOOK_LABEL_RELATION,BOOK
+                 WHERE BOOK_LABEL_RELATION.BOOK_ID=BOOK.BOOK_ID 
+                 AND BOOK_LABEL_RELATION.LABEL_ID IN (SELECT LABEL_ID
+                                      FROM BOOK_LABEL_RELATION
+                                     WHERE BOOK_ID = #bookId#)
+                 AND BOOK.UP_STACK=1
+                 GROUP BY BOOK_LABEL_RELATION.BOOK_ID) T
+         WHERE (BOOK_ID &gt; #bookId#
+           OR BOOK_ID &lt; #bookId#)
+           ORDER BY T.CONT DESC )
+ WHERE ROWNUM &lt;= #end# AND ROWNUM &gt;=#start#
+	</select>
+	
+	<select id="getByWhere" resultClass="Integer" parameterClass="map">
+		<![CDATA[
+		SELECT BOOK_ID
+			FROM 
+	    (SELECT 
+		   BOOK_ID
+		FROM 
+		    BOOK
+		 WHERE 1 = 1
+		 ]]>
+		 <include refid="whereCondition"/>
+		  ORDER BY (DOWNLOAD_COUNT+DOWNLOAD_COUNT_PREFIX) DESC) WHERE 1=1 
+		 <dynamic>
+			<isNotEmpty prepend="AND" property="rowNum">
+				ROWNUM &lt;= #rowNum#
+			</isNotEmpty>  
+		</dynamic>
+	</select>
+	<!-- kangbaoxing -->
+	<select id="getHotClickBook" resultClass="Integer" parameterClass="Integer">
+		SELECT 
+			BOOK_ID FROM (
+				SELECT 
+					BOOK_ID,(DOWNLOAD_COUNT+DOWNLOAD_COUNT_PREFIX) c,ROW_NUMBER() OVER ( ORDER BY  (DOWNLOAD_COUNT+DOWNLOAD_COUNT_PREFIX) DESC) RN 
+				FROM 
+					BOOK
+			)
+		WHERE RN BETWEEN 0 AND #COUNT#
+
+	</select>
+	<!-- Kangbaoxing -->
+	<select id="getByLabelName" resultClass="Integer" parameterClass="map">
+		SELECT BOOK_ID
+  FROM (SELECT BOOK_ID, ROWNUM AS RN
+          FROM (
+               
+               SELECT BOOK_LABEL_RELATION.BOOK_ID,
+                               2 SORTNUM,
+                               (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                      FROM BOOK_LABEL_RELATION,BOOK
+                      WHERE BOOK_LABEL_RELATION.BOOK_ID=BOOK.BOOK_ID  AND LABEL_ID IN (
+                                        SELECT LABEL_ID FROM LABEL WHERE LABEL_NAME LIKE '%'||#labelName#||'%'
+                                        )
+               UNION
+               SELECT BOOK_ID,
+                       1 SORTNUM,
+                       (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                  FROM BOOK
+                 WHERE BOOK_NAME LIKE '%'||#labelName#||'%'
+                UNION
+                SELECT BOOK_ID,
+                       2 SORTNUM,
+                       (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                  FROM BOOK
+                 WHERE BOOK_NAME NOT LIKE '%'||#labelName#||'%'
+                   AND AUTHOR_NAME LIKE '%'||#labelName#||'%'
+                UNION
+                SELECT BOOK_ID,
+                       3 SORTNUM,
+                       (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                  FROM BOOK
+                 WHERE BOOK_NAME NOT LIKE '%'||#labelName#||'%'
+                   AND AUTHOR_NAME NOT LIKE '%'||#labelName#||'%'
+                   AND SUMMARY LIKE '%'||#labelName#||'%'
+                 ORDER BY SORTNUM, C DESC))
+ 					WHERE RN &gt; 0
+   					AND RN &lt;= 12
+	</select>
+	<!-- kangbaoxing -->
+	<select id="getBooKCountByLabel" resultClass="Integer" parameterClass="String">
+		SELECT COUNT(BOOK_ID)
+  FROM (SELECT BOOK_ID, ROWNUM AS RN
+          FROM (
+               
+               SELECT BOOK_LABEL_RELATION.BOOK_ID,
+                               2 SORTNUM,
+                               (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                      FROM BOOK_LABEL_RELATION,BOOK
+                      WHERE BOOK_LABEL_RELATION.BOOK_ID=BOOK.BOOK_ID  AND LABEL_ID IN (
+                                        SELECT LABEL_ID FROM LABEL WHERE LABEL_NAME LIKE '%'||#labelName#||'%'
+                                        )
+               UNION
+               SELECT BOOK_ID,
+                       1 SORTNUM,
+                       (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                  FROM BOOK
+                 WHERE BOOK_NAME LIKE '%'||#labelName#||'%'
+                UNION
+                SELECT BOOK_ID,
+                       2 SORTNUM,
+                       (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                  FROM BOOK
+                 WHERE BOOK_NAME NOT LIKE '%'||#labelName#||'%'
+                   AND AUTHOR_NAME LIKE '%'||#labelName#||'%'
+                UNION
+                SELECT BOOK_ID,
+                       3 SORTNUM,
+                       (DOWNLOAD_COUNT + DOWNLOAD_COUNT_PREFIX) C
+                  FROM BOOK
+                 WHERE BOOK_NAME NOT LIKE '%'||#labelName#||'%'
+                   AND AUTHOR_NAME NOT LIKE '%'||#labelName#||'%'
+                   AND SUMMARY LIKE '%'||#labelName#||'%'
+                 ORDER BY SORTNUM, C DESC))
+ 					WHERE RN &gt; 0
+   					AND RN &lt;= 12
+	</select>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   BOOK 
+		WHERE 
+		   1 = 1 <include refid="whereCondition"/>
+	</select>
+	
+   <select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      BOOK_ID 
+	   FROM 
+		  (SELECT 
+		     T.BOOK_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         BOOK_ID 
+              FROM 
+                 BOOK 
+              WHERE 
+                 1=1 <include refid="whereCondition"/> ORDER BY BOOK_ID DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<select id="getCountWithLabel" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   BOOK T
+		WHERE 
+		   1 = 1 <include refid="whereConditionLabel"/>
+	</select>
+	
+   <select id="getByPageWithLabel" parameterClass="map" resultClass="int">
+	   SELECT 
+	      BOOK_ID 
+	   FROM 
+		  (SELECT 
+		     T.BOOK_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         BOOK_ID 
+              FROM 
+                 BOOK T 
+              WHERE 
+                 1=1 <include refid="whereConditionLabel"/> ORDER BY (DOWNLOAD_COUNT+DOWNLOAD_COUNT_PREFIX) DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<select id="getCountWithCatalog" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   BOOK T
+		WHERE 
+		   1 = 1 <include refid="whereConditionCatalog"/>
+	</select>
+	
+   <select id="getByPageWithCatalog" parameterClass="map" resultClass="int">
+	   SELECT 
+	      BOOK_ID 
+	   FROM 
+		  (SELECT 
+		     T.BOOK_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         BOOK_ID 
+              FROM 
+                 BOOK T 
+              WHERE 
+                 1=1 <include refid="whereConditionCatalog"/> ORDER BY BOOK_ID DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<select id="getCountByCatalogid" resultClass="int" parameterClass="map">
+		SELECT 
+		   COUNT(1) 
+		FROM 
+		   BOOK_CATALOG_RELATION A,BOOK B
+		WHERE 
+		   1 = 1 
+		  <isNotEmpty prepend="AND" property="catalogId">
+				A.CATALOG_ID=#catalogId#
+		  </isNotEmpty>
+		  AND A.BOOK_ID=B.BOOK_ID
+		  AND B.UP_STACK=#upStack#
+	</select>
+	
+   <select id="getByPageByCatalogid" parameterClass="map" resultClass="int">
+	   SELECT 
+	      BOOK_ID 
+	   FROM 
+		  (SELECT 
+		     T.BOOK_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (		SELECT 
+					   B.BOOK_ID BOOK_ID
+					FROM 
+					   BOOK_CATALOG_RELATION A,BOOK B
+					WHERE 
+					   1 = 1 
+					  <isNotEmpty prepend="AND" property="catalogId">
+							A.CATALOG_ID=#catalogId#
+					  </isNotEmpty>
+					  AND A.BOOK_ID=B.BOOK_ID
+					  AND B.UP_STACK=#upStack# ORDER BY (B.DOWNLOAD_COUNT+B.DOWNLOAD_COUNT_PREFIX) DESC
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.BookDTO">
+	        UPDATE BOOK
+	        <dynamic prepend="set">
+           	   BOOK_ID                 = #id#,
+               BOOK_SOURCE_ID          = #bookSourceId#,
+               BOOK_NAME               = #bookName#,
+               AUTHOR_ID               = #authorId#,
+               AUTHOR_NAME             = #authorName#,
+               BOOK_TYPE               = #bookType#,
+               BOOK_SIZE               = #bookSize#,
+               SUMMARY                 = #summary#,
+               DOWNLOAD_COUNT          = #downloadCount#,
+               DOWNLOAD_COUNT_PREFIX   = #downloadCountPrefix#,
+               DISCUSS_COUNT           = #discussCount#,
+               DISCUSS_COUNT_PREFIX    = #discussCountPrefix#,
+               ADD_TIME                = #addTime#,
+               ADMIN_ID                = #adminId#,
+               UP_STACK                = #upStack#,
+               DEL_MARK                = #delMark#,
+               ENCRYPTION_TYPE         = #encryptionType#,
+               BOOK_URL                = #bookUrl#,
+               LOCAL_PATH              = #localPath#,
+               ENCRYPTION_START_CAPTER = #encryptionStartCapter#,
+               COVER_IMG_URL           = #coverImgUrl#,
+               COVER_IMG_LOCAL_PATH    = #coverImgLocalPath#,
+               BOOK_COMMENT            = #bookComment#,
+               IS_HOT                  = #isHot#,
+               ALL_LABEL               = #allLabel#,
+               BOOK_NAME_PY            = #bookNamePy#,
+               STATUS                  = #status#,
+               LONG_NOMINATEINFOR	   = #longNominateinfor#,
+			   SHORT_NOMINATEINFOR	   = #shortNominateinfor#,
+			   CELEBRITY_RECOMMEND	   = #celebrityRecommend#,
+			   MEDIA_RECOMMEND		   = #mediaRecommend#,
+			   BOOK_SORT               = #bookSort#,
+			   IS_REFINED              = #isRefined#,
+			   TOTAL_PAGE			   = #totalPage#,
+			   TOTAL_WORDS			   = #totalWords#,
+			   IS_FREE				   = #isFree#,
+			   PRICE				   = #price#
+           </dynamic>
+           WHERE BOOK_ID = #id#
+	</update>
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="book" parameterClass="int">
+		SELECT BOOK_ID,
+		       BOOK_SOURCE_ID,
+		       BOOK_NAME,
+		       AUTHOR_ID,
+		       AUTHOR_NAME,
+		       BOOK_TYPE,
+		       BOOK_SIZE,
+		       SUMMARY,
+		       DOWNLOAD_COUNT,
+		       DOWNLOAD_COUNT_PREFIX,
+		       DISCUSS_COUNT,
+		       DISCUSS_COUNT_PREFIX,
+		       ADD_TIME,
+		       ADMIN_ID,
+		       UP_STACK,
+		       DEL_MARK,
+		       ENCRYPTION_TYPE,
+		       BOOK_URL,
+		       LOCAL_PATH,
+		       ENCRYPTION_START_CAPTER,
+		       COVER_IMG_URL,
+		       COVER_IMG_LOCAL_PATH,
+		       BOOK_COMMENT,
+		       IS_HOT,
+		       All_LABEL,
+		       BOOK_NAME_PY,
+		       STATUS,
+		       LONG_NOMINATEINFOR,
+			   SHORT_NOMINATEINFOR,
+			   CELEBRITY_RECOMMEND,
+			   MEDIA_RECOMMEND,
+			   BOOK_SORT,
+			   IS_REFINED,
+			   TOTAL_PAGE,
+			   TOTAL_WORDS,
+			   IS_FREE,
+			   PRICE
+		  FROM BOOK
+		 WHERE BOOK_ID = #id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_BOOK.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BOOK
+		  (BOOK_ID,
+		   BOOK_SOURCE_ID,
+		   BOOK_NAME,
+		   AUTHOR_ID,
+		   AUTHOR_NAME,
+		   BOOK_TYPE,
+		   BOOK_SIZE,
+		   SUMMARY,
+		   DOWNLOAD_COUNT,
+		   DOWNLOAD_COUNT_PREFIX,
+		   DISCUSS_COUNT,
+		   DISCUSS_COUNT_PREFIX,
+		   ADD_TIME,
+		   ADMIN_ID,
+		   UP_STACK,
+		   DEL_MARK,
+		   ENCRYPTION_TYPE,
+		   BOOK_URL,
+		   LOCAL_PATH,
+		   ENCRYPTION_START_CAPTER,
+		   COVER_IMG_URL,
+		   COVER_IMG_LOCAL_PATH,
+		   BOOK_COMMENT,
+		   IS_HOT,
+		   BOOK_NAME_PY,
+		   ALL_LABEL,
+		   STATUS,
+		   LONG_NOMINATEINFOR,
+		   SHORT_NOMINATEINFOR,
+		   CELEBRITY_RECOMMEND,
+		   MEDIA_RECOMMEND,
+		   BOOK_SORT,
+		   IS_REFINED,
+		   TOTAL_PAGE,
+		   TOTAL_WORDS,
+		   IS_FREE,
+		   PRICE)
+		VALUES
+		  (#id#,
+		   #bookSourceId#,
+		   #bookName#,
+		   #authorId#,
+		   #authorName#,
+		   #bookType#,
+		   #bookSize#,
+		   #summary#,
+		   #downloadCount#,
+		   #downloadCountPrefix#,
+		   #discussCount#,
+		   #discussCountPrefix#,
+		   #addTime#,
+		   #adminId#,
+		   #upStack#,
+		   #delMark#,
+		   #encryptionType#,
+		   #bookUrl#,
+		   #localPath#,
+		   #encryptionStartCapter#,
+		   #coverImgUrl#,
+		   #coverImgLocalPath#,
+		   #bookComment#,
+		   #isHot#,
+		   #bookNamePy#,
+		   #allLabel#,
+		   #status#,
+		   #longNominateinfor#,
+		   #shortNominateinfor#,
+		   #celebrityRecommend#,
+		   #mediaRecommend#,
+		   #bookSort#,
+		   #isRefined#,
+		   #totalPage#,
+		   #totalWords#,
+		   #isFree#,
+		   #price#)
+	</insert>
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM BOOK WHERE BOOK_ID = #id#
+	</delete>
+</sqlMap>

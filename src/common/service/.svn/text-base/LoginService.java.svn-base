@@ -1,0 +1,161 @@
+package cn.com.twsm.common.service;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import cn.com.twsm.common.dto.AdminGroupLimitDTO;
+import cn.com.twsm.common.dto.AdminsDTO;
+import cn.com.twsm.common.dto.SystemLimitDTO;
+import cn.com.twsm.common.exception.LoginException;
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.Cook;
+import cn.com.twsm.common.utils.General;
+import cn.com.twsm.system.service.AdminGroupLimitService;
+import cn.com.twsm.system.service.SystemLimitService;
+
+/**
+ * 用户登录Service 单例模式
+ * 
+ * @author QiaoGuangqing
+ * @date 2012-04-18
+ */
+public class LoginService extends BasicService {
+	private static LoginService loginService = null;
+
+	/**
+	 * 用户名密码登录
+	 * 
+	 * @param userName
+	 * @param userPwd
+	 * @throws LoginException
+	 */
+	public void doLogin(String userName, String userPwd) throws LoginException {
+		// AdminsDAO adminsDAO = AdminsDAO.getInstance();
+		AdminsDTO adminsDTO = null;
+		try {
+			adminsDTO = adminsDAO.getByUserName(userName);
+		} catch (SQLException ex) {
+			throw new LoginException(LoginService.class, "查询用户出现异常", ex);
+		}
+
+		if (adminsDTO == null) {
+			throw new LoginException(LoginService.class, "用户不存在");
+		}
+
+		if (!adminsDTO.getUserPwd().equals(userPwd)) {
+			throw new LoginException(LoginService.class, "用户密码不正确");
+		}
+
+		try {
+			addLimitUrls(adminsDTO);
+		} catch (SQLException ex) {
+			throw new LoginException(LoginService.class, "查询用户权限出现异常", ex);
+		}
+
+		// 登录成功 设置Cookie和Session
+		setSessionAndCookie(this.getRequest(), this.getResponse(), adminsDTO);
+	}
+
+	private void addLimitUrls(AdminsDTO adminsDTO) throws SQLException {
+
+		SystemLimitService systemLimitService = SystemLimitService
+				.getInstance();
+
+		AdminGroupLimitService adminGroupLimitService = AdminGroupLimitService
+				.getInstance();
+
+		Integer groupId = adminsDTO.getGroupId();
+
+		if (groupId != null) {
+			List<Integer> relationIds = adminGroupLimitService
+					.getByGroupId(groupId);
+
+			// 私有权限
+			if (relationIds != null) {
+				List<AdminGroupLimitDTO> relations = adminGroupLimitService
+						.getById(relationIds);
+				if (relations != null) {
+					SystemLimitDTO limit = null;
+					for (AdminGroupLimitDTO dto : relations) {
+						limit = systemLimitService.getById(dto.getLimitId());
+						if (limit.getUrl() != null) {
+							adminsDTO.addLimitURL(limit.getUrl());
+						}
+					}
+				}
+			}
+		}
+
+		// public 权限
+		List<SystemLimitDTO> publicLimits = systemLimitService
+				.getPublicLimits();
+		if (publicLimits != null) {
+			for (SystemLimitDTO pLimit : publicLimits) {
+				adminsDTO.addLimitURL(pLimit.getUrl());
+			}
+		}
+
+	}
+
+	/**
+	 * 利用Cookie中保存的用户名和密码进行自动登录
+	 * 
+	 * @return
+	 */
+	public boolean doCookieLogin() {
+		HttpServletRequest request = this.getRequest();
+
+		String userName = General.convertNullToEmpty(Cook.getCookie(request,
+				Cook.USER_NAME));
+		String userPwd = General.convertNullToEmpty(Cook.getCookie(request,
+				Cook.USER_PWD));
+
+		if (General.isEmpty(userName) || General.isEmpty(userPwd)) {
+			return false;
+		}
+
+		try {
+			doLogin(userName, userPwd);
+			return true;
+		} catch (LoginException ex) {
+			return false;
+		}
+	}
+
+	/**
+	 * 私有方法 登录成功后设置Session与Cookie
+	 * 
+	 * @param request
+	 * @param response
+	 * @param adminsDTO
+	 */
+	private void setSessionAndCookie(HttpServletRequest request,
+			HttpServletResponse response, AdminsDTO adminsDTO) {
+		// 设置Session
+		request.getSession().setAttribute(
+				ConfigUtil.getProperty(ConfigUtil.SESSION_USER_KEY), adminsDTO);
+		// 设置Cookie
+		Cook.setCookie(response, Cook.USER_NAME, adminsDTO.getUserName(),
+				60 * 60 * 24 * 7, "/", null);
+		Cook.setCookie(response, Cook.USER_PWD, adminsDTO.getUserPwd(),
+				60 * 60 * 24 * 7, "/", null);
+	}
+
+	/**
+	 * 获取用户登录Service实例
+	 * 
+	 * @return
+	 */
+	public static LoginService getInstance() {
+		if (loginService == null) {
+			synchronized (LoginService.class) {
+				if (loginService == null)
+					loginService = new LoginService();
+			}
+		}
+		return loginService;
+	}
+}

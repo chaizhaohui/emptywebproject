@@ -1,0 +1,68 @@
+package cn.com.twsm.common.dao;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.UserBookShareDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 漂流书DAO
+ * @author Shi Weiyan
+ * @date 2012-04-12
+ * @version 1.0.0.1
+ */
+public class UserBookShareDAO extends BasicDAO<UserBookShareDTO> {
+	
+	private static UserBookShareDAO userBookShareDAO; 
+	public static UserBookShareDAO getInstance(){
+		if(userBookShareDAO == null){
+			synchronized(UserBookShareDAO.class){
+				if(userBookShareDAO == null){
+					userBookShareDAO = new UserBookShareDAO();
+				}
+			}
+		}
+		return userBookShareDAO;
+	}
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private UserBookShareDAO(){
+		super();
+	}
+	
+
+	/**
+	 * 查询所有的记录总数
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getCount(Map<String, Object> whereMap) throws SQLException{
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject("UserBookShare.getCount", whereMap);
+	}
+	
+	/**
+	 * 查询所有的漂流书信息列表
+	 * @param whereMap
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<UserBookShareDTO> getAroundBookList(Map<String, Object> whereMap) throws SQLException{
+		return this.getById(SqlBuilder.getSqlMapClient().queryForList("UserBookShare.getId", whereMap));
+	}
+
+	/**
+	 * 通过bookId查询所有关联这本书的漂流书
+	 * @param bookId
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<UserBookShareDTO> getByBookId(Integer bookId) throws SQLException{
+		return this.getById(SqlBuilder.getSqlMapClient().queryForList("UserBookShare.getByBookId", bookId));
+	}
+}

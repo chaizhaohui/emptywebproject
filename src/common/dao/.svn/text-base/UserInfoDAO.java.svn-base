@@ -1,0 +1,29 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+
+import cn.com.twsm.common.dto.UserInfoDTO;
+/**
+ * 用户信息DAO
+ * @author QiaoGuangqing
+ * @date 2012-04-06
+ */
+public class UserInfoDAO extends BasicDAO<UserInfoDTO> {
+	
+	private static UserInfoDAO userInfoDAO; 
+	private UserInfoDAO(){super();}
+	public static UserInfoDAO getInstance(){
+		if(userInfoDAO == null){
+			synchronized(UserInfoDAO.class){
+				if(userInfoDAO == null){
+					userInfoDAO = new UserInfoDAO();
+				}
+			}
+		}
+		return userInfoDAO;
+	}
+	
+	public UserInfoDTO getUserInfoById(Integer userId) throws SQLException{
+		return this.getById(userId);
+	}
+}

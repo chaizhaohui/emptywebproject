@@ -1,0 +1,61 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookInfoDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+public class BookInfoDAO extends BasicDAO<BookInfoDTO> {
+	
+	private static BookInfoDAO bookInfoDAO = null;
+	
+	public static BookInfoDAO getInstance() {
+		
+		if (bookInfoDAO == null) {
+			synchronized (BookInfoDAO.class) {
+				if (bookInfoDAO == null) {
+					bookInfoDAO = new BookInfoDAO();
+				}
+			}
+		}
+		
+		return bookInfoDAO;
+		
+	}
+	
+	public BookInfoDTO getByBookId(int bookId) throws SQLException {
+		
+		SqlMapClient sqlMap = SqlBuilder.getSqlMapClient();
+		BookInfoDTO result = (BookInfoDTO)sqlMap.queryForObject("BookInfo.getById", bookId);
+		
+		return result;
+		
+	}
+	
+	public int getCount() throws SQLException {
+		Object result =  SqlBuilder.getSqlMapClient().queryForObject("BookInfo.getCount");
+		
+		if (result != null) {
+			return ((Integer)result).intValue();
+		}
+		
+		return 0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<BookInfoDTO> getByPage( Map<String,Integer> whereMap) throws SQLException {
+		
+		List<Integer> ids =  SqlBuilder.getSqlMapClient().queryForList("BookInfo.getByPage", whereMap);
+		
+		if (ids != null) {
+			return getById(ids);
+		}
+		
+		return null;
+	}
+
+}

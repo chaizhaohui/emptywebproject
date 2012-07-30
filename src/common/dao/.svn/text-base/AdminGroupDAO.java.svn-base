@@ -1,0 +1,54 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import cn.com.twsm.common.dto.AdminGroupDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * ADMIN_GROUP表DAO
+ * 
+ * @author Guo Tianci
+ * @date 2012-06-13
+ */
+public class AdminGroupDAO extends BasicDAO<AdminGroupDTO> {
+
+	private static AdminGroupDAO adminGroupDAO;
+
+	private AdminGroupDAO() {
+		super();
+	}
+
+	public static AdminGroupDAO getInstance() {
+		if (adminGroupDAO == null) {
+			synchronized (AdminGroupDAO.class) {
+				if (adminGroupDAO == null) {
+					adminGroupDAO = new AdminGroupDAO();
+				}
+			}
+		}
+		return adminGroupDAO;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AdminGroupDTO> getAllAdminGroups() throws SQLException {
+		List<Integer> idList = (List<Integer>) SqlBuilder.getSqlMapClient()
+				.queryForList("AdminGroup.getAll");
+		if (idList != null && idList.size() > 0)
+			return this.getById(idList);
+		return null;
+	}
+	
+//	/**
+//	 * 根据 用户组ID 删除关联关系 ADMIN_GROUP_LIMIT
+//	 * @param id 用户组ID
+//	 * @return
+//	 * @throws SQLException
+//	 */
+//	public int deleteAdminGroupLimitRelation(int adminGroupId) throws SQLException {
+//		SqlMapClient sqlMap = SqlBuilder.getSqlMapClient();
+//	}
+//		sqlMap.queryForList(arg0, arg1)
+
+}

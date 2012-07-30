@@ -1,0 +1,44 @@
+package cn.com.twsm.common.dto;
+
+public class AroundBookHistoryDTO extends BasicDTO{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer userId;						//用户ID: 外键 必填
+	private Integer bookId;						//书籍ID: 外键 必填
+	private Integer shareId;					//分享ID: 外键 必填
+	private String isReceive;					//是否被收留: 必填 0:否 1:是 默认是0
+	private Long addTime;						//添加时间: 必填
+
+	public void setUserId(Integer userId){
+		this.userId = userId;
+	}
+	public Integer getUserId(){
+		return this.userId;
+	}
+	public void setBookId(Integer bookId){
+		this.bookId = bookId;
+	}
+	public Integer getBookId(){
+		return this.bookId;
+	}
+	public void setShareId(Integer shareId){
+		this.shareId = shareId;
+	}
+	public Integer getShareId(){
+		return this.shareId;
+	}
+	public void setIsReceive(String isReceive){
+		this.isReceive = isReceive;
+	}
+	public String getIsReceive(){
+		return this.isReceive;
+	}
+	public void setAddTime(Long addTime){
+		this.addTime = addTime;
+	}
+	public Long getAddTime(){
+		return this.addTime;
+	}
+}

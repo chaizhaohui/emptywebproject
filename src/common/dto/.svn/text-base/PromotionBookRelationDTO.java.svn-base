@@ -1,0 +1,42 @@
+package cn.com.twsm.common.dto;
+
+import java.math.BigDecimal;
+
+/**
+ * 数据专题关系DTO
+ * @author ZhangChengpeng
+ * @date 2012-04-11
+ *
+ */
+public class PromotionBookRelationDTO extends BasicDTO {
+
+	private static final long serialVersionUID = 1L;
+	private Integer promotionId;
+	private Integer bookId;
+	private BigDecimal bookSort;
+
+	public Integer getPromotionId() {
+		return promotionId;
+	}
+
+	public void setPromotionId(Integer promotionId) {
+		this.promotionId = promotionId;
+	}
+
+	public Integer getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+
+	public BigDecimal getBookSort() {
+		return bookSort;
+	}
+
+	public void setBookSort(BigDecimal bookSort) {
+		this.bookSort = bookSort;
+	}
+
+}

@@ -1,0 +1,51 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.CpUserDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * Admins表DAO
+ * 
+ * @author QiaoGuangqing
+ * @date 2012-04-19
+ */
+public class CpUserDAO extends BasicDAO<CpUserDTO> {
+	private static CpUserDAO cpUserDAO;
+
+	private CpUserDAO() {
+		super();
+	}
+
+	public static CpUserDAO getInstance() {
+		if (cpUserDAO == null) {
+			synchronized (CpUserDAO.class) {
+				if (cpUserDAO == null) {
+					cpUserDAO = new CpUserDAO();
+				}
+			}
+		}
+		return cpUserDAO;
+	}
+
+	public int getCountByWhere(Map<String, Object> whereMap)
+			throws SQLException {
+		Integer s = (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"CpUser.getCountByWhere", whereMap);
+		return s;
+	}
+
+	public List<CpUserDTO> getByWhere(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"CpUser.getByWhere", whereMap);
+		if (list != null && list.size() > 0) {
+			return this.getById(list);
+		}
+		return null;
+	}
+
+}

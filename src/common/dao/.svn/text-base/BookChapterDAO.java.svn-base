@@ -1,0 +1,75 @@
+package cn.com.twsm.common.dao;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookChapterDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+/**
+ * 书籍章节表DAO
+ * @author Zhangmeng
+ * @date 2012-04-12
+ * @version 1.0.0.1
+ */
+public class BookChapterDAO extends BasicDAO<BookChapterDTO> {
+	private static BookChapterDAO bookChapterDAO; 
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookChapterDAO() {
+		super();
+	}
+	public static BookChapterDAO getInstance(){
+		if(bookChapterDAO == null){
+			synchronized(BookChapterDAO.class){
+				if(bookChapterDAO == null){
+					bookChapterDAO = new BookChapterDAO();
+				}
+			}
+		}
+		return bookChapterDAO;
+	}
+
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[id,bookId,chapterType,chapterName,chapterSort,chapterUrl,encryptionType,localPath,downloadCount]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("BookChapter.getCount",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得章节ID
+	 * add by ZhangMeng 2012/04/11
+	 * @param whereMap[id,bookId,chapterType,chapterName,chapterSort,chapterUrl,encryptionType,localPath,downloadCount]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("BookChapter.getByPage", whereMap);
+		return list;
+	}
+	/**
+	 * 根据查询条件获得章节ID
+	 * add by ZhangMeng 2012/04/11
+	 * @param whereMap[id,bookId,chapterType,chapterName,chapterSort,chapterUrl,encryptionType,localPath,downloadCount]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByWhere(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("BookChapter.getByWhere", whereMap);
+		return list;
+	}
+
+
+}

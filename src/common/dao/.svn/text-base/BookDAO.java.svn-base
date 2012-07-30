@@ -1,0 +1,237 @@
+package cn.com.twsm.common.dao;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookCatalogDTO;
+import cn.com.twsm.common.dto.BookDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+/**
+ * 书籍表DAO
+ * @author lixinglei
+ * @date 2012-04-11
+ * @version 1.0.0.1
+ */
+public class BookDAO extends BasicDAO<BookDTO> {
+	private static BookDAO bookDAO; 
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookDAO() {
+		super();
+	}
+	
+//	public int delete(int bookId) throws SQLException
+//	{
+//		return SqlBuilder.getSqlMapClient().delete("Book.delete", bookId);
+//	}
+
+	public static BookDAO getInstance(){
+		if(bookDAO == null){
+			synchronized(BookDAO.class){
+				if(bookDAO == null){
+					bookDAO = new BookDAO();
+				}
+			}
+		}
+		return bookDAO;
+	}
+	/**
+	 * 根据条件获得记录的总数
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[id,bookSourceId,bookName,authorId,authorName,bookType,bookSize,summary,downloadCount = 0,downloadCountPrefix,discussCount,discussCountPrefix,addTime,adminId,upStack,delMark,encryptionType,bookUrl,localPath,encryptionStartCapter,coverImgUrl,coverImgLocalPath,bookComment,isHot,allLabel]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Book.getCount",whereMap);
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[id,bookSourceId,bookName,authorId,authorName,bookType,bookSize,summary,downloadCount = 0,downloadCountPrefix,discussCount,discussCountPrefix,addTime,adminId,upStack,delMark,encryptionType,bookUrl,localPath,encryptionStartCapter,coverImgUrl,coverImgLocalPath,bookComment,isHot,allLabel]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCountWithLabel(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Book.getCountWithLabel",whereMap);
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[id,bookSourceId,bookName,authorId,authorName,bookType,bookSize,summary,downloadCount = 0,downloadCountPrefix,discussCount,discussCountPrefix,addTime,adminId,upStack,delMark,encryptionType,bookUrl,localPath,encryptionStartCapter,coverImgUrl,coverImgLocalPath,bookComment,isHot,allLabel]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCountWithCatalog(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Book.getCountWithCatalog",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得书籍ID
+	 * add by ZhangMeng 2012/04/11
+	 * @param whereMap[start,end,id,bookSourceId,bookName,authorId,authorName,bookType,bookSize,summary,downloadCount = 0,downloadCountPrefix,discussCount,discussCountPrefix,addTime,adminId,upStack,delMark,encryptionType,bookUrl,localPath,encryptionStartCapter,coverImgUrl,coverImgLocalPath,bookComment,isHot,allLabel]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("Book.getByPage", whereMap);
+		return list;
+	}
+	
+	/**
+	 * 根据分页数据及条件获得书籍ID
+	 * add by ZhangMeng 2012/04/23
+	 * @param whereMap[start,end,id,bookSourceId,bookName,authorId,authorName,bookType,bookSize,summary,downloadCount = 0,downloadCountPrefix,discussCount,discussCountPrefix,addTime,adminId,upStack,delMark,encryptionType,bookUrl,localPath,encryptionStartCapter,coverImgUrl,coverImgLocalPath,bookComment,isHot,allLabel]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPageWithLabel(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("Book.getByPageWithLabel", whereMap);
+		return list;
+	}
+	
+	/**
+	 * 根据分页数据及条件获得书籍ID
+	 * add by ZhangMeng 2012/04/23
+	 * @param whereMap[start,end,id,bookSourceId,bookName,authorId,authorName,bookType,bookSize,summary,downloadCount = 0,downloadCountPrefix,discussCount,discussCountPrefix,addTime,adminId,upStack,delMark,encryptionType,bookUrl,localPath,encryptionStartCapter,coverImgUrl,coverImgLocalPath,bookComment,isHot,allLabel]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPageWithCatalog(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("Book.getByPageWithCatalog", whereMap);
+		return list;
+	}
+	
+	/**
+	 * 根据catalogid查询book的总数
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[catalogId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCountByCatalogid(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Book.getCountByCatalogid",whereMap);
+	}
+	
+	/**
+	 * 根据catalogid及分页条件查询book书籍ID
+	 * add by ZhangMeng 2012/04/11
+	 * @param whereMap[start,end,catalogid]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPageByCatalogid(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("Book.getByPageByCatalogid", whereMap);
+		return list;
+	}
+	
+	/**
+	 * 根据查询条件获得书籍ID
+	 * add by ZhangMeng 2012/04/11
+	 * @param whereMap[id,bookSourceId,bookName,authorId,authorName,bookType,bookSize,summary,downloadCount = 0,downloadCountPrefix,discussCount,discussCountPrefix,addTime,adminId,upStack,delMark,encryptionType,bookUrl,localPath,encryptionStartCapter,coverImgUrl,coverImgLocalPath,bookComment,isHot,allLabel]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByWhere(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("Book.getByWhere", whereMap);
+		return list;
+	}
+
+
+
+	public  int getCount() throws SQLException {
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Book.getCount");
+	}
+
+	/**
+	 * 获得查询结果集列表
+	 * add by kangbaoxing 2012/04/16
+	 * @param whereMap[labelName,start,end]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<BookDTO> getByLabelName(Map whereMap) throws SQLException {
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("Book.getByLabelName",whereMap);
+		while(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	/*
+	 * 获得countben点击率高的图书
+	 */
+	@SuppressWarnings("unchecked")
+	public List<BookDTO> getHotClickBook(int count) throws SQLException {
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("Book.getHotClickBook",count);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	/*
+	 * kangbaoxing
+	 * 获得相关图书的接口
+	 */
+	@SuppressWarnings("unchecked")
+	public List<BookDTO> getRelationBook(Map whereMap) throws SQLException {
+		// TODO Auto-generated method stub
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("Book.getRelationBook",whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	/**
+	 * kangbaoxing
+	 * 获得相关图书的总数
+	 */
+	public Integer getRelationBookCount(String bookId) throws SQLException {
+		// TODO Auto-generated method stub
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Book.getRelationBookCount",bookId);
+	}
+	/**
+	 * kangbaoxing
+	 * 根据标签获得标签相关图书的个数
+	 * @param 标签名称
+	 * @return 标签相关图书的总数
+	 * @throws SQLException 
+	 */
+	public Integer getBooKCountByLabel(String labelName) throws SQLException {
+		// TODO Auto-generated method stub
+		 return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Book.getBooKCountByLabel",labelName);
+	}
+	
+	/**
+	 * 根据书籍ID查询分类ID
+	 * add by ZhangMeng 2012/04/11
+	 * @param Integer bookId
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public Integer getBookCatalogByBookId(Integer bookId)
+			throws SQLException {
+		Object catalogId = SqlBuilder.getSqlMapClient().queryForObject(
+				"BookCatalog.getBookCatalogByBookId", bookId);
+		if (null != catalogId) {
+			return (Integer) catalogId;
+		} else {
+			return null;
+		}
+	}
+	
+
+}

@@ -1,0 +1,62 @@
+package cn.com.twsm.common.dto;
+
+@SuppressWarnings("serial")
+public class StatLabelDTO extends BasicDTO{
+	private Integer labelId;					//标签ID
+	private Integer subscribeCount;				//当日订阅次数
+	private Integer unsubscribeCount;			//当日取消订阅次数
+	private Integer subscribeTotalCount;		//总订阅次数
+	private Long addTime;					//统计时间
+	private String year;						//年份
+	private String month;						//月份
+	private String day;							//日期
+
+	public void setLabelId(Integer labelId){
+		this.labelId = labelId;
+	}
+	public Integer getLabelId(){
+		return this.labelId;
+	}
+	public void setSubscribeCount(Integer subscribeCount){
+		this.subscribeCount = subscribeCount;
+	}
+	public Integer getSubscribeCount(){
+		return this.subscribeCount;
+	}
+	public void setUnsubscribeCount(Integer unsubscribeCount){
+		this.unsubscribeCount = unsubscribeCount;
+	}
+	public Integer getUnsubscribeCount(){
+		return this.unsubscribeCount;
+	}
+	public void setSubscribeTotalCount(Integer subscribeTotalCount){
+		this.subscribeTotalCount = subscribeTotalCount;
+	}
+	public Integer getSubscribeTotalCount(){
+		return this.subscribeTotalCount;
+	}
+	public void setAddTime(Long addTime){
+		this.addTime = addTime;
+	}
+	public Long getAddTime(){
+		return this.addTime;
+	}
+	public void setYear(String year){
+		this.year = year;
+	}
+	public String getYear(){
+		return this.year;
+	}
+	public void setMonth(String month){
+		this.month = month;
+	}
+	public String getMonth(){
+		return this.month;
+	}
+	public void setDay(String day){
+		this.day = day;
+	}
+	public String getDay(){
+		return this.day;
+	}
+}

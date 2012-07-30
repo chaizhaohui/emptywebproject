@@ -1,0 +1,60 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.PromotionDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 图书专题DAO
+ * @author ZhangChengpeng
+ * @date 2012-04-11
+ *
+ */
+public class PromotionDAO extends BasicDAO<PromotionDTO>{
+	private static PromotionDAO promotionDAO;
+	private PromotionDAO() {
+		super();
+	}
+
+	public static PromotionDAO getInstance() {
+		if(promotionDAO == null){
+			synchronized(PromotionDAO.class){
+				if(promotionDAO == null){
+					promotionDAO = new PromotionDAO();
+				}
+			}
+		}
+		return promotionDAO;
+	}
+	
+	public PromotionDTO getPromotionById(Integer promotionId) throws SQLException {
+		return this.getById(promotionId);
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by ZhangMeng 2012/04/12
+	 * @param whereMap[id,promotionGroup,promotionName,promotionDesc,imageUrl,localPath,jumpType,promotionSort,disabled,jumpDetail,summary,detail,periodicalNum,showDate,isHot,addTime]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Promotion.getCount",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得专题ID
+	 * add by ZhangMeng 2012/04/12
+	 * @param whereMap[start,end,id,promotionGroup,promotionName,promotionDesc,imageUrl,localPath,jumpType,promotionSort,disabled,jumpDetail,summary,detail,periodicalNum,showDate,isHot,addTime]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("Promotion.getByPage", whereMap);
+		return list;
+	}
+}

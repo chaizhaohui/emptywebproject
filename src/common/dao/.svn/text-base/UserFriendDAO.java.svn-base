@@ -1,0 +1,69 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.UserFriendDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 用户关注表DAO
+ * 
+ * @author 肖金
+ * @date 2012-04-12
+ */
+public class UserFriendDAO extends BasicDAO<UserFriendDTO> {
+
+	private static UserFriendDAO userFriendDAO; 
+	private UserFriendDAO(){super();}
+	public static UserFriendDAO getInstance(){
+		if(userFriendDAO == null){
+			synchronized(UserFriendDAO.class){
+				if(userFriendDAO == null){
+					userFriendDAO = new UserFriendDAO();
+				}
+			}
+		}
+		return userFriendDAO;
+	}
+
+	/**
+	 * 根据条件获得记录的总数 add by xiaojin 2012/04/12
+	 * 
+	 * @param whereMap[userId,friendUserId,startDate,endDate]
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"UserFriend.getCount", whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得记录对象 add by lixnglei 2012/04/21
+	 * 
+	 * @param whereMap[userId,friendUserId,startDate,endDate]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<UserFriendDTO>  getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserFriend.getByPage", whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	
+
+	public Integer addFriendUser(UserFriendDTO userFriendDTO) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().insert("UserFriend.insert",userFriendDTO);
+	}
+
+	
+	public void delFriendUser(Map<String, Object> whereMap) throws SQLException {
+		SqlBuilder.getSqlMapClient().delete("UserFriend.delete",whereMap);
+	}
+
+
+}

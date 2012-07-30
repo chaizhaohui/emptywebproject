@@ -1,0 +1,47 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.ClientVersionDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 客户端下载表DAO
+ * 
+ * @author lixinglei
+ * @date 2012-04-11
+ * @version 1.0.0.1
+ */
+public class ClientVersionDAO extends BasicDAO<ClientVersionDTO> {
+	private static ClientVersionDAO clientVersionDAO;
+
+	private ClientVersionDAO() {
+		super();
+	}
+
+	public static ClientVersionDAO getInstance() {
+		if (clientVersionDAO == null) {
+			synchronized (ClientVersionDAO.class) {
+				if (clientVersionDAO == null) {
+					clientVersionDAO = new ClientVersionDAO();
+				}
+			}
+		}
+		return clientVersionDAO;
+	}
+
+	public int getCount(Map<String, Object> whereMap) throws SQLException {
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject(
+				"ClientVersion.getCount", whereMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByPage(Map<String, Object> whereMap)
+			throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList(
+				"ClientVersion.getByPage", whereMap);
+		return list;
+	}
+}

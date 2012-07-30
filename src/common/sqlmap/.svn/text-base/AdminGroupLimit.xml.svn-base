@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AdminGroupLimit">
+	<resultMap class="cn.com.twsm.common.dto.AdminGroupLimitDTO"
+		id="adminsGroupLimitDTO">
+		<result column="GROUP_LIMIT_ID" property="id" jdbcType="INTEGER" />
+		<result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" />
+		<result column="LIMIT_ID" property="limitId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.AdminGroupLimitDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_ADMIN_GROUP_LIMIT.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO ADMIN_GROUP_LIMIT
+				(GROUP_LIMIT_ID, GROUP_ID, LIMIT_ID)
+		VALUES (#id#, #groupId#, #limitId#)
+	</insert>
+	
+	<select id="getById" resultMap="adminsGroupLimitDTO" parameterClass="int">
+		SELECT 
+			GROUP_LIMIT_ID,
+			GROUP_ID,
+			LIMIT_ID
+		FROM ADMIN_GROUP_LIMIT
+		WHERE GROUP_LIMIT_ID = #id#
+	</select>
+
+	<select id="selectByGroupId" resultClass="Integer" parameterClass="int">
+		SELECT 
+			GROUP_LIMIT_ID
+		FROM ADMIN_GROUP_LIMIT
+		WHERE GROUP_ID = #id#
+	
+	</select>
+	
+	<delete id="delete" parameterClass="int">
+		DELETE FROM ADMIN_GROUP_LIMIT
+		WHERE GROUP_LIMIT_ID = #id#
+	</delete>
+</sqlMap>

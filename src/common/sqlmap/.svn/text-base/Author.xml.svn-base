@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Author">
+	<resultMap class="cn.com.twsm.common.dto.AuthorDTO" id="author">
+		<result column="AUTHOR_ID" property="id" jdbcType="NUMBER"/>
+		<result column="TRUE_NAME" property="trueName" jdbcType="VARCHAR2"/>
+		<result column="PEN_NAME" property="penName" jdbcType="VARCHAR2"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				AUTHOR_ID=#id#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="trueName">
+				TRUE_NAME=#trueName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="penName">
+				PEN_NAME=#penName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="penNameLike">
+				PEN_NAME like '%'||#penNameLike#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="trueNameLike">
+				TRUE_NAME like '%'||#trueNameLike#||'%'
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM AUTHOR WHERE AUTHOR_ID = #id#
+	</delete>
+	<update id="update" parameterClass="cn.com.twsm.common.dto.AuthorDTO">
+	        UPDATE AUTHOR
+	        <dynamic prepend="set">
+           	   TRUE_NAME=#trueName#,
+           	   PEN_NAME=#penName#
+           </dynamic>
+           WHERE AUTHOR_ID = #id#
+	</update>
+	<select id="getCount" resultClass="Integer" parameterClass="map">
+	 	SELECT
+	 		COUNT(1)
+	 	FROM
+	 		AUTHOR
+	 	WHERE 
+	 		1=1
+	 	<include refid="whereCondition"/> 
+	</select>
+	<select id="showAuthorList" resultClass="Integer" parameterClass="map">
+		SELECT
+			AUTHOR_ID
+		FROM 
+			(SELECT 
+				AUTHOR_ID,ROWNUM RN 
+			FROM 
+				AUTHOR
+			WHERE 1=1 <include refid="whereCondition"/> 
+			ORDER BY AUTHOR_ID DESC
+			)
+		WHERE 1=1
+		AND RN &lt;= #end# AND RN &gt;=#start#
+	</select>
+	
+	
+	
+	<select id="getById" resultMap="author" parameterClass="Integer">
+		SELECT 
+			AUTHOR_ID,
+			TRUE_NAME,
+			PEN_NAME 
+		FROM 
+			AUTHOR 
+		WHERE 
+			AUTHOR_ID=#id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.AuthorDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT SEQ_AUTHOR.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO AUTHOR(AUTHOR_ID,TRUE_NAME,PEN_NAME)
+		VALUES(#id#,#trueName#,#penName#)
+	</insert>
+</sqlMap>

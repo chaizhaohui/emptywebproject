@@ -1,0 +1,238 @@
+package cn.com.twsm.common.dto;
+
+
+public class UserBlogDTO extends BasicDTO {
+	private static final long serialVersionUID = 1L;
+	
+	public static final String CONTENT_TYPE_DISCUSS = "discuss";
+	public static final String CONTENT_TYPE_NOTE = "note";
+	public static final String CONTENT_TYPE_SUMMARY = "summary";
+	public static final String CONTENT_TYPE_BLOG = "blog";
+	
+	private String contentType; 			// 内容类型 必填 discuss:书评 note:笔记 summary:书摘 blog:博客
+	private String title; 					// 标题
+	private String content; 				// 内容: 必填
+	private String allLabel;	   			// 标签:全部标签 冗余字段 以'|'分割多个
+	private Integer bookId;					// 相关书籍ID:外键
+	private String position;				// 位置:客户端传送的位置定位字符串 原样保存
+	private Integer clickCount = 0;			// 点击次数: 必填 默认为0
+	private Integer clickCountPrefix = 0;	// 点击次数偏移: 必填 默认为0
+	private String otherUserVisable = "1";	// 其他人是否可见: 必填 0:否 1:是 默认为1
+	private Long addTime;					// 发布时间: 必填
+	private Long clientAddTime;				// 客户端发布时间: 必填
+	private Integer deviceId;				// 发布设备ID:外键
+	private String toSns;					// 是否同步到社区: 必填 0:否 1:是
+	private String adminRead = "0";			// 管理员已读: 必填 0:否 1:是 默认为0
+	private Long adminReadTime;				// 管理员阅读时间
+	private Integer adminId;				// 阅读管理员ID: 外键
+	private Integer refActivityId;			// 引用动态ID
+	private String positionDesc;			// 位置说明:客户端传送的位置说明
+	private Integer userId;					// 用户ID:外键
+	private Integer discussCount = 0;		// 评论次数:必填 默认为0
+	private String deleteFlag = "0";		//删除标记 必填 默认为0, 0:否 1:是 默认为0 add by lixinglei
+	private String isRecommend = "0";		//推荐标记 必填 默认为0, 0:否 1:是 默认为0 add by lixinglei
+	private String imgFileLocalPath;		//博客图片本地存放路径
+	private String imgFileUrl;				//博客图片URL
+	private String isTop = "0";				//是否置顶作为活动:必填 0:否 1:是 默认为0
+	
+	
+	public String getIsRecommend() {
+		return isRecommend;
+	}
+
+	public void setIsRecommend(String isRecommend) {
+		this.isRecommend = isRecommend;
+	}
+
+	public String getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(String deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getAllLabel() {
+		return allLabel;
+	}
+
+	public void setAllLabel(String allLabel) {
+		this.allLabel = allLabel;
+	}
+
+	public Integer getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public Integer getClickCount() {
+		return clickCount;
+	}
+
+	public void setClickCount(Integer clickCount) {
+		this.clickCount = clickCount;
+	}
+
+	public Integer getClickCountPrefix() {
+		return clickCountPrefix;
+	}
+
+	public void setClickCountPrefix(Integer clickCountPrefix) {
+		this.clickCountPrefix = clickCountPrefix;
+	}
+
+	public String getOtherUserVisable() {
+		return otherUserVisable;
+	}
+
+	public void setOtherUserVisable(String otherUserVisable) {
+		this.otherUserVisable = otherUserVisable;
+	}
+
+	public Long getAddTime() {
+		return addTime;
+	}
+
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+
+	public Long getClientAddTime() {
+		return clientAddTime;
+	}
+
+	public void setClientAddTime(Long clientAddTime) {
+		this.clientAddTime = clientAddTime;
+	}
+
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	public String getToSns() {
+		return toSns;
+	}
+
+	public void setToSns(String toSns) {
+		this.toSns = toSns;
+	}
+
+	public String getAdminRead() {
+		return adminRead;
+	}
+
+	public void setAdminRead(String adminRead) {
+		this.adminRead = adminRead;
+	}
+
+	public Long getAdminReadTime() {
+		return adminReadTime;
+	}
+
+	public void setAdminReadTime(Long adminReadTime) {
+		this.adminReadTime = adminReadTime;
+	}
+
+	public Integer getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+
+	public Integer getRefActivityId() {
+		return refActivityId;
+	}
+
+	public void setRefActivityId(Integer refActivityId) {
+		this.refActivityId = refActivityId;
+	}
+
+	public String getPositionDesc() {
+		return positionDesc;
+	}
+
+	public void setPositionDesc(String positionDesc) {
+		this.positionDesc = positionDesc;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public Integer getDiscussCount() {
+		return discussCount;
+	}
+
+	public void setDiscussCount(Integer discussCount) {
+		this.discussCount = discussCount;
+	}
+
+	public String getImgFileLocalPath() {
+		return imgFileLocalPath;
+	}
+
+	public void setImgFileLocalPath(String imgFileLocalPath) {
+		this.imgFileLocalPath = imgFileLocalPath;
+	}
+
+	public String getImgFileUrl() {
+		return imgFileUrl;
+	}
+
+	public void setImgFileUrl(String imgFileUrl) {
+		this.imgFileUrl = imgFileUrl;
+	}
+
+	public String getIsTop() {
+		return isTop;
+	}
+
+	public void setIsTop(String isTop) {
+		this.isTop = isTop;
+	}
+}

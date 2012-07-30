@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	
+	<filter>
+	    <filter-name>charactorEncodingFilter</filter-name>
+	    <filter-class>cn.com.twsm.common.filter.CharactorEncodingFilter</filter-class>
+	    <init-param>
+	    	<param-name>encoding</param-name>
+	        <param-value>UTF-8</param-value>
+	    </init-param>
+	</filter>
+	<filter-mapping>
+	    <filter-name>charactorEncodingFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<servlet>
+		<servlet-name>log4j-init</servlet-name>
+		<servlet-class>cn.com.twsm.common.filter.Log4jInit</servlet-class>
+		<init-param>
+			<param-name>log4j</param-name>
+			<param-value>WEB-INF/classes/log4j.properties</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	
+	<filter>
+        <filter-name>struts2</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+    </filter>
+	<servlet>  
+		<servlet-name>JspSupportServlet</servlet-name>  
+		<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>  
+		<load-on-startup>1</load-on-startup>  
+	</servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ResponseDRM</servlet-name>
+    <servlet-class>cn.com.twsm.drm.ResponseDRM</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ResponseDRM</servlet-name>
+    <url-pattern>/servlet/ResponseDRM</url-pattern>
+  </servlet-mapping>
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>*.do</url-pattern>
+        <dispatcher>REQUEST </dispatcher>  
+		<dispatcher>FORWARD </dispatcher> 
+    </filter-mapping>
+    
+    <jsp-config>
+        <taglib>
+            <taglib-uri>/tg</taglib-uri>
+            <taglib-location>/WEB-INF/pagetag.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+	
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>

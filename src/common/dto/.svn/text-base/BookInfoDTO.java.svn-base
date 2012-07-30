@@ -1,0 +1,97 @@
+package cn.com.twsm.common.dto;
+
+/**
+ * BOOK_INFO 表
+ * @author Guo Tianci
+ *
+ */
+public class BookInfoDTO extends BasicDTO{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6290460224722852505L;
+	
+	private String title;
+	
+	private String sendDate;
+	
+	private String source;
+	
+	private String imgLocalPath;
+	
+	private String imgURL;
+	
+	private String content;
+	
+	private Long addTime;
+	
+	private long infoSort;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSendDate() {
+		return sendDate;
+	}
+
+	public void setSendDate(String sendDate) {
+		this.sendDate = sendDate;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getImgLocalPath() {
+		return imgLocalPath;
+	}
+
+	public void setImgLocalPath(String imgLocalPath) {
+		this.imgLocalPath = imgLocalPath;
+	}
+
+	public String getImgURL() {
+		return imgURL;
+	}
+
+	public void setImgURL(String imgURL) {
+		this.imgURL = imgURL;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Long getAddTime() {
+		return addTime;
+	}
+
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+
+	public long getInfoSort() {
+		return infoSort;
+	}
+
+	public void setInfoSort(long infoSort) {
+		this.infoSort = infoSort;
+	}
+	
+	
+
+}

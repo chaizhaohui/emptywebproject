@@ -1,0 +1,39 @@
+package cn.com.twsm.common.action;
+
+import java.io.IOException;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import cn.com.twsm.common.service.LogoutService;
+
+/**
+ * 注销action
+ * @author Guo Tianci
+ * @date 2012-05-21
+ */
+public class LogoutAction extends BasicAction {
+	
+	public void doLogout() throws IOException {
+		
+		LogoutService.getInstance().doLogout();
+		
+//		return ActionSupport.SUCCESS;
+		
+		StringBuffer sb = new StringBuffer(16);
+		sb.append("<script>");
+		sb.append(" window.parent.location.href='");
+		sb.append("/tpl/login.html'");
+		sb.append("</script>");
+		HttpServletResponse response = getResponse();
+		response.reset();
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		response.setHeader("Expires", "0");
+		ServletOutputStream out = this.getResponse().getOutputStream();
+		out.write(sb.toString().getBytes("utf-8"));
+		out.flush();
+		out.close();
+	}
+	
+}

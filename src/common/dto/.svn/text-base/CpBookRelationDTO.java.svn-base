@@ -1,0 +1,25 @@
+package cn.com.twsm.common.dto;
+
+public class CpBookRelationDTO extends BasicDTO{
+	private String cpBookId;					//CP书籍ID: 必填
+	private int bookSourceId;					//书籍源ID:  外键 必填
+	private int cpUserId;
+	public String getCpBookId() {
+		return cpBookId;
+	}
+	public void setCpBookId(String cpBookId) {
+		this.cpBookId = cpBookId;
+	}
+	public int getBookSourceId() {
+		return bookSourceId;
+	}
+	public void setBookSourceId(int bookSourceId) {
+		this.bookSourceId = bookSourceId;
+	}
+	public int getCpUserId() {
+		return cpUserId;
+	}
+	public void setCpUserId(int cpUserId) {
+		this.cpUserId = cpUserId;
+	}
+}

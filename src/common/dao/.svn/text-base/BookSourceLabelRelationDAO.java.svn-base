@@ -1,0 +1,43 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookSourceCatalogRelationDTO;
+import cn.com.twsm.common.dto.BookSourceLabelRelationDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+/**
+ * BookSourceLabelRelation表DAO
+ * @author kangbaoxing
+ * @date 2012-04-19
+ */
+public class BookSourceLabelRelationDAO extends BasicDAO<BookSourceLabelRelationDTO> {
+
+	private static BookSourceLabelRelationDAO bookSourceLabelRelationDAO;
+	public static  BookSourceLabelRelationDAO getInstance(){
+		if(bookSourceLabelRelationDAO == null){
+			synchronized(BookSourceLabelRelationDAO.class){
+				if(bookSourceLabelRelationDAO == null){
+					bookSourceLabelRelationDAO = new BookSourceLabelRelationDAO();
+				}
+			}
+		}
+		return bookSourceLabelRelationDAO;
+	}	
+	
+	private BookSourceLabelRelationDAO(){
+		super();
+	}
+	
+	public List<BookSourceLabelRelationDTO> getByWhere(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("BookSourceLabelRelation.getByWhere",whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+}

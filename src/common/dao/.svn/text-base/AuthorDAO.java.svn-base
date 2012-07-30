@@ -1,0 +1,62 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.AuthorDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * Admins表DAO
+ * @author kangbaoxing
+ * @date 2012-04-19
+ */
+public class AuthorDAO extends BasicDAO<AuthorDTO> {
+	
+	private static AuthorDAO authorDAO;
+
+	private AuthorDAO() {
+		super();
+	}
+
+	public static AuthorDAO getInstance() {
+		if (authorDAO == null) {
+			synchronized (AuthorDAO.class) {
+				if (authorDAO == null) {
+					authorDAO = new AuthorDAO();
+				}
+			}
+		}
+		return authorDAO;
+	}
+	/**
+	 * 依据条件获取记录数量
+	 * @param whereMap[authorid,authorId,penName]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Author.getCount", whereMap);
+	}
+
+	/**
+	 * 
+	 * @param whereMap[start,end]
+	 * @return
+	 * @throws SQLException 
+	 */
+	public List<AuthorDTO> showAuthorList(Map<String, Object> whereMap) throws SQLException {
+		List<Integer> idList = (List<Integer>)SqlBuilder.getSqlMapClient().queryForList("Author.showAuthorList", whereMap);
+		if(idList != null && idList.size() > 0)
+			return this.getById(idList);
+		return null;
+	}
+
+	public List<AuthorDTO> getByWhere(Map<String,Object> whereMap) throws SQLException {
+		List<Integer> idList = (List<Integer>)SqlBuilder.getSqlMapClient().queryForList("Author.showAuthorList", whereMap);
+		if(idList != null && idList.size() > 0)
+			return this.getById(idList);
+		return null;
+	}
+}

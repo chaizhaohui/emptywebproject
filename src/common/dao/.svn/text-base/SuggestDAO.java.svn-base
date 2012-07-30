@@ -1,0 +1,60 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.SuggestDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 用户意见反馈DAO
+ * @author QiaoGuangqing
+ * @date 2012-04-23
+ */
+public class SuggestDAO extends BasicDAO<SuggestDTO> {
+	
+	private static SuggestDAO suggestDAO; 
+	public static SuggestDAO getInstance(){
+		if(suggestDAO == null){
+			synchronized(SuggestDAO.class){
+				if(suggestDAO == null){
+					suggestDAO = new SuggestDAO();
+				}
+			}
+		}
+		return suggestDAO;
+	}
+	/**
+	 * 默认构造函数 不能用于事务
+	 */
+	private SuggestDAO(){
+		super();
+	}
+	
+	
+	/**
+	 * 依据条件获取记录数
+	 * @param whereMap[deal,adminId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Suggest.getCount", whereMap);
+	}
+	
+	/**
+	 * 依据条件分页获取记录
+	 * @param whereMap[start,end,deal,adminId]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<SuggestDTO> getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = (List<Integer>)SqlBuilder.getSqlMapClient().queryForList("Suggest.getByPage", whereMap);
+		if(list != null && list.size() > 0)
+			return this.getById(list);
+		return null;
+	}
+
+}

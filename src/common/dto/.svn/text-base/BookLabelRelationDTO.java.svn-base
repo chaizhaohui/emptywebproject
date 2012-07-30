@@ -1,0 +1,26 @@
+package cn.com.twsm.common.dto;
+
+public class BookLabelRelationDTO extends BasicDTO{
+//	private Integer relationId;					//关系ID: 主键 自增
+	private Integer bookId;						//书籍ID:外键 必填
+	private Integer labelId;					//关键词ID:外键 必填
+
+//	public void setRelationId(Integer relationId){
+//		this.relationId = relationId;
+//	}
+//	public Integer getRelationId(){
+//		return this.relationId;
+//	}
+	public void setBookId(Integer bookId){
+		this.bookId = bookId;
+	}
+	public Integer getBookId(){
+		return this.bookId;
+	}
+	public void setLabelId(Integer labelId){
+		this.labelId = labelId;
+	}
+	public Integer getLabelId(){
+		return this.labelId;
+	}
+}

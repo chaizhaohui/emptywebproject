@@ -1,0 +1,45 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.CpBookRelationDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * @author kangbaoxing
+ * @date 2012-04-19
+ */
+public class CpBookRelationDAO extends BasicDAO<CpBookRelationDTO> {
+
+	private static CpBookRelationDAO cpBookRelationDAO;
+
+	private CpBookRelationDAO() {
+		super();
+	}
+
+	public static CpBookRelationDAO getInstance() {
+		if (cpBookRelationDAO == null) {
+			synchronized (CpBookRelationDAO.class) {
+				if (cpBookRelationDAO == null) {
+					cpBookRelationDAO = new CpBookRelationDAO();
+				}
+			}
+		}
+		return cpBookRelationDAO;
+	}
+
+	public List<CpBookRelationDTO> getByWhere(Map<String, Object> where)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		List<Integer> cpBookRelationId = SqlBuilder.getSqlMapClient()
+				.queryForList("CpBookRelation.getByWhere", where);
+		if (cpBookRelationId != null) {
+			return this.getById(cpBookRelationId);
+		}
+		return null;
+	}
+
+}

@@ -1,0 +1,62 @@
+<#import "/tpl/common.html" as common/>
+<#assign tg=JspTaglibs["/WEB-INF/pagetag.tld"]>
+<@common.html title="大众阅读管理平台 - 漂流书管理 - 添加漂流书">
+<script>
+function doSave()
+{
+    if(!checkParam())
+    {
+        return false;
+    }
+    document.forms[0].action="/around/AroundBookManagerAction-addAroundBook.do";
+    document.forms[0].method="post";
+    document.forms[0].submit();
+}
+function checkParam()
+{
+    if($("input[name='bookName']").attr("value").length==0) 
+    {
+        alert("书籍名称不能为空");
+        return false;
+    }
+  if($("input[name='userId']").val().length==0||isNaN($("input[name='userId']").val()))
+    {
+        alert("用户id不能为空且必须为数字");
+        return false;
+    }
+    return true;
+}
+</script>
+    <!--查询条件内容区 end-->
+    <div class="ri_box">
+    	<div class="ri_box_top">
+            <div class="ri_top_le">
+                <span class="ri_resources_ico"></span>
+                <span>添加漂流书</span>
+            </div>
+        </div>
+        <div class="sear_list">
+        <form enctype ="multipart/form-data" method="POST">
+            <ul>
+               <li>
+                 <span class="w110_ri">书籍名称：</span><span><input type="text"  class="w180 inpu_bg" name="bookName"/></span>
+               </li>
+            </ul>
+        
+        <div class="clear"></div>
+                <div class="w110_ri fl_left" style="height:205px;">漂书信息：</div>
+                <textarea class="mrmp_textarea" name="shareMsg" ></textarea>
+        <ul>
+           <li>
+             <span class="w110_ri">用户ID：</span><span><input type="text"  class="w180 inpu_bg" name="userId"/></span>
+           </li>
+        </ul>
+        </form>
+    </div>
+    <div class="bank10"></div>
+            <div class="mrmp_fot_btn">
+                <span class="sear_list_btn"><a href="javascript:;" onclick="doSave()">保存</a></span>
+                <span class="sear_list_btn"><a href="javascript:history.back(-1)">返 回</a></span>
+            </div>
+    <div class="bank20"></div>
+</@common.html>

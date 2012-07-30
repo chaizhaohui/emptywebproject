@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BookSourceAuthorRelation">
+	<resultMap class="cn.com.twsm.common.dto.BookSourceAuthorRelationDTO" id="bookSourceAuthorRelation">
+		<result column="RELATION_ID" property="id" jdbcType="NUMBER"/>
+		<result column="BOOK_SOURCE_ID" property="bookSourceId" jdbcType="NUMBER"/>
+		<result column="AUTHOR_ID" property="authorId" jdbcType="NUMBER"/>
+	</resultMap>
+	<select id="getById" resultMap="bookSourceAuthorRelation" parameterClass="int">
+		SELECT 
+			RELATION_ID,
+			BOOK_SOURCE_ID,
+			AUTHOR_ID 
+		FROM 
+			BOOK_SOURCE_AUTHOR_RELATION
+		WHERE
+			RELATION_ID=#id#
+	</select>
+
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.BookSourceAuthorRelationDTO">
+		<selectKey keyProperty="id" resultClass="int" type="pre">
+			SELECT BOOK_SOURCE_AUTHOR_RELATION.Nextval FROM DUAL
+		</selectKey>
+		INSERT INTO BOOK_SOURCE_AUTHOR_RELATION(RELATION_ID,BOOK_SOURCE_ID,AUTHOR_ID)
+		VALUES(#id#,#bookSourceId#,#authorId#)
+	</insert>
+</sqlMap>

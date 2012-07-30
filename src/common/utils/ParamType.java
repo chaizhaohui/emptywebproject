@@ -1,0 +1,16 @@
+package common.utils;
+
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface ParamType {
+	
+	public enum PARAM_TYPE{IN, OUT, IN_OUT};
+	
+	public PARAM_TYPE value() default PARAM_TYPE.IN_OUT;
+}

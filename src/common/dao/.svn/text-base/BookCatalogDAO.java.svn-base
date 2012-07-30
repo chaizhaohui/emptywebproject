@@ -1,0 +1,99 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.BookCatalogDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+public class BookCatalogDAO extends BasicDAO<BookCatalogDTO> {
+	
+	private static BookCatalogDAO bookCatalogDAO;
+
+	private BookCatalogDAO() {
+		super();
+	}
+
+	public static BookCatalogDAO getInstance() {
+		if (bookCatalogDAO == null) {
+			synchronized (BookCatalogDAO.class) {
+				if (bookCatalogDAO == null) {
+					bookCatalogDAO = new BookCatalogDAO();
+				}
+			}
+		}
+		return bookCatalogDAO;
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[id,catalogName,disabled,catalogSort,bookCount,catalogImgLocalPath,catalogImgUrl]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("BookCatalog.getCount",whereMap);
+	}
+
+	
+	/**
+	 * 根据查询条件获得catalogid列表
+	 * add by ZhangMeng 2012/04/10
+	 * @param whereMap[id,catalogName,disabled,catalogSort,bookCount,catalogImgLocalPath,catalogImgUrl]
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getByWhere(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("BookCatalog.getByWhere", whereMap);
+		return list;
+	}
+	/**
+	 * 获得所有catalog列表
+	 * add by ZhangMeng 2012/04/10
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<BookCatalogDTO> getAllCatalog() throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("BookCatalog.getByWhere",new HashMap<String,Object>());
+		List<BookCatalogDTO> listBookCatalog = null;
+		if(null!=list&&list.size()>0)
+		{
+			listBookCatalog = this.getById(list);
+		}
+		return listBookCatalog;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<BookCatalogDTO> getCatalogs(Map<String, Object> whereMap) throws SQLException {
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("BookCatalog.getByPage",whereMap);
+		
+		if (list != null && list.size() > 0) {
+			return getById(list);
+		}
+		
+		return Collections.emptyList();
+	}
+	
+	
+	public int getCatalogBookCount(int catalogId) throws SQLException {
+		Object count = SqlBuilder.getSqlMapClient().queryForObject("BookCatalog.getCatalogBookCount",catalogId);
+		return (Integer)count;
+	}
+	
+	
+	public int getCatalogBookSourceCount(int catalogId) throws SQLException {
+		Object count = SqlBuilder.getSqlMapClient().queryForObject("BookCatalog.getCatalogBookSourceCount",catalogId);
+		return (Integer)count;
+	}
+	
+	public int getCatalogCpCount(int catalogId) throws SQLException {
+		Object count = SqlBuilder.getSqlMapClient().queryForObject("BookCatalog.getCatalogCpCount",catalogId);
+		return (Integer)count;
+	}
+}

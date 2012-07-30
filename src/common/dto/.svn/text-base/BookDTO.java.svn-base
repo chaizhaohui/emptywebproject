@@ -1,0 +1,430 @@
+package cn.com.twsm.common.dto;
+
+import java.math.BigDecimal;
+
+import cn.com.twsm.common.utils.ConfigUtil;
+import cn.com.twsm.common.utils.General;
+
+/**
+ * 书籍表DTO
+ * @author lixinglei
+ * @date 2012-04-09
+ * @version 1.0.0.1
+ */
+public class BookDTO extends BasicDTO{
+	private static final long serialVersionUID = 1L;
+	public static final String BOOK_TYPE_TEXT = "1";	//文本书籍类型
+	public static final String BOOK_TYPE_AUDIO = "2"; //语音图书类型
+	
+	public static final String BOOK_UPSTACK_UP = "1";	//上架图书
+	public static final String BOOK_UPSTACK_DOWN = "0";	//下架图书
+	
+	public static final String BOOK_HOT_YES = "1";	//热门图书
+	public static final String BOOK_HOT_NO = "0";	//非热门图书
+	
+	public static final String BOOK_DEL_YES = "1";	//可以删除
+	public static final String BOOK_DEL_NO = "0";	//不可以删除
+	
+	private Integer bookSourceId;					//书籍源ID 外键 必填
+	private String bookName;						//书籍名称 必填
+	private Integer authorId;						//外键
+	private String authorName;						//冗余字段 必填
+	private String bookType;						//书籍类型 1:文本 2:语音 必填
+	private Integer bookSize;						//书籍大小 单位KB 必填
+	private String summary;							//书籍简介
+	private Integer downloadCount = 0;				//下载次数 必填
+	private Integer downloadCountPrefix = 0;			//下载次数偏移 必填
+	private Integer discussCount = 0;					//评论次数 必填
+	private Integer discussCountPrefix = 0;				//评论次数偏移 必填
+	private Long addTime;							//添加时间 必填
+	private Integer adminId;						//外键 必填
+	private String upStack = "0";					//1:上架 0:下架 必填
+	private String delMark = "1";					//是否可删除标记 0:否 1:是 默认为1 必填
+	private String encryptionType;					//加密类型 为空则不加密
+	private String bookUrl;							//资源URL 必填
+	private String localPath;						//本地路径 必填
+	private Integer encryptionStartCapter;			//加密起始章节 0为不加密 必填
+	private String coverImgUrl;						//书籍封面URL
+	private String coverImgLocalPath;				//书籍封面本地路径
+	private String bookComment;						//书籍点评
+	private String isHot="0";						//是否为热门图书:必填 0:否 1:是 默认为0
+	private String allLabel;						//所有标签字段
+	private String bookNamePy;						//书名拼音
+	private String status = "unPack";
+	private String longNominateinfor;// 图书长推荐语:允许为空
+	private String shortNominateinfor;// 图书短推荐语:允许为空
+	private String celebrityRecommend;// 名人推荐语:允许为空
+	private String mediaRecommend;// 媒体推荐语:允许为空
+	private String catalogName;
+	private BigDecimal bookSort = BigDecimal.valueOf(1000);
+	private String isRefined = "0";
+
+	private Integer totalPage;							// 图书总页数
+	private Integer totalWords;							// 图书总字数
+	private String isFree = "1";						// 是否免费 0:否 1:是 默认为1
+	private BigDecimal price = BigDecimal.valueOf(0); 	// 图书单价 必填 默认为0
+	
+	
+	//扩展字段
+	private String epubUrl;						//EPUB书籍URL
+	private String audioUrl;					//MP3文件URL
+	
+	
+	
+	public String getBookNamePy() {
+		return bookNamePy;
+	}
+
+	public void setBookNamePy(String bookNamePy) {
+		this.bookNamePy = bookNamePy;
+	}
+
+	/**
+	 * 根据终端类型获取书籍图片URL全路径，service中动态使用
+	 * @return
+	 */
+	public String getFullcoverImgUrl(){
+		if(isPad()){
+			return getBigFullcoverImgUrl();
+		}else{
+			return getSmallFullcoverImgUrl();	
+		}
+	}
+	
+	/**
+	 * 获取书籍图片URL全路径(大图片)
+	 * @return
+	 * @author lixinglei
+	 * @date 2012-06-19
+	 */
+	public String getBigFullcoverImgUrl(){
+		return General.isEmpty(this.getCoverImgUrl())?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.BOOKCOVER_URL_PREFIX_BIG)) + this.getCoverImgUrl();
+	}
+	
+	/**
+	 * 获取书籍图片URL全路径(小图片)
+	 * @return
+	 * @author lixinglei
+	 * @date 2012-06-19
+	 */
+	public String getSmallFullcoverImgUrl(){
+		return General.isEmpty(this.getCoverImgUrl())?"":General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.BOOKCOVER_URL_PREFIX_SMALL)) + this.getCoverImgUrl();
+	}
+	
+	/**
+	 * 获取书籍URL全路径
+	 * @return
+	 */
+	public String getFullBookUrl(){
+		String configPath = BookDTO.BOOK_TYPE_AUDIO.equals(this.getBookType())?General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.AUDIOBOOKS_URL_PREFIX)):General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.BOOKS_URL_PREFIX));
+		return General.isEmpty(this.getBookUrl())?"":configPath + this.getBookUrl();
+	}
+	
+	/**
+	 * 获取书籍本地路径全路径
+	 * @return
+	 */
+	public String getFullLocalPath(){
+		String configPath = BookDTO.BOOK_TYPE_AUDIO.equals(this.getBookType())?General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.AUDIOBOOKS_LOCALPATH_PREFIX)):General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.BOOKS_LOCALPATH_PREFIX));
+		return General.isEmpty(this.getLocalPath())?"":configPath + this.getLocalPath();
+	}
+	
+	/**
+	 * 获取书籍下载路径全路径
+	 * @return
+	 */
+	public String getFullDownloadUrl(){
+		String configPath = BookDTO.BOOK_TYPE_AUDIO.equals(this.getBookType())?General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.AUDIOBOOKS_URL_PREFIX)):General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.BOOKS_URL_PREFIX));
+		return General.isEmpty(this.getBookUrl())?"":configPath + this.getBookUrl();
+	}
+	
+	/**
+	 * 获取书籍资源下载跳转URL
+	 * @return
+	 */
+	public String getJumpUrl(){
+		String downLoadUrl = General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.URL_BOOK_DOWNLOAD));
+		if(General.isEmpty(this.getBookUrl()))
+		{
+			return null;
+		}
+		else
+		{
+			downLoadUrl = downLoadUrl + "?bookId="+this.getId();
+		}
+		return downLoadUrl;
+	}
+	/**
+	 * 获取书籍章节资源下载跳转URL
+	 * @return
+	 */
+	public String getChapterJumpUrl(){
+		String downLoadUrl = General.convertNullToEmpty(ConfigUtil.getProperty(ConfigUtil.URL_CHAPTER_DOWNLOAD));
+		if(General.isEmpty(this.getBookUrl()))
+		{
+			return null;
+		}
+		else
+		{
+			downLoadUrl = downLoadUrl + "?bookId="+this.getId();
+		}
+		return downLoadUrl;
+	}
+	
+	public Integer getBookSourceId() {
+		return bookSourceId;
+	}
+	public void setBookSourceId(Integer bookSourceId) {
+		this.bookSourceId = bookSourceId;
+	}
+	public String getBookName() {
+		return bookName;
+	}
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+	public Integer getAuthorId() {
+		return authorId;
+	}
+	public void setAuthorId(Integer authorId) {
+		this.authorId = authorId;
+	}
+	public String getAuthorName() {
+		return authorName;
+	}
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
+	}
+	public String getBookType() {
+		return bookType;
+	}
+	public void setBookType(String bookType) {
+		this.bookType = bookType;
+	}
+	public Integer getBookSize() {
+		return bookSize;
+	}
+	public void setBookSize(Integer bookSize) {
+		this.bookSize = bookSize;
+	}
+	public String getSummary() {
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+	public Integer getDownloadCount() {
+		return downloadCount;
+	}
+	public void setDownloadCount(Integer downloadCount) {
+		this.downloadCount = downloadCount;
+	}
+	public Integer getDownloadCountPrefix() {
+		return downloadCountPrefix;
+	}
+	public void setDownloadCountPrefix(Integer downloadCountPrefix) {
+		this.downloadCountPrefix = downloadCountPrefix;
+	}
+	public Integer getDiscussCount() {
+		return discussCount;
+	}
+	public void setDiscussCount(Integer discussCount) {
+		this.discussCount = discussCount;
+	}
+	public Integer getDiscussCountPrefix() {
+		return discussCountPrefix;
+	}
+	public void setDiscussCountPrefix(Integer discussCountPrefix) {
+		this.discussCountPrefix = discussCountPrefix;
+	}
+	public Long getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(Long addTime) {
+		this.addTime = addTime;
+	}
+	public Integer getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+	public String getUpStack() {
+		return upStack;
+	}
+	public void setUpStack(String upStack) {
+		this.upStack = upStack;
+	}
+	public String getDelMark() {
+		return delMark;
+	}
+	public void setDelMark(String delMark) {
+		this.delMark = delMark;
+	}
+	public String getEncryptionType() {
+		return encryptionType;
+	}
+	public void setEncryptionType(String encryptionType) {
+		this.encryptionType = encryptionType;
+	}
+	public String getBookUrl() {
+		return bookUrl;
+	}
+	public void setBookUrl(String bookUrl) {
+		this.bookUrl = bookUrl;
+	}
+	public String getLocalPath() {
+		return localPath;
+	}
+	public void setLocalPath(String localPath) {
+		this.localPath = localPath;
+	}
+	public Integer getEncryptionStartCapter() {
+		return encryptionStartCapter;
+	}
+	public void setEncryptionStartCapter(Integer encryptionStartCapter) {
+		this.encryptionStartCapter = encryptionStartCapter;
+	}
+	public String getCoverImgUrl() {
+		return coverImgUrl;
+	}
+	public void setCoverImgUrl(String coverImgUrl) {
+		this.coverImgUrl = coverImgUrl;
+	}
+	public String getCoverImgLocalPath() {
+		return coverImgLocalPath;
+	}
+	public void setCoverImgLocalPath(String coverImgLocalPath) {
+		this.coverImgLocalPath = coverImgLocalPath;
+	}
+	public String getBookComment() {
+		return bookComment;
+	}
+	public void setBookComment(String bookComment) {
+		this.bookComment = bookComment;
+	}
+	public String getIsHot() {
+		return isHot;
+	}
+	public void setIsHot(String isHot) {
+		this.isHot = isHot;
+	}
+	public String getAllLabel() {
+		return allLabel;
+	}
+	public void setAllLabel(String allLabel) {
+		this.allLabel = allLabel;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getEpubUrl() {
+		return epubUrl;
+	}
+
+	public void setEpubUrl(String epubUrl) {
+		this.epubUrl = epubUrl;
+	}
+
+	public String getAudioUrl() {
+		return audioUrl;
+	}
+
+	public void setAudioUrl(String audioUrl) {
+		this.audioUrl = audioUrl;
+	}
+
+	public String getLongNominateinfor() {
+		return longNominateinfor;
+	}
+
+	public void setLongNominateinfor(String longNominateinfor) {
+		this.longNominateinfor = longNominateinfor;
+	}
+
+	public String getShortNominateinfor() {
+		return shortNominateinfor;
+	}
+
+	public void setShortNominateinfor(String shortNominateinfor) {
+		this.shortNominateinfor = shortNominateinfor;
+	}
+
+	public String getCelebrityRecommend() {
+		return celebrityRecommend;
+	}
+
+	public void setCelebrityRecommend(String celebrityRecommend) {
+		this.celebrityRecommend = celebrityRecommend;
+	}
+
+	public String getMediaRecommend() {
+		return mediaRecommend;
+	}
+
+	public void setMediaRecommend(String mediaRecommend) {
+		this.mediaRecommend = mediaRecommend;
+	}
+
+	public String getCatalogName() {
+		return catalogName;
+	}
+
+	public void setCatalogName(String catalogName) {
+		this.catalogName = catalogName;
+	}
+
+	public BigDecimal getBookSort() {
+		return bookSort;
+	}
+
+	public void setBookSort(BigDecimal bookSort) {
+		this.bookSort = bookSort;
+	}
+	
+	public String getIsRefined() {
+		return isRefined;
+	}
+
+	public void setIsRefined(String isRefined) {
+		this.isRefined = isRefined;
+	}
+
+	public Integer getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(Integer totalPage) {
+		this.totalPage = totalPage;
+	}
+
+	public Integer getTotalWords() {
+		return totalWords;
+	}
+
+	public void setTotalWords(Integer totalWords) {
+		this.totalWords = totalWords;
+	}
+
+	public String getIsFree() {
+		return isFree;
+	}
+
+	public void setIsFree(String isFree) {
+		this.isFree = isFree;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+}

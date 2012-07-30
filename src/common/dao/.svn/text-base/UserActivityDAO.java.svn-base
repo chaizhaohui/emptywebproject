@@ -1,0 +1,133 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dto.UserActivityDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+/**
+ * 用户动态表DAO
+ * @author lixinglei
+ * @date 2012-04-09
+ * @version 1.0.0.1
+ */
+public class UserActivityDAO extends BasicDAO<UserActivityDTO> {
+	private static UserActivityDAO userActivityDAO; 
+	private UserActivityDAO(){super();}
+	public static UserActivityDAO getInstance(){
+		if(userActivityDAO == null){
+			synchronized(UserActivityDAO.class){
+				if(userActivityDAO == null){
+					userActivityDAO = new UserActivityDAO();
+				}
+			}
+		}
+		return userActivityDAO;
+	}
+	
+	/**
+	 * 根据传入的blogId获取一个UserActivityDTO
+	 * @param whereMap[blogId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public UserActivityDTO getByBlogId(Integer blogId) throws SQLException {
+		if(blogId == null){
+			return null;
+		}
+		Integer activityId = (Integer)SqlBuilder.getSqlMapClient().queryForObject("UserActivity.getByBlogId",blogId);
+		if(activityId != null){
+			return getById(activityId);	
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据传入的条件结合配置文件进行查询
+	 * @param whereMap[blogId,userId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<UserActivityDTO> getByWhere(Map<String,Object> whereMap) throws SQLException {
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("UserActivity.getByWhere",whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * @param whereMap[business Type:getByLabelName,getRecommend,getByMyLabel;date type:labelName,userId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getBusinessCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("UserActivity.getBusinessCount",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * @param whereMap[business Type:getByLabelName,getRecommend,getByMyLabel;date type:labelName,userId,start,end]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<UserActivityDTO>  getBusinessByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserActivity.getBusinessByPage", whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据条件获得记录的总数
+	 * @param whereMap[blogId,userId]
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCount(Map<String,Object> whereMap) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("UserActivity.getCount",whereMap);
+	}
+	
+	/**
+	 * 根据分页数据及条件获得记录对象
+	 * @param whereMap[blogId,userId,start,end]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<UserActivityDTO>  getByPage(Map<String,Object> whereMap) throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserActivity.getByPage", whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据whereMap中top的值获取该表最近更新的top条记录。
+	 * 潜在bug:该SQL——"UserActivity.getTop"需要优化
+	 * @param whereMap[userId,top]
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<UserActivityDTO> getTop(Map<String,Object> whereMap)throws SQLException{
+		List<Integer> list = SqlBuilder.getSqlMapClient().queryForList("UserActivity.getTop", whereMap);
+		if(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据blogId获取activityId
+	 * @param blogId
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getActivityIdByBlogId(Integer blogId) throws SQLException{
+		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("UserActivity.getActivityIdByBlogId", blogId);
+	}
+}

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserBlogDiscuss">
+	<resultMap class="cn.com.twsm.common.dto.UserBlogDiscussDTO" id="userBlogDiscuss">
+		<result column="DISCUSS_ID" property="id" jdbcType="NUMBER"/>
+		<result column="BLOG_ID" property="blogId" jdbcType="NUMBER"/>
+		<result column="USER_ID" property="userId" jdbcType="NUMBER"/>
+		<result column="CONTENT" property="content" jdbcType="VARCHAR"/>
+		<result column="ADD_TIME" property="addTime" jdbcType="NUMBER"/>
+		<result column="IS_READ" property="isRead" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<dynamic>
+			<isNotEmpty prepend="AND" property="blogId">
+				BLOG_ID = #blogId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="userId">
+				USER_ID = #userId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isRead">
+				IS_READ = #isRead#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="startDate">				
+				ADD_TIME &gt; #startDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="endDate">				
+				ADD_TIME &lt;= #endDate#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="getById" resultMap="userBlogDiscuss" parameterClass="int">
+		SELECT DISCUSS_ID, 
+		       BLOG_ID, 
+		       USER_ID, 
+		       CONTENT, 
+		       ADD_TIME, 
+		       IS_READ
+		  FROM USER_BLOG_DISCUSS
+		 WHERE DISCUSS_ID = #id#
+	</select>
+	
+	
+	<select id="getCount" parameterClass="map" resultClass="int">
+		SELECT COUNT(1) 
+	      FROM USER_BLOG_DISCUSS
+		 WHERE 1=1 <include refid="whereCondition"/> 
+	</select>
+	
+	<select id="getByPage" parameterClass="map" resultClass="int">
+	   SELECT 
+	      DISCUSS_ID 
+	   FROM 
+		  (SELECT 
+		     T.DISCUSS_ID,
+		     ROWNUM AS RN 
+		   FROM 
+		     (SELECT 
+		         DISCUSS_ID 
+              FROM 
+                 USER_BLOG_DISCUSS
+              WHERE 
+                 1=1 <include refid="whereCondition"/> 
+              ORDER BY ADD_TIME DESC   
+              ) T
+           )
+        WHERE 
+           RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.UserBlogDiscussDTO">
+		UPDATE USER_BLOG_DISCUSS
+		<dynamic prepend="set">
+			DISCUSS_ID=#id#,
+		    BLOG_ID=#blogId#,
+		    USER_ID=#userId#,
+		    CONTENT=#content#,
+		    ADD_TIME=#addTime#,
+		    IS_READ=#isRead#
+		</dynamic>
+		WHERE DISCUSS_ID = #id#
+	</update>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UserBlogDiscussDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			select SEQ_USER_BLOG_DISCUSS.NEXTVAL from dual
+        </selectKey>
+		INSERT INTO USER_BLOG_DISCUSS
+		(
+		    DISCUSS_ID,
+		    BLOG_ID,
+		    USER_ID,
+		    CONTENT,
+		    ADD_TIME,
+		    IS_READ
+		)
+		VALUES
+		(
+		  #id#,
+		  #blogId#,
+		  #userId#,
+		  #content#,
+		  #addTime#,
+		  #isRead#
+		)
+	</insert>
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM USER_BLOG_DISCUSS WHERE DISCUSS_ID = #id#
+	</delete>
+</sqlMap>

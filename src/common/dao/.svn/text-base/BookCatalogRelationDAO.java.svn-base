@@ -1,0 +1,40 @@
+package cn.com.twsm.common.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import cn.com.twsm.common.dao.BasicDAO;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+import cn.com.twsm.common.dto.BookCatalogRelationDTO;
+import cn.com.twsm.common.sqlbuilder.SqlBuilder;
+
+public class BookCatalogRelationDAO extends BasicDAO<BookCatalogRelationDTO> {
+	private static BookCatalogRelationDAO bookCatalogRelationDAO; 
+	/**
+	 * 默认构造函数 不能用于事务 必须
+	 */
+	private BookCatalogRelationDAO() {
+		super();
+	}
+	public static BookCatalogRelationDAO getInstance(){
+		if(bookCatalogRelationDAO == null){
+			synchronized(BookCatalogRelationDAO.class){
+				if(bookCatalogRelationDAO == null){
+					bookCatalogRelationDAO = new BookCatalogRelationDAO();
+				}
+			}
+		}
+		return bookCatalogRelationDAO;
+	}
+	public List<BookCatalogRelationDTO> getByWhere(Map<String ,Object> whereMap) throws SQLException{
+		List<Integer> list=SqlBuilder.getSqlMapClient().queryForList("BookCatalogRelation.getByWhere",whereMap);
+		while(list!=null&&list.size()>0){
+			return this.getById(list);
+		}
+		return null;
+	}
+	
+}
+ 
