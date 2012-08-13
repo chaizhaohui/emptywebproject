@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<!-- 
+	<package name="books" extends="global" namespace="/books">
+	</package>
+	 -->
+	<package name="books" extends="global" namespace="/books">
+		<action name="*-*" class="cn.com.twsm.books.action.{1}" method="{2}"></action>
+	</package>
+	<package name="cpmanager" namespace="/cpmanager">
+		<interceptors>
+			<!-- 请求参数赋值拦截器 -->
+			<interceptor name="ParameterInterceptor" class="cn.com.twsm.common.interceptor.ParametersInterceptor"></interceptor>
+			<interceptor name="AuthenticaitonInterceptor" class="cn.com.twsm.common.interceptor.AuthenticaitonInterceptor"></interceptor>
+			<interceptor-stack name="CommonStack">
+				<interceptor-ref name="ParameterInterceptor"></interceptor-ref>
+				<interceptor-ref name="AuthenticaitonInterceptor"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="CommonStack"></default-interceptor-ref>
+		<action name="*-*" class="cn.com.twsm.books.action.{1}" method="{2}"></action>
+	</package>
+</struts>

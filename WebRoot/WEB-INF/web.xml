@@ -7,7 +7,7 @@
 	
 	<filter>
 	    <filter-name>charactorEncodingFilter</filter-name>
-	    <filter-class>cn.com.twsm.common.filter.CharactorEncodingFilter</filter-class>
+	    <filter-class>common.filter.CharactorEncodingFilter</filter-class>
 	    <init-param>
 	    	<param-name>encoding</param-name>
 	        <param-value>UTF-8</param-value>
@@ -20,7 +20,7 @@
 	
 	<servlet>
 		<servlet-name>log4j-init</servlet-name>
-		<servlet-class>cn.com.twsm.common.filter.Log4jInit</servlet-class>
+		<servlet-class>common.filter.Log4jInit</servlet-class>
 		<init-param>
 			<param-name>log4j</param-name>
 			<param-value>WEB-INF/classes/log4j.properties</param-value>
@@ -37,17 +37,6 @@
 		<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>  
 		<load-on-startup>1</load-on-startup>  
 	</servlet>
-  <servlet>
-    <description>This is the description of my J2EE component</description>
-    <display-name>This is the display name of my J2EE component</display-name>
-    <servlet-name>ResponseDRM</servlet-name>
-    <servlet-class>cn.com.twsm.drm.ResponseDRM</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>ResponseDRM</servlet-name>
-    <url-pattern>/servlet/ResponseDRM</url-pattern>
-  </servlet-mapping>
     <filter-mapping>
         <filter-name>struts2</filter-name>
         <url-pattern>*.do</url-pattern>

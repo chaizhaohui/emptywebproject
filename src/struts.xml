@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.action.extension" value="do" />
+	<constant name="struts.multipart.maxSize" value="104857600"></constant>
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+    <constant name="struts.url.includeParams" value="all"/>
+	
+	<package name="notlogin" extends="json-default" namespace="/">
+		<action name="toLogin" class="common.action.LoginAction" method="toLogin">
+			<result type="freemarker">/tpl/login.html</result>
+		</action>
+		<action name="doLogin" class="common.action.LoginAction" method="doLogin">
+			<result type="json" />
+		</action>
+		
+		<action name="ValidateCodeAction" class="common.action.ValidateCodeAction" method="obtainValidateCode">
+		</action>
+		
+		
+	</package>	
+	
+	<package name="global" extends="json-default" namespace="/">
+	    <interceptors>
+	    	<interceptor-stack name="appStack">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name ="fileUploadStack"></interceptor-ref>	
+			</interceptor-stack>
+	    </interceptors>
+	    <default-interceptor-ref name="appStack" />
+	    <global-results>
+			<result name="toLogin" type="redirect">/toLogin.do</result>
+			<result name="marker" type="freemarker">${returnUrl}</result>
+			<result name="json" type="json" />
+			<result name="redirect" type="redirect">${returnUrl}</result>
+			<result name="redirectAction" type="redirectAction">${action}</result>
+			<result name="chain" type="chain"><param name="actionName">${action}</param></result>
+		</global-results>
+		
+		<action name="index" class="common.action.IndexAction" method="toIndex">
+			<result name="success" type="freemarker">/tpl/index.html</result>
+		</action>
+	</package>
+	<!-- 
+	<include file="struts_conf/users.xml"/>
+	-->
+</struts>

@@ -33,9 +33,9 @@ public class UsersDAO extends BasicDAO<UsersDTO> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public int getCount(Map<String,Object> whereMap) throws SQLException{
+	/*public int getCount(Map<String,Object> whereMap) throws SQLException{
 		return (Integer)SqlBuilder.getSqlMapClient().queryForObject("Users.getCount", whereMap);
-	}
+	}*/
 	
 	/**
 	 * 依据条件分页获取记录
@@ -43,12 +43,12 @@ public class UsersDAO extends BasicDAO<UsersDTO> {
 	 * @return
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public List<UsersDTO> getByPage(Map<String,Object> whereMap) throws SQLException{
 		List<Integer> list = (List<Integer>)SqlBuilder.getSqlMapClient().queryForList("Users.getByPage", whereMap);
 		if(list != null && list.size() > 0)
 			return this.getById(list);
 		return null;
-	}
+	}*/
 
 }
