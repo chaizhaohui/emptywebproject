@@ -1,15 +1,16 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<base href="${basePath}">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Pragma"   content="no-cache"/>
 <meta http-equiv="Cache-Control"   content="no-cache"/>
 <meta http-equiv="Expires"   content="0"/> 
 
-<title>天闻数媒 大众阅读管理平台</title>
-<link href="/css/smart.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" language="javascript" src="/js/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" language="javascript" src="/js/common.js"></script>
+<title>空的项目</title>
+<link href="css/smart.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" language="javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" language="javascript" src="js/common.js"></script>
 <script type="text/javascript" language="javascript">
 	$(function(){
 		$("#arrow_ico").click(function(){
@@ -34,7 +35,7 @@
         <div class="top_ri">
             <div class="nav_menu">
                 <ul>
-                    <li><a name="menu" jump="/index.html" href="javascript:void(0)" class="nav_menu_hover">首&nbsp;页</a></li>
+                    <li><a name="menu" jump="index.html" href="javascript:void(0)" class="nav_menu_hover">首&nbsp;页</a></li>
 					<li><a name="menu" mode="users" href="javascript:void(0)"> 用户管理 </a></li>
 					<li><a name="menu" mode="books" href="javascript:void(0)"> 书籍管理 </a></li>
 					<li><a name="menu" mode="onlinelisten" href="javascript:void(0)"> 听书管理 </a></li>
@@ -68,75 +69,6 @@
                     <ul style="display:none;">
 						<li><a href="javascript:void(0)" jump="/users/UserAction-showUserList.do"><span class="book_ico"></span><span>用户列表</span></a></li>
 						<li><a href="javascript:void(0)" jump="/users/SuggestAction-showSuggestList.do"><span class="book_ico"></span><span>用户反馈</span></a></li>
-					</ul>
-                    <div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="books" href="javascript:void(0);"><span>书籍管理</span></a></div>
-					<ul style="display:none;">
-						<li><a href="javascript:void(0)" jump="../books/BookSourceManager-showBookSourceList.do"><span class="book_ico"></span><span>书源管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="../books/BookManager-showBookList.do"><span class="book_ico"></span><span>书籍管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="../books/AuthorManager-showAuthorList.do"><span class="book_ico" ></span><span>作家管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="../books/CpBookAction-showCpSuggestList.do"><span class="book_ico" ></span><span>CP消息管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="../books/CpUserManager-showCpUserList.do"><span class="book_ico" ></span><span>cp用户管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="../drm/DrmPackage-page.do"><span class="book_ico" ></span><span>图书DRM加密</span></a></li>
-						
-					</ul>
-                    <div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="onlinelisten" href="javascript:void(0);"><span>听书管理</span></a></div>
-					<ul style="display:none;">
-						<li><a href="javascript:void(0)"  jump="/onlinelisten/ListenPromotionManagerAction-showPromotionList.do"><span class="book_ico"></span><span>听书首页专题管理</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/onlinelisten/ListenBookManagerAction-showBookList.do"><span class="book_ico" ></span><span>听书书籍管理</span></a></li>
-					</ul>
-                    <div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="sns" href="javascript:void(0);"><span>社区管理</span></a></div>
-					<ul style="display:none;">
-						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-showBlogList.do"><span class="book_ico"></span><span>用户博客管理</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertBlog.do"><span class="book_ico"></span><span>后台添加博客</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertDiscuss.do"><span class="book_ico"></span><span>后台添加书评</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertNote.do"><span class="book_ico"></span><span>后台添加笔记</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/sns/BlogAction-toInsertSummar.do"><span class="book_ico"></span><span>后台添加书摘</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/sns/BlogDiscussAction-showBlogDiscussList.do"><span class="book_ico" ></span><span>博客评论管理</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/sns/FriendAction-showFriendList.do"><span class="book_ico" ></span><span>用户关注管理</span></a></li>
-						<li><a href="javascript:void(0)"  jump="/sns/ActiveUserAction-showActiveUserList.do"><span class="book_ico" ></span><span>活跃用户管理</span></a></li>
-					</ul>
-					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="catalog" href="javascript:void(0);"><span>分类管理</span></a></div>
-					<ul style="display:none;">
-						<li><a href="javascript:void(0)" jump="../catalog/CatalogAction-showCatalogList.do"><span class="book_ico" ></span><span>书籍分类管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="../catalog/CpCatalogRelationManager-showCpCatalogRelationList.do"><span class="book_ico"></span><span>分类关联管理</span></a></li>
-					</ul>
-					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="promotion" href="javascript:void(0);"><span>专题管理</span></a></div>
-					
-					<ul style="display:none;">
-						<li><a href="javascript:void(0)" jump="/promotion/PromotionAction-showPromotionList.do"><span class="book_ico"></span><span>专题列表</span></a></li>
-					</ul>
-					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="label" href="javascript:void(0);"><span>标签管理</span></a></div>
-					<ul style="display:none;">
-                        <li><a href="javascript:void(0)"  jump="/label/LabelListAction-showLabelList.do"><span class="book_ico"></span><span>标签列表</span></a></li>
-                        <li><a href="javascript:void(0)"  jump="/label/LabelListAction-showHotLabelList.do"><span class="book_ico" ></span><span>热门标签列表</span></a></li>
-                    </ul>
-					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="around" href="javascript:void(0);"><span>漂流书管理</span></a></div>
-					<ul style="display:none;">
-                        <li><a href="javascript:void(0)"  jump="/around/AroundBookAction-showAroundBookList.do"><span class="book_ico"></span><span>漂流书列表</span></a></li>
-                        <li><a href="javascript:void(0)"  jump="/around/AroundBookHistoryAction-showAroundBookHistoryList.do"><span class="book_ico" ></span><span>漂流书历史列表</span></a></li>
-                    </ul>
-					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="client" href="javascript:void(0);"><span>客户端管理</span></a></div>
-						<ul style="display:none;">
-							<li><a href="javascript:void(0)" jump="/client/ClientCoveryMsgAction-showClientCoveryMsgList.do"><span class="book_ico"></span><span>客户端每日寄语管理</span></a></li>
-							<li><a href="javascript:void(0)" jump="/client/ClientSkinAction-showClientSkinList.do"><span class="book_ico"></span><span>客户端皮肤管理</span></a></li>
-							<li><a href="javascript:void(0)" jump="/client/ClientVersionAction-showClientVersionList.do"><span class="book_ico"></span><span>客户端版本管理</span></a></li>
-						</ul>
-					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="system" href="javascript:void(0);"><span>系统管理</span></a></div>
-					<ul style="display:none;">
-						<li><a href="javascript:void(0)" jump="/system/UserAction-showUserList.do"><span class="book_ico"></span><span>管理员列表</span></a></li>
-						<li><a href="javascript:void(0)" jump="/system/AdminGroupAction-showAdminGroupList.do"><span class="book_ico"></span><span>用户组管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="/system/DataCacheAction-showCache.do"><span class="book_ico"></span><span>数据缓存管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="/system/SessionCacheAction-showCache.do"><span class="book_ico"></span><span>Session缓存管理</span></a></li>
-						<li><a href="javascript:void(0)" jump="/system/ErrorLogAction-getErrorLog.do"><span class="book_ico"></span><span>错误日志</span></a></li>
-					</ul>
-					<div class="left_menu_tit"><span class="resources_ico"></span><a name="menu" mode="system" href="javascript:void(0);"><span>数据统计</span></a></div>
-					<ul style="display:none;">
-						<li><a href="javascript:void(0)" jump="/count/BookCountAction-showBookCountListByDay.do"><span class="book_ico"></span><span>书籍统计-日</span></a></li>
-						<li><a href="javascript:void(0)" jump="/count/BookCountAction-showBookCountListByMonth.do"><span class="book_ico"></span><span>书籍统计-月</span></a></li>
-						<li><a href="javascript:void(0)" jump="/count/BookCatalogCountAction-showBookCatalogCountListByDay.do"><span class="book_ico"></span><span>书籍分类统计-日</span></a></li>
-						<li><a href="javascript:void(0)" jump="/count/BookCatalogCountAction-showBookCatalogCountListByMonth.do"><span class="book_ico"></span><span>书籍分类统计-月</span></a></li>
-						<li><a href="javascript:void(0)" jump="/count/ShowStatLabelListAction-showStatLabelDayList.do"><span class="book_ico"></span><span>标签统计-日</span></a></li>
-						<li><a href="javascript:void(0)" jump="/count/ShowStatLabelListAction-showStatLabelMonthList.do"><span class="book_ico"></span><span>标签统计-月</span></a></li>
 					</ul>
                 </div>
             </td>

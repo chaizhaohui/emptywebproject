@@ -28,7 +28,9 @@ public class BasicAction {
 	public String returnUrl;
 	public String refUrl;
 	public String prvUrl;
-
+	//配置页面的路径
+	private String basePath;
+	
 	/**
 	 * 获取当前Request对象
 	 * 
@@ -182,5 +184,15 @@ public class BasicAction {
 
 	public void setPrvUrl(String prvUrl) {
 		this.prvUrl = prvUrl;
+	}
+
+	public String getPath() {
+		String path = this.getRequest().getContextPath();
+		return path;
+	}
+
+	public String getBasePath() {
+		String basePath = this.getRequest().getScheme()+"://"+this.getRequest().getServerName()+":"+this.getRequest().getServerPort()+this.getRequest().getContextPath()+"/";
+		return basePath;
 	}
 }
