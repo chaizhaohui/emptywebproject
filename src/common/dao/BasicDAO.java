@@ -8,6 +8,7 @@ import java.util.List;
 import common.dto.BasicDTO;
 import common.memcache.MemcachedCacheUtils;
 import common.sqlbuilder.SqlBuilder;
+import common.utils.ConfigUtil;
 
 
 /**
@@ -34,19 +35,23 @@ public abstract class BasicDAO<T extends BasicDTO> {
 	public T getById(Integer id) throws SQLException{
 		if(id == null)
 			return null;
-		
-		//构造缓存中的Key cn.con.twsm.portal.dto.ClientVersionDTO$2002
-		String key = new StringBuffer(16).append(this.className).append(DELIMITER).append(id).toString();
-		
-		//先去缓存中查询Key 查询不到则使用数据库进行查询并将结果放入缓存
-		T t = (T)MemcachedCacheUtils.getClient().get(key);
-		if(t == null){
+		T t = null;
+		if(isMemcacheOpen()){
+			//构造缓存中的Key cn.con.twsm.portal.dto.ClientVersionDTO$2002
+			String key = new StringBuffer(16).append(this.className).append(DELIMITER).append(id).toString();
+			
+			//先去缓存中查询Key 查询不到则使用数据库进行查询并将结果放入缓存
+			t = (T)MemcachedCacheUtils.getClient().get(key);
+			if(t == null){
+				t = (T)SqlBuilder.getSqlMapClient().queryForObject(prefix + ".getById", id);
+				if(t != null)
+					MemcachedCacheUtils.getClient().set(key, t);
+			}
+			
+			key = null;
+		}else{
 			t = (T)SqlBuilder.getSqlMapClient().queryForObject(prefix + ".getById", id);
-			if(t != null)
-				MemcachedCacheUtils.getClient().set(key, t);
 		}
-		
-		key = null;
 		return t;
 	}
 	
@@ -106,10 +111,15 @@ public abstract class BasicDAO<T extends BasicDTO> {
 	 * @throws SQLException
 	 */
 	public int delete(int id) throws SQLException{
-		String key = new StringBuffer(16).append(this.className).append(DELIMITER).append(id).toString();
-		MemcachedCacheUtils.getClient().delete(key);
-		int count = SqlBuilder.getSqlMapClient().delete(prefix + ".delete", id);
-		MemcachedCacheUtils.getClient().delete(key);
+		int count = 0;
+		if(isMemcacheOpen()){
+			String key = new StringBuffer(16).append(this.className).append(DELIMITER).append(id).toString();
+			MemcachedCacheUtils.getClient().delete(key);
+			count = SqlBuilder.getSqlMapClient().delete(prefix + ".delete", id);
+			MemcachedCacheUtils.getClient().delete(key);
+		}else{
+			count = SqlBuilder.getSqlMapClient().delete(prefix + ".delete", id);
+		}
 		return count;
 	}
 	
@@ -138,11 +148,16 @@ public abstract class BasicDAO<T extends BasicDTO> {
 	 * @throws SQLException
 	 */
 	public int update(T t) throws SQLException{
-		String key = new StringBuffer(16).append(this.className).append(DELIMITER).append(t.getId()).toString();
-		//System.out.println(key);
-		MemcachedCacheUtils.getClient().delete(key);
-		int count = SqlBuilder.getSqlMapClient().update(prefix + ".update", t);
-		MemcachedCacheUtils.getClient().delete(key);
+		int count = 0;
+		if(isMemcacheOpen()){
+			String key = new StringBuffer(16).append(this.className).append(DELIMITER).append(t.getId()).toString();
+			//System.out.println(key);
+			MemcachedCacheUtils.getClient().delete(key);
+			count = SqlBuilder.getSqlMapClient().update(prefix + ".update", t);
+			MemcachedCacheUtils.getClient().delete(key);
+		}else{
+			count = SqlBuilder.getSqlMapClient().update(prefix + ".update", t);
+		}
 		return count;
 	}
 	
@@ -182,5 +197,8 @@ public abstract class BasicDAO<T extends BasicDTO> {
 		prefix = className.substring(className.lastIndexOf(".") + 1);
 		if(prefix.endsWith("DTO"))
 			prefix = prefix.substring(0, prefix.length() - 3);
-	}	
+	}
+	private boolean isMemcacheOpen(){
+		return ConfigUtil.isMemcacheOpen();
+	}
 }

@@ -18,6 +18,7 @@ import common.utils.General;
  * @date 2012-02-06
  */
 public class BasicAction {
+	public static final int PAGESIZE = 10;
 	public static final String MARKER = "marker";
 	public static final String JSON = "json";
 	public static final String REDIRECT = "redirect";

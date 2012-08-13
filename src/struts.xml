@@ -45,7 +45,5 @@
 			<result name="success" type="freemarker">/tpl/index.html</result>
 		</action>
 	</package>
-	<!-- 
 	<include file="struts_conf/users.xml"/>
-	-->
 </struts>

@@ -4,6 +4,6 @@
         "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<package name="users" extends="global" namespace="/users">
-		<action name="*-*" class="cn.com.twsm.users.action.{1}" method="{2}"></action>
+		<action name="*-*" class="user.action.{1}" method="{2}"></action>
 	</package>	
 </struts>

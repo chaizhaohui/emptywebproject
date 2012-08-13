@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="User">
+	<resultMap class="common.dto.UserDTO" id="user">
+		<result column="USER_ID" property="id" jdbcType="INTEGER"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+		<result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="whereCondition">
+		<isNotNull prepend="AND" property="id">
+			USER.USER_ID = #id#
+		</isNotNull>
+		<isNotNull prepend="AND" property="userName">
+			USER.USERNAME = #userName#
+		</isNotNull>
+		<isNotNull prepend="AND" property="password">
+			USER.PASSWORD = #password#
+		</isNotNull>
+	</sql>
+	<select id="getCount" resultClass="int" parameterClass="map">
+		SELECT COUNT(1) FROM USERS WHERE 1 = 1 <include refid="whereCondition"/>
+	</select>
+	<select id="getByPage" resultClass="int" parameterClass="map">
+		SELECT USER_ID FROM (SELECT t.USER_ID,ROWNUM as RN FROM (
+            SELECT USER_ID
+              FROM USERS
+             WHERE 1 = 1
+                   <include refid="whereCondition"/>
+            ) t )
+        WHERE RN &gt; #start# AND RN &lt;= #end#
+	</select>
+	
+	<!-- *************************************************************************************************** -->
+	<select id="getById" resultMap="users" parameterClass="int">
+		SELECT USER_ID,
+			   MOBILE,
+			   EMAIL,
+			   USER_PWD,
+			   REG_TYPE,
+			   SOURCE,
+			   NICK_NAME,
+			   READ_BOOK_DESC,
+			   STATUS,
+			   DEVICE_COUNT,
+			   ADD_TIME,
+			   HEAD_IMG_URL,
+			   HEAD_IMG_LOCAL_PATH,
+			   LAST_ACT_TIME,
+			   LAST_DEVICE_ID,
+			   IS_RECOMMEND,
+			   RECOMMEND_SORT,
+			   RECOMMEND_TIME
+		  FROM USER
+		 WHERE USER_ID = #id#
+	</select>
+	
+	<insert id="insert" parameterClass="cn.com.twsm.common.dto.UsersDTO">
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT SEQ_USERS.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO USERS(
+			   USER_ID,
+			   MOBILE,
+			   EMAIL,
+			   USER_PWD,
+			   REG_TYPE,
+			   SOURCE,
+			   NICK_NAME,
+			   READ_BOOK_DESC,
+			   STATUS,
+			   DEVICE_COUNT,
+			   ADD_TIME,
+			   HEAD_IMG_URL,
+			   HEAD_IMG_LOCAL_PATH,
+			   LAST_ACT_TIME,
+			   LAST_DEVICE_ID,
+			   IS_RECOMMEND,
+			   RECOMMEND_SORT,
+			   RECOMMEND_TIME
+			   )
+		VALUES (
+			   #id#,
+			   #mobile#,
+			   #email#,
+			   #userPwd#,
+			   #regType#,
+			   #source#,
+			   #nickName#,
+			   #readBookDesc#,
+			   #status#,
+			   #deviceCount#,
+			   #addTime#,
+			   #headImgUrl#,
+			   #headImgLocalPath#,
+			   #lastActTime#,
+			   #lastDeviceId#,
+			   #isRecommend#,
+			   #recommendSort#,
+			   #recommendTime#
+			   )
+	</insert>
+	
+	<update id="update" parameterClass="cn.com.twsm.common.dto.UsersDTO">
+	    UPDATE USERS
+	    <dynamic prepend="SET">
+	    	MOBILE = #mobile#,
+			EMAIL = #email#,
+			USER_PWD = #userPwd#,
+			REG_TYPE = #regType#,
+			SOURCE = #source#,
+			NICK_NAME = #nickName#,
+			READ_BOOK_DESC = #readBookDesc#,
+			STATUS = #status#,
+			DEVICE_COUNT = #deviceCount#,
+			ADD_TIME = #addTime#,
+			HEAD_IMG_URL = #headImgUrl#,
+			HEAD_IMG_LOCAL_PATH = #headImgLocalPath#,
+			LAST_ACT_TIME = #lastActTime#,
+			LAST_DEVICE_ID = #lastDeviceId#,
+			IS_RECOMMEND = #isRecommend#,
+			RECOMMEND_SORT = #recommendSort#,
+			RECOMMEND_TIME = #recommendTime#
+	    </dynamic>
+	     WHERE USER_ID = #id#
+	</update>
+	
+	<delete id="delete" parameterClass="int">
+	    DELETE FROM USERS WHERE USER_ID = #id#
+	</delete>
+</sqlMap>
+

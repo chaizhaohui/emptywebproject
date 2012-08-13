@@ -35,7 +35,7 @@ public class ConfigUtil {
 	public static final String MEM_DATACACHE_SOCKETCONNECTT = "memcache.datacache.socketConnectT";
 	public static final String MEM_DATACACHE_COMPRESSENALBED = "memcache.datacache.CompressEnable";
 	public static final String MEM_DATACACHE_COMPRESSTHRESHOLD = "memcache.datacache.CompressThreshold";
-	
+	public static final String MEMCACHE_ISOPEN = "memcache.isopen";
 	
 	/** 用户信息存放在Session中的Key **/
 	public static final String SESSION_USER_KEY = "session.userKey";
@@ -167,5 +167,12 @@ public class ConfigUtil {
 	
 	public static Properties getProperties(){
 		return properties;
+	}
+	//判断memchache是否开启
+	public static boolean isMemcacheOpen(){
+		if(ConfigUtil.getProperty(ConfigUtil.MEMCACHE_ISOPEN).equals("1")){
+			return true;
+		}
+		return false;
 	}
 }
