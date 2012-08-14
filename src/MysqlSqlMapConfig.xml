@@ -11,9 +11,9 @@
 			
 			<!--property name="JDBC.Driver" value="oracle.jdbc.driver.OracleDriver" /-->
 			<property name="JDBC.Driver" value="com.p6spy.engine.spy.P6SpyDriver" />
-			<property name="JDBC.ConnectionURL" value="jdbc:mysql://192.168.0.8:3306/t"/>
-			<property name="JDBC.Username" value="read365" />
-			<property name="JDBC.Password" value="read365" />
+			<property name="JDBC.ConnectionURL" value="jdbc:mysql://localhost:3306/test"/>
+			<property name="JDBC.Username" value="root" />
+			<property name="JDBC.Password" value="" />
 			 
 			<!--  
 			<property name="JDBC.Driver" value="com.mysql.jdbc.Driver" />
@@ -23,6 +23,6 @@
             -->
 		</dataSource>
 	</transactionManager>
-	<sqlMap resource="cn/com/twsm/common/mysqlmap/Users.xml"/>
+	<sqlMap resource="common/sqlmap/User.xml"/>
 	<!-- by end  -->
 </sqlMapConfig>

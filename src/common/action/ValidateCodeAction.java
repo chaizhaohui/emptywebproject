@@ -14,7 +14,7 @@ import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import common.utils.ConfigUtil;
 
-public class ValidateCodeAction extends BasicAction
+public class ValidateCodeAction extends AppBasicAction
 {
     /**
      * 描述

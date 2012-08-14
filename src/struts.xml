@@ -23,7 +23,32 @@
 		
 		
 	</package>	
-	
+	<package name="interface" extends ="struts-default,json-default" namespace="/interface/">
+		<result-types>
+            <result-type name="xml" class="common.xmlplugin.XMLResult"></result-type>  
+        </result-types>
+		<interceptors>
+			<!-- 鉴权拦截器 -->
+			<interceptor name="AuthenticaitonInterceptor" class="common.interceptor.AuthenticaitonInterceptor"></interceptor>
+			<!-- 请求参数赋值拦截器 -->
+			<interceptor name="ParameterInterceptor" class="common.interceptor.ParametersInterceptor"></interceptor>
+			<!-- Action执行时间记录日志拦截器 -->
+			<interceptor name="ExecuteTimerInterceptor" class="common.interceptor.ExecuteTimerInterceptor"></interceptor>
+			
+			<interceptor-stack name="CommonStack">
+				<interceptor-ref name="AuthenticaitonInterceptor"></interceptor-ref>
+				<interceptor-ref name="ExecuteTimerInterceptor"></interceptor-ref>
+				<interceptor-ref name="ParameterInterceptor"></interceptor-ref>
+				<interceptor-ref name ="fileUploadStack"></interceptor-ref>	
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="CommonStack"></default-interceptor-ref>
+		
+	    <global-results>
+	    	<result name="jsonResult" type="json" />
+	    	<result name="xmlResult" type="xml" />
+		</global-results>
+	</package>
 	<package name="global" extends="json-default" namespace="/">
 	    <interceptors>
 	    	<interceptor-stack name="appStack">
@@ -45,5 +70,6 @@
 			<result name="success" type="freemarker">/tpl/index.html</result>
 		</action>
 	</package>
-	<include file="struts_conf/users.xml"/>
+	<include file="struts_conf/user.xml"/>
+	<include file="struts_conf/user_inter.xml"></include>
 </struts>

@@ -56,4 +56,8 @@ public class UserDAO extends BasicDAO<UserDTO> {
 			return this.getById(list);
 		return null;
 	}
+	public int getCount(Map<String, Object> whereMap) throws SQLException {
+		// TODO Auto-generated method stub
+		return (Integer) SqlBuilder.getSqlMapClient().queryForObject("User.getCount", whereMap);
+	}
 }

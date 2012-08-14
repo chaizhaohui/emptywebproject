@@ -1,6 +1,6 @@
 <#import "/tpl/common.html" as common/>
 <#assign tg=JspTaglibs["/WEB-INF/pagetag.tld"]>
-<@common.html title="大众阅读管理平台 - 系统管理 - 管理员列表">
+<@common.html title="用户列表">
 <div class="ri_box">
 	<div class="ri_box_top">
 		<div class="ri_top_le">
@@ -16,54 +16,6 @@
 			</li>
 			<li>
 				<span class="w110_ri">昵  称：</span><span><input type="text" name="nickName" <#if nickName??>value="${nickName}"</#if> class="w180 inpu_bg"/></span>
-			</li>
-			<li>
-				<span class="w110_ri">状  态：</span>
-				<span>
-					<select name="status" class="w185 inpu_bg_sele">
-                    	<option value="" selected>-- 全部 --</option>
-                        <option value="active" <#if status?? && status=="active">selected</#if>>已激活</option>
-                        <option value="noactive" <#if status?? && status=="noactive">selected</#if>>未激活</option>
-                        <option value="locked" <#if status?? && status=="locked">selected</#if>>已锁定</option>
-                    </select>
-				</span>
-			</li>
-			<li>
-				<span class="w110_ri">是否填写昵称：</span>
-				<span>
-					<select name=haveNickName class="w185 inpu_bg_sele">
-                    	<option value="" selected>-- 全部 --</option>
-                        <option value="1" <#if haveNickName?? && haveNickName=="1">selected</#if>>已填写</option>
-                        <option value="0" <#if haveNickName?? && haveNickName=="0">selected</#if>>未填写</option>
-                    </select>
-			</li>
-			<li>
-				<span class="w110_ri">是否上传头像：</span>
-				<span>
-					<select name=haveHeadImg class="w185 inpu_bg_sele">
-                    	<option value="" selected>-- 全部 --</option>
-                        <option value="1" <#if haveHeadImg?? && haveHeadImg=="1">selected</#if>>已上传</option>
-                        <option value="0" <#if haveHeadImg?? && haveHeadImg=="0">selected</#if>>未上传</option>
-                    </select>
-			</li>
-			<li>
-				<span class="w110_ri">是否推荐用户：</span>
-				<span>
-					<select name=isRecommend class="w185 inpu_bg_sele">
-                    	<option value="" selected>-- 全部 --</option>
-                        <option value="1" <#if isRecommend?? && isRecommend=="1">selected</#if>>已推荐</option>
-                        <option value="0" <#if isRecommend?? && isRecommend=="0">selected</#if>>未推荐</option>
-                    </select>
-			</li>
-			<li>
-				<span class="w110_ri">最后登录时间：</span>
-				<span class="mrmp_date">
-					<input type="text" name="lastActDateStart" <#if lastActDateStart??>value="${lastActDateStart}"</#if> readonly="readonly" onFocus="WdatePicker();" class="w100 inpu_bg"/><font class="mrmp_date_icon"></font>
-				</span> 
-				<span>-</span>
-				<span class="mrmp_date"> 
-					<input type="text" name="lastActDateEnd" <#if lastActDateEnd??>value="${lastActDateEnd}"</#if> readonly="readonly" onFocus="WdatePicker();" class="w100 inpu_bg" /><font class="mrmp_date_icon"></font>
-				</span>
 			</li>
 		</ul>
 		<div class="bank10"></div>
@@ -88,29 +40,17 @@
 			<tr>
 				<th class="b5"><input type="checkbox" name="checkAll" /></th>
 				<th>用户ID</th>
-				<th>Email</th>
-				<th>手机</th>
-				<th>用户昵称</th>
-				<th>注册方式</th>
-				<th>注册时间</th>
-				<th>状态</th>
-				<th>最后登录时间</th>
-				<th>推荐用户</th>
-				<th>基本操作</th>
+				<th>用户名称</th>
+				<th>用户密码</th>
+				<th>操作</th>
 			</tr>
 			<#if dataList??>
 			<#list dataList as user>
 			<tr>
 				<td class="b5"><input type="checkbox" name="userId" value="${user.userId?c}"/></td>
 				<td>${user.userId?c}</td>
-				<td>${user.email!"--"}</td>
-				<td>${user.mobile!"--"}</td>
-				<td>${user.nickName!"--"}</td>
-				<td>${user.regTypeStr!"--"}</td>
-				<td>${user.addTime!"--"}</td>
-				<td>${user.statusStr!"--"}</td>
-				<td>${user.lastActTime!"--"}</td>
-				<td><#if user.isRecommend=="0">否<#else>是</#if></td>
+				<td>${user.userName!"--"}</td>
+				<td>${user.password!"--"}</td>
 				<td>
 					<span class="pen_ico"></span>
 					<span><a href="/users/UserAction-showUserDetail.do?userId=${user.userId?c}&refUrl=${refUrl?url}">查看</a></span>

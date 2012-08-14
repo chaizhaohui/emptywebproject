@@ -7,7 +7,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @author QiaoGuangqing
  * @date 2012-04-19
  */
-public class IndexAction extends BasicAction {
+public class IndexAction extends AppBasicAction {
 	
 	
 	public String toIndex(){

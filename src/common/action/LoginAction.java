@@ -11,7 +11,7 @@ import common.utils.General;
  * @author QiaoGuangqing
  * @date 2012-04-18
  */
-public class LoginAction extends BasicAction {
+public class LoginAction extends AppBasicAction {
 	
 	private String userName;	//用户名
 	private String userPwd;		//用户密码
