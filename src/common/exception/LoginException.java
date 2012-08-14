@@ -1,7 +1,6 @@
 package common.exception;
 /**
  * 后台用户登录异常
- * @author QiaoGuangqing
  * @date 2012-04-18
  */
 public class LoginException extends BasicException {

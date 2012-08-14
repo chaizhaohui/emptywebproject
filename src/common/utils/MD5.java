@@ -4,7 +4,6 @@
 
 /**
  * MD5加密解密
- * @author QiaoGuangqing
  * @Date 2012-04-19
  */
 

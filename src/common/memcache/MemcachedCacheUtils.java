@@ -6,7 +6,6 @@ import com.danga.MemCached.MemCachedClient;
 
 /**
  * MemcachedCache工具类
- * @author QiaoGuangqing
  * @date 2012-03-14
  */
 public class MemcachedCacheUtils {

@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import org.apache.log4j.PropertyConfigurator;
 /**
  * 初始化Log4j相对路径
- * @author QiaoGuangqing
  * @date 2012-04-18
  */
 public class Log4jInit extends HttpServlet {

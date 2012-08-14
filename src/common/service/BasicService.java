@@ -10,7 +10,6 @@ import org.apache.struts2.ServletActionContext;
 
 /**
  * 所有Service通用基类 封装了当前请求的Request Response Session对象 所有Service继承此基类以获得该对象
- * @author QiaoGuangqing
  * @date 2012-03-14
  */
 public class BasicService {

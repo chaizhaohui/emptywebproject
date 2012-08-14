@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 用户Cookies操作类
- * @author QiaoGuangqing
  * @date 2012-03-14
  */
 public class Cook {

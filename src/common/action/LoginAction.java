@@ -8,7 +8,6 @@ import common.utils.General;
 
 /**
  * 用户登录Action
- * @author QiaoGuangqing
  * @date 2012-04-18
  */
 public class LoginAction extends AppBasicAction {

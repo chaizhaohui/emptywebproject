@@ -2,7 +2,6 @@ package common.utils;
 
 /**
  * 分页标签工具类
- * @author QiaoGuangqing
  * @date 2012-03-29
  */
 public class Page {

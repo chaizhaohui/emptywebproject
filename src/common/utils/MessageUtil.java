@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 /**
  * 服务端将错误码转换为错误文本工具类
- * @author QiaoGuangqing
  * @date 2012-04-06
  */
 public class MessageUtil {

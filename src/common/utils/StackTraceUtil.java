@@ -1,7 +1,6 @@
 package common.utils;
 /**
  * 异常堆栈信息工具类
- * @author QiaoGuangqing
  * @date 2012-04-24
  */
 public class StackTraceUtil {

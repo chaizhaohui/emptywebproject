@@ -1,7 +1,6 @@
 package common.interceptor;
 /**
  * RequestHeader参数常量接口
- * @author QiaoGuangqing
  * @date 2012-04-06
  */
 public interface HeaderIF {

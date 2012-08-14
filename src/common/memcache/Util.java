@@ -7,7 +7,6 @@ import common.utils.ConfigUtil;
 
 /**
  * Memcached工具类
- * @author QiaoGuangqing
  * @date 2012-03-14
  */
 public class Util {

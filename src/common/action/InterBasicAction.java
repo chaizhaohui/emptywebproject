@@ -29,7 +29,6 @@ import common.utils.ParamType.PARAM_TYPE;
 /**
  * 所有Action基类 封装了RequestHeader对象以及捕捉异常 所有Action继承此基类
  * 
- * @author QiaoGuangqing
  * @date 2012-03-15
  */
 public abstract class InterBasicAction extends ActionSupport implements ActionI {

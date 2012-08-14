@@ -6,7 +6,6 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 /**
  * Action执行时间拦截器 记录每个Action执行时间
- * @author QiaoGuangqing
  * @date 2012-03-21
  */
 public class ExecuteTimerInterceptor extends AbstractInterceptor {

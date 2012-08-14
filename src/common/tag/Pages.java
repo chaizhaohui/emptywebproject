@@ -16,7 +16,6 @@ import common.utils.General;
 /**
  * 后台分页标签实体
  * 
- * @author QiaoGuangqing
  * @date 2012-03-29
  */
 public class Pages extends Component

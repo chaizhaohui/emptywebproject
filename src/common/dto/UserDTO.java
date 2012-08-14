@@ -9,7 +9,6 @@ import common.utils.General;
 
 /**
  * 用户表DTO
- * @author QiaoGuangqing
  * @date 2012-04-06
  */
 public class UserDTO extends BasicDTO {

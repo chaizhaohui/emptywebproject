@@ -11,7 +11,6 @@ import org.apache.struts2.views.jsp.ComponentTagSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 /**
  * 后台分页标签
- * @author QiaoGuangqing
  * @date 2012-03-29
  */
 public class PageTag extends ComponentTagSupport{

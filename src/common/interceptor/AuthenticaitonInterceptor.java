@@ -21,7 +21,6 @@ import common.utils.MessageUtil;
  * 鉴权拦截器 所有接口请求都要通过此拦截器
  * 1.验证DeviceNum是否存在 不存在则自动建立
  * 2.自动注册并绑定用户
- * @author QiaoGuangqing
  * @date 2012-03-21
  */
 public class AuthenticaitonInterceptor extends AbstractInterceptor {

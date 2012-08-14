@@ -2,7 +2,7 @@ package common.action;
 
 /**
  * 所有Action接口 BasicAction将实现此接口
- * @author QiaoGuangqing
+ * 
  * @date 2012-03-14
  */
 public interface ActionI {

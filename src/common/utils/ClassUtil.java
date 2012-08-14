@@ -13,7 +13,6 @@ import common.dto.BasicDTO;
 
 /**
  * Class工具类
- * @author QiaoGuangqing
  * @description 封装一般Class操作方法
  */
 public class ClassUtil {

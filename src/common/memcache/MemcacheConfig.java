@@ -2,7 +2,6 @@ package common.memcache;
 
 /**
  * Memcached配置文件常量接口
- * @author QiaoGuangqing
  * @date 2012-03-14
  */
 public interface MemcacheConfig {

@@ -8,7 +8,6 @@ import common.utils.TerminalCodes;
 
 /**
  * 所有自定义异常基类 所有异常都继承此基类
- * @author QiaoGuangqing
  * @date 2012-03-14
  */
 public class BasicException extends Exception {

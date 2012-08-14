@@ -9,7 +9,6 @@ import common.sqlbuilder.SqlBuilder;
 
 /**
  * 用户DAO
- * @author QiaoGuangqing
  * @date 2012-04-21
  */
 public class UserDAO extends BasicDAO<UserDTO> {

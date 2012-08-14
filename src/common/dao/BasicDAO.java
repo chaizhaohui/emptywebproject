@@ -13,7 +13,6 @@ import common.utils.ConfigUtil;
 
 /**
  * 所有Dao基类 创建新Dao需要继承此基类 定义了基本的CRUD操作
- * @author QiaoGuangqing
  * @param <T>
  * @date 2012-03-15
  */

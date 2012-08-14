@@ -12,7 +12,6 @@ public class BasicVO {
 	
 	/**
 	 * 重写实toString方法 方便System.out时打印信息
-	 * @author QiaoGuangqing
 	 */
 	@Override
 	public String toString(){
